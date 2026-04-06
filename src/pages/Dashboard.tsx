@@ -338,9 +338,12 @@ const Dashboard = () => {
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">Recent Alerts</h2>
           {alerts.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 text-center">
+            <GlowCard>
+              <div className="p-8 text-center">
               <ShieldCheck className="h-14 w-14 text-[hsl(var(--safe))] mx-auto mb-4" />
               <p className="text-sm text-muted-foreground">No alerts yet — everything looks good</p>
+              </div>
+            </GlowCard>
             </div>
           ) : (
             <div className="space-y-3">
