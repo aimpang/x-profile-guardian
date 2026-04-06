@@ -418,7 +418,8 @@ const Dashboard = () => {
                 Connect your X account to enable push notifications.
               </p>
             )}
-          </div>
+            </div>
+          </GlowCard>
 
           <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
             <div className="flex items-center justify-between">
