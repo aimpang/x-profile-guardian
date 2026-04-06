@@ -34,7 +34,8 @@ const Index = () => {
       </nav>
 
       {/* Hero — full viewport */}
-      <section className="flex flex-col items-center justify-center text-center px-6" style={{ minHeight: "calc(100vh - 65px)" }}>
+      {/* Hero — top section */}
+      <section className="flex flex-col items-center text-center px-6 pt-16 pb-12">
         <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground mb-4 mx-[150px]">Defend your X account</p>
         <h1 className="font-semibold text-foreground leading-[0.95]" style={{ fontSize: "clamp(48px, 10vw, 96px)" }}>
           XGuard
