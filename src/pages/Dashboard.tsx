@@ -278,8 +278,8 @@ const Dashboard = () => {
         )}
 
         {/* Account Status Card */}
-        {account ? (
-          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8">
+          <GlowCard>
+            <div className="p-8">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                 {account.x_avatar_url ? (
