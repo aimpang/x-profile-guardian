@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import {
   Shield,
   ShieldCheck,
@@ -10,6 +10,7 @@ import {
   Unplug,
   LogOut,
   Slash,
+  Loader2,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -45,6 +46,14 @@ interface Alert {
   created_at: string | null;
 }
 
+interface SubscriptionInfo {
+  subscribed: boolean;
+  status: string;
+  trial_end: string | null;
+  current_period_end: string | null;
+  subscription_id: string | null;
+}
+
 const eventLabels: Record<string, string> = {
   username: "Username",
   display_name: "Display name",
@@ -56,10 +65,24 @@ const eventLabels: Record<string, string> = {
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [account, setAccount] = useState<ConnectedAccount | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [pushEnabled, setPushEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [subInfo, setSubInfo] = useState<SubscriptionInfo | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+
+  const checkSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("check-subscription");
+      if (error) throw error;
+      setSubInfo(data);
+    } catch {
+      // No subscription yet — that's fine
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -73,20 +96,63 @@ const Dashboard = () => {
         setPushEnabled(accRes.data.push_enabled ?? true);
       }
       if (alertRes.data) setAlerts(alertRes.data);
+      await checkSubscription();
       setLoading(false);
     };
     fetchData();
   }, [user]);
 
-  const trialDaysLeft = account?.trial_ends_at
-    ? Math.max(0, Math.ceil((new Date(account.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
-    : 0;
+  // Handle checkout success redirect
+  useEffect(() => {
+    if (searchParams.get("checkout") === "success") {
+      toast.success("Subscription activated! Welcome to XGuard.");
+      checkSubscription();
+    }
+  }, [searchParams]);
 
-  const isExpired = account?.subscription_status === "expired";
-  const isTrial = account?.subscription_status === "trial";
+  const trialDaysLeft = subInfo?.trial_end
+    ? Math.max(0, Math.ceil((new Date(subInfo.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : account?.trial_ends_at
+      ? Math.max(0, Math.ceil((new Date(account.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+      : 0;
+
+  const subStatus = subInfo?.status || account?.subscription_status || "none";
+  const isExpired = subStatus === "expired" || subStatus === "canceled" || subStatus === "past_due";
+  const isTrial = subStatus === "trialing" || subStatus === "trial";
+  const isActive = subStatus === "active";
 
   const handleConnectX = () => {
     toast.info("X OAuth integration coming soon. This will connect your X account via OAuth.");
+  };
+
+  const handleCheckout = async () => {
+    setCheckoutLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout");
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start checkout");
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const handleManageBilling = async () => {
+    setPortalLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to open billing portal");
+    } finally {
+      setPortalLoading(false);
+    }
   };
 
   const togglePush = async (val: boolean) => {
@@ -140,9 +206,10 @@ const Dashboard = () => {
           <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-foreground">Your trial has ended</p>
+              <p className="text-sm font-medium text-foreground">Your subscription has ended</p>
               <p className="text-sm text-muted-foreground">Subscribe to keep your X account protected.</p>
-              <Button size="sm" className="mt-3">
+              <Button size="sm" className="mt-3" onClick={handleCheckout} disabled={checkoutLoading}>
+                {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                 Subscribe — $9/month
               </Button>
             </div>
@@ -203,7 +270,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Recent Alerts — always visible */}
+        {/* Recent Alerts */}
         <Separator />
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">Recent Alerts</h2>
@@ -259,7 +326,7 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Settings — always visible */}
+        {/* Settings */}
         <Separator />
         <div className="space-y-5">
           <h2 className="text-lg font-semibold text-foreground">Settings</h2>
@@ -293,18 +360,28 @@ const Dashboard = () => {
                 <Label className="text-foreground">Subscription</Label>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {isExpired
-                    ? "Trial ended — subscribe to continue"
+                    ? "Subscription ended — subscribe to continue"
                     : isTrial
                       ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
-                      : account
+                      : isActive
                         ? "Active — $9/month"
-                        : "14-day free trial when you connect"}
+                        : "Start with a 14-day free trial"}
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={() => toast.info("Stripe billing portal coming soon")}>
-              Manage billing
-            </Button>
+            <div className="flex gap-2">
+              {(subInfo?.subscribed) ? (
+                <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={portalLoading}>
+                  {portalLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Manage billing
+                </Button>
+              ) : (
+                <Button size="sm" onClick={handleCheckout} disabled={checkoutLoading}>
+                  {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Subscribe — $9/month
+                </Button>
+              )}
+            </div>
           </div>
 
           {account && (
