@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/custom-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
