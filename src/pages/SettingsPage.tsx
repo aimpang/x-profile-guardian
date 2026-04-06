@@ -137,7 +137,8 @@ const SettingsPage = () => {
             </Button>
           </div>
         </div>
-      </div>
+          </div>
+        </GlowCard>
     </div>
   );
 };

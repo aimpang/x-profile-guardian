@@ -467,8 +467,8 @@ const Dashboard = () => {
               </div>
               <Button variant="destructive" size="sm" onClick={handleDisconnect}>
                 Disconnect
-              </Button>
-            </div>
+              </div>
+            </GlowCard>
           )}
         </div>
 
