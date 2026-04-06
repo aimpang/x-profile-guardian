@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-twitter-webhooks-signature",
 };
 
-const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID")!;
+const ONESIGNAL_APP_ID = Deno.env.get("31b40850-42e4-4835-8579-4bfc004ddc04")!;
 const ONESIGNAL_REST_API_KEY = Deno.env.get(
   "os_v2_app_gg2aqucc4redlblzjp6aato4asusa72qbmtuh3vhpgzpghzgfwfkxibn6kmfwk5lhjnbdwiqvujobsnl7yqkmhzzlgd7rdsmnvu7dgi",
 )!;
