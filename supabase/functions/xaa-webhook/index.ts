@@ -5,6 +5,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-twitter-webhooks-signature",
 };
 
+const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID")!;
+const ONESIGNAL_REST_API_KEY = Deno.env.get(
+  "os_v2_app_gg2aqucc4redlblzjp6aato4asusa72qbmtuh3vhpgzpghzgfwfkxibn6kmfwk5lhjnbdwiqvujobsnl7yqkmhzzlgd7rdsmnvu7dgi",
+)!;
+const X_CONSUMER_SECRET = Deno.env.get("ikLWhBxiQNDEPBzSgpcu7QGstYh5LA8dq8UXMSv2cVtPa9r1i4")!;
+
 interface ProfileSnapshot {
   username?: string;
   display_name?: string;
@@ -12,9 +18,6 @@ interface ProfileSnapshot {
   profile_image?: string;
   banner?: string;
 }
-
-// ←←← PUT YOUR X APP CONSUMER SECRET HERE (keep it secret!)
-const X_CONSUMER_SECRET = Deno.env.get("X_CONSUMER_SECRET")!;
 
 async function verifyXSignature(req: Request, body: string): Promise<boolean> {
   const signatureHeader = req.headers.get("x-twitter-webhooks-signature");
@@ -38,16 +41,13 @@ async function verifyXSignature(req: Request, body: string): Promise<boolean> {
 }
 
 async function sendPushNotification(token: string, title: string, body: string) {
-  const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
-  const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
-
   if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
-    console.warn("[PUSH] OneSignal not configured — skipping push notification");
+    console.log("[OneSignal] Missing keys - push skipped");
     return;
   }
 
   try {
-    const res = await fetch("https://onesignal.com/api/v1/notifications", {
+    const response = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,22 +62,16 @@ async function sendPushNotification(token: string, title: string, body: string) 
       }),
     });
 
-    const result = await res.text();
-    if (!res.ok) {
-      console.error(`[PUSH] OneSignal error (${res.status}):`, result);
-    } else {
-      console.log("[PUSH] Notification sent successfully");
-    }
+    const result = await response.json();
+    console.log("[OneSignal] Push sent:", result);
   } catch (err) {
-    console.error("[PUSH] Failed to send notification:", err);
+    console.error("[OneSignal] Failed to send push:", err);
   }
 }
 
 async function sendEmailAlert(email: string, eventType: string, oldVal: any, newVal: any) {
-  console.log(
-    `[EMAIL] ${email} | ${eventType} changed | old: ${JSON.stringify(oldVal)} | new: ${JSON.stringify(newVal)}`,
-  );
-  // TODO: Add real email service (Resend, Postmark, etc.) here later
+  console.log(`[EMAIL] ${email} | ${eventType} changed`);
+  // TODO: Add real email service later
 }
 
 Deno.serve(async (req: Request) => {
@@ -93,9 +87,7 @@ Deno.serve(async (req: Request) => {
     return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
   }
 
-  // Verify XAA signature (required for security)
   if (!(await verifyXSignature(req, bodyText))) {
-    console.error("Invalid XAA webhook signature");
     return new Response("Unauthorized", { status: 401, headers: corsHeaders });
   }
 
@@ -110,34 +102,27 @@ Deno.serve(async (req: Request) => {
     }
 
     const x_user_id = event.filter?.user_id;
-    const changePayload = event.payload; // { before, after }
+    const changePayload = event.payload;
 
     if (!x_user_id || !changePayload?.after) {
-      return new Response("Missing user_id or payload", { status: 400, headers: corsHeaders });
+      return new Response("Missing data", { status: 400, headers: corsHeaders });
     }
 
-    // Find connected account
-    const { data: account, error: accError } = await supabase
+    const { data: account } = await supabase
       .from("connected_accounts")
       .select("*")
       .eq("x_user_id", x_user_id)
       .maybeSingle();
 
-    if (accError || !account) {
-      return new Response("Account not found", { status: 404, headers: corsHeaders });
-    }
+    if (!account) return new Response("Account not found", { status: 404, headers: corsHeaders });
 
-    // Skip if subscription expired
     if (account.subscription_status === "expired") {
       return new Response("Subscription expired", { status: 200, headers: corsHeaders });
     }
 
     const snapshot: ProfileSnapshot = (account.last_snapshot as ProfileSnapshot) || {};
-
-    // Extract the changed field (e.g. "profile.update.bio" → "bio")
     const field = event.event_type.replace("profile.update.", "") as keyof ProfileSnapshot;
 
-    // Create alert
     const alertData = {
       user_id: account.user_id,
       event_type: field,
@@ -147,28 +132,21 @@ Deno.serve(async (req: Request) => {
 
     await supabase.from("alerts").insert([alertData]);
 
-    // Update last_snapshot
     const newSnapshot = { ...snapshot, [field]: changePayload.after };
     await supabase.from("connected_accounts").update({ last_snapshot: newSnapshot }).eq("id", account.id);
 
-    // Send notifications
     const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
     const email = userData?.user?.email;
 
-    if (email) {
-      await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
-    }
+    if (email) await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
 
     if (account.push_enabled && account.push_token) {
       await sendPushNotification(account.push_token, "🚨 XGuard Alert", `Your ${field.replace("_", " ")} was changed`);
     }
 
-    return new Response(JSON.stringify({ message: "Alert processed successfully", field }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response("Alert processed", { status: 200, headers: corsHeaders });
   } catch (error) {
-    console.error("XAA Webhook error:", error);
+    console.error("Webhook error:", error);
     return new Response("Internal server error", { status: 500, headers: corsHeaders });
   }
 });
