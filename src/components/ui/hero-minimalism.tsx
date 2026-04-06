@@ -69,7 +69,7 @@ export function MinimalHeroBackground() {
           p.opacity -= 0.008;
           if (p.opacity <= 0) reset(p);
         }
-        ctx.fillStyle = `rgba(29, 155, 240, ${p.opacity * 0.4})`;
+        ctx.fillStyle = `rgba(250, 250, 250, ${p.opacity * 0.4})`;
         ctx.fillRect(p.x, p.y, 0.6, Math.random() * 2 + 1);
       });
       raf = requestAnimationFrame(draw);
