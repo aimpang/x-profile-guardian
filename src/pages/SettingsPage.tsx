@@ -73,7 +73,7 @@ const SettingsPage = () => {
       <div className="max-w-lg mx-auto px-6 py-10 space-y-6">
         {/* Push notifications */}
         {hasAccount && (
-          <div className="rounded-xl border border-border bg-secondary p-5">
+          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
             <div className="flex items-center gap-3 mb-4">
               <Bell className="h-5 w-5 text-primary" />
               <h2 className="font-semibold text-foreground">Notifications</h2>
@@ -91,7 +91,7 @@ const SettingsPage = () => {
         )}
 
         {/* Billing */}
-        <div className="rounded-xl border border-border bg-secondary p-5">
+        <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
           <div className="flex items-center gap-3 mb-4">
             <CreditCard className="h-5 w-5 text-primary" />
             <h2 className="font-semibold text-foreground">Billing</h2>
@@ -104,7 +104,7 @@ const SettingsPage = () => {
 
         {/* Disconnect X */}
         {hasAccount && (
-          <div className="rounded-xl border border-border bg-secondary p-5">
+          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
             <div className="flex items-center gap-3 mb-4">
               <Unplug className="h-5 w-5 text-destructive" />
               <h2 className="font-semibold text-foreground">Disconnect X account</h2>
@@ -117,7 +117,7 @@ const SettingsPage = () => {
         )}
 
         {/* Account */}
-        <div className="rounded-xl border border-border bg-secondary p-5">
+        <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
           <h2 className="font-semibold text-foreground mb-3">Account</h2>
           <p className="text-sm text-muted-foreground mb-1">{user?.email}</p>
           <div className="flex gap-2 mt-4">
