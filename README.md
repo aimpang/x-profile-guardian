@@ -3,73 +3,46 @@
 **Instant alerts when your X profile changes.**  
 Set once. Protected forever.
 
-A minimal, defensive micro-SaaS that monitors your own X account and notifies you in real-time if anything changes (username, bio, profile picture, banner, etc.).
+A minimal, defensive micro-SaaS that monitors **your own** X account and sends real-time alerts the moment anything changes (username, bio, profile picture, banner, etc.).
 
-Built to protect creators, influencers, and power users from account takeovers and unauthorized changes.
-
----
-
-## The Problem
-
-Hackers frequently take over X accounts by changing the handle, bio, or profile picture. Most owners only notice hours or days later — often after damage has already been done.
-
-XGuard solves this by giving you **instant alerts** the moment any public profile change occurs.
+Built for creators, influencers, and anyone who wants peace of mind about their X identity.
 
 ---
 
-## How It Works (User Flow)
+## Core Features
 
-1. **Sign up** — Instantly with Google or email.
-2. **Connect your X account** — Authorize via OAuth (we only monitor the account you own).
-3. **Set it and forget it** — XGuard subscribes to your profile using X’s official Activity API (XAA).
-4. **Get alerted** — Receive instant mobile push + email notifications with clear before/after details when anything changes.
-5. **Quick action** — Tap “This was me” to dismiss legitimate changes.
+- Real-time detection of profile changes using X’s official Activity API (XAA)
+- Instant mobile push notifications + email alerts
+- Clear before/after comparison for every change
+- One-tap "This was me" to dismiss legitimate changes
+- Simple, secure onboarding: Sign up → Connect your X account via OAuth
+- We **only monitor the single account you own** — nothing else
+
+### Pricing
+- 14-day free trial
+- Then **$9/month** or **$89/year** (save ~17%)
 
 ---
 
-## Architecture & Tech Stack
+## How It Works
 
-- **Frontend**: React + TypeScript + Tailwind CSS (Vite)
-- **Backend**: Supabase (Postgres, Auth, Edge Functions, Realtime)
+1. **Sign up** instantly with Google or email.
+2. **Connect your X account** via OAuth (we only monitor what you own).
+3. **Set it and forget it** — XGuard subscribes to your profile using XAA webhooks.
+4. **Get alerted** the moment a change happens (push + email).
+5. View details in the dashboard and mark changes as "This was me" if legitimate.
+
+---
+
+## Tech Stack
+
+- **Frontend**: React + TypeScript + Tailwind
+- **Backend**: Supabase (Postgres, Auth, Edge Functions)
 - **Real-time monitoring**: X Activity API (XAA) webhooks
-- **Push notifications**: OneSignal (mobile + web)
-- **Payments**: Stripe (14-day free trial → $9/month)
-- **Deployment**: Supabase + Vercel (planned)
-
-### Key Components
-
-- `connected_accounts` – Stores the user’s linked X account + last known snapshot
-- `alerts` – History of all detected profile changes with before/after data
-- `xaa-webhook` – Edge Function that receives real-time events from X and creates alerts
-- OAuth flow for secure X account connection
+- **Push notifications**: OneSignal
+- **Payments**: Stripe
+- **Authentication**: Google/Apple + X OAuth
 
 ---
 
-## Design Philosophy
-
-- **Minimal & Calm** — “Set it and forget it” experience
-- **Honest** — We do not prevent hacks; we detect and alert you immediately
-- **Privacy-first** — We only monitor the single X account you explicitly authorize
-- **Trustworthy** — Clear before/after diffs and one-tap “This was me” dismissal
-
----
-
-## Current Status (April 2026)
-
-- Dark X-themed UI completed
-- Dashboard with connected / not-connected states
-- Landing page with clear value proposition
-- Supabase schema + basic webhook structure
-- Stripe integration in progress
-- OneSignal push setup started
-
-**Next priorities:**
-1. Full X OAuth flow
-2. Production-ready XAA webhook with proper signature verification
-3. Stripe subscription + billing portal
-4. Real OneSignal mobile push notifications
-5. Cleanup of leftover template routes
-
----
-
-## Tech & Architecture Diagram (Planned)
+## Architecture
