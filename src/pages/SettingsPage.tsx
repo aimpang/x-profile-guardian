@@ -126,19 +126,19 @@ const SettingsPage = () => {
         {/* Account */}
         <GlowCard>
           <div className="p-5">
-          <h2 className="font-semibold text-foreground mb-3">Account</h2>
-          <p className="text-sm text-muted-foreground mb-1">{user?.email}</p>
-          <div className="flex gap-2 mt-4">
-            <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>
-              Log out
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
-              Delete account
-            </Button>
-          </div>
-        </div>
+            <h2 className="font-semibold text-foreground mb-3">Account</h2>
+            <p className="text-sm text-muted-foreground mb-1">{user?.email}</p>
+            <div className="flex gap-2 mt-4">
+              <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>
+                Log out
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
+                Delete account
+              </Button>
+            </div>
           </div>
         </GlowCard>
+      </div>
     </div>
   );
 };
