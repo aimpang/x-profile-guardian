@@ -33,50 +33,61 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero — full viewport */}
-      {/* Hero — top section */}
-      <section className="flex flex-col items-center text-center px-6 pt-16 pb-12">
-        <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground mb-4 mx-[150px]">Defend your X account</p>
-        <h1 className="font-semibold text-foreground leading-[0.95]" style={{ fontSize: "clamp(48px, 10vw, 96px)" }}>
-          XGuard
-        </h1>
-        <p className="mt-5 text-muted-foreground text-base sm:text-lg max-w-md">
-          Instant alerts the moment your X profile changes. Set once. Forget forever.
+      {/* Hero */}
+      <section className="flex flex-col items-center text-center px-6 pt-24 pb-20 max-w-3xl mx-auto">
+        <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6">
+          Protect your X identity
         </p>
-        <Link to="/signup" className="mt-8">
-          <Button size="lg" className="text-base px-8 gap-2">
-            Start free trial <ArrowRight className="h-4 w-4" />
+        <h1 className="font-semibold text-foreground leading-[1.05] tracking-tight" style={{ fontSize: "clamp(36px, 6vw, 64px)" }}>
+          Instant alerts when your X profile changes
+        </h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          Set once. Protected forever.
+        </p>
+        <Link to="/signup" className="mt-10">
+          <Button size="lg" className="text-base px-10 py-6 gap-2 text-lg">
+            Start 14-day free trial <ArrowRight className="h-5 w-5" />
           </Button>
         </Link>
-        <p className="text-xs text-muted-foreground mt-3">14-day free trial · No credit card required</p>
+        <p className="text-xs text-muted-foreground mt-4 tracking-wide">
+          No credit card required · Cancel anytime
+        </p>
       </section>
 
       {/* How it works + Pricing */}
-      <section className="px-6 py-24 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold text-foreground text-center mb-12">How it works</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="px-6 py-20 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold text-foreground text-center mb-14">How it works</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { icon: <Zap className="h-8 w-8 text-primary" />, title: "Sign up", desc: "Create your account in seconds with just an email." },
-            { icon: <Shield className="h-8 w-8 text-primary" />, title: "Connect X", desc: "Authorize your X account via OAuth. We only monitor your own profile." },
-            { icon: <Bell className="h-8 w-8 text-primary" />, title: "Stay protected", desc: "Get instant push & email alerts if anything changes." },
+            { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Create your account in seconds with just your email." },
+            { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor what you own." },
+            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Get instant push and email alerts the moment anything changes on your profile." },
           ].map((step, i) => (
-            <div key={i} className="text-center p-6 rounded-xl border border-border bg-secondary/50 backdrop-blur-sm">
+            <div key={i} className="p-6 rounded-xl border border-border bg-secondary/30 text-center">
               <div className="flex justify-center mb-4">{step.icon}</div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground">{step.desc}</p>
+              <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
             </div>
           ))}
 
           {/* Pricing card */}
-          <div className="text-center p-6 rounded-xl border border-border bg-secondary/50 backdrop-blur-sm flex flex-col justify-between">
+          <div className="p-6 rounded-xl border border-border bg-secondary/30 flex flex-col justify-between text-center">
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Simple pricing</h3>
-              <div className="text-3xl font-bold text-foreground mb-1">$9<span className="text-sm font-normal text-muted-foreground">/mo</span></div>
-              <p className="text-xs text-muted-foreground mb-4">After 14-day free trial</p>
-              <ul className="text-left space-y-2 mb-4">
-                {["1 X account", "Real-time monitoring", "Push & email alerts", "Alert history", "Quick dismiss"].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2 text-xs text-foreground">
-                    <Check className="h-3 w-3 text-safe flex-shrink-0" />
+              <h3 className="text-base font-semibold text-foreground mb-3">Simple pricing</h3>
+              <div className="text-3xl font-bold text-foreground mb-1">
+                $9<span className="text-sm font-normal text-muted-foreground">/mo</span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-5">After 14-day free trial</p>
+              <ul className="text-left space-y-2.5 mb-5">
+                {[
+                  "1 X account protected",
+                  "Real-time profile monitoring",
+                  "Instant push + email alerts",
+                  "Full change history",
+                  "\"This was me\" quick dismiss",
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-foreground">
+                    <Check className="h-3.5 w-3.5 text-safe flex-shrink-0 mt-0.5" />
                     {f}
                   </li>
                 ))}
