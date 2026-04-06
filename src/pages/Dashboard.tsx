@@ -397,7 +397,8 @@ const Dashboard = () => {
         <div className="space-y-5">
           <h2 className="text-lg font-semibold text-foreground">Settings</h2>
 
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5 space-y-3">
+          <GlowCard>
+            <div className="p-5 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Bell className="h-5 w-5 text-foreground" />
