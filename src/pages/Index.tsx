@@ -61,7 +61,7 @@ const Index = () => {
           {[
             { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Create your account in seconds with just your email." },
             { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor what you own." },
-            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Get instant push and email alerts the moment anything changes on your profile." },
+            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Receive instant push and email alerts the second your profile changes." },
           ].map((step, i) => (
             <div key={i} className="p-6 rounded-xl border border-border bg-secondary/30 text-center">
               <div className="flex justify-center mb-4">{step.icon}</div>
