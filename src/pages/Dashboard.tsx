@@ -12,6 +12,7 @@ import {
   Slash,
   Loader2,
 } from "lucide-react";
+import { GlowCard } from "@/components/ui/glow-card";
 import {
   Breadcrumb,
   BreadcrumbList,
