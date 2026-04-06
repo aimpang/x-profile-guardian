@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, ShieldCheck, ExternalLink, AlertTriangle, Bell, CreditCard, Unplug, LogOut } from "lucide-react";
+import { Shield, ShieldCheck, ExternalLink, AlertTriangle, Bell, CreditCard, Unplug, LogOut, Slash } from "lucide-react";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -296,11 +297,23 @@ const Dashboard = () => {
             Log out
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground text-center pt-2">
-          <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
-          {" · "}
-          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
-        </p>
+        <div className="flex justify-center pt-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/terms">Terms</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/privacy">Privacy</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </div>
     </div>
   );
