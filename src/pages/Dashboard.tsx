@@ -362,41 +362,39 @@ const Dashboard = () => {
                   key={alert.id}
                   className={`rounded-xl border p-4 ${alert.is_legitimate ? "border-border bg-secondary/50" : "border-destructive/30 bg-destructive/5"}`}
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">
-                        {eventLabels[alert.event_type] || alert.event_type} changed
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
-                      </p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-foreground">
+                          {eventLabels[alert.event_type] || alert.event_type} changed
+                        </p>
+                        <p className="text-xs text-muted-foreground shrink-0">
+                          {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
+                        </p>
+                      </div>
                       {(() => {
                         const oldVal = alert.old_data?.[alert.event_type] ?? null;
                         const newVal = alert.new_data?.[alert.event_type] ?? null;
                         const isImage = alert.event_type === "profile_image" || alert.event_type === "banner";
-                        return (
-                          <div className="mt-2 space-y-1.5">
-                            <div className="text-xs flex items-start gap-1.5">
-                              <span className="text-muted-foreground shrink-0">Before:</span>
-                              {oldVal == null ? (
-                                <span className="italic text-muted-foreground">Not set</span>
-                              ) : isImage ? (
-                                <img src={oldVal} alt="before" className="h-8 w-8 rounded object-cover" />
-                              ) : (
-                                <span className="text-destructive line-through break-all">{oldVal}</span>
-                              )}
-                            </div>
-                            <div className="text-xs flex items-start gap-1.5">
-                              <span className="text-muted-foreground shrink-0">After:</span>
-                              {newVal == null ? (
-                                <span className="italic text-muted-foreground">Not set</span>
-                              ) : isImage ? (
-                                <img src={newVal} alt="after" className="h-8 w-8 rounded object-cover" />
-                              ) : (
-                                <span className="text-[hsl(var(--safe))] break-all">{newVal}</span>
-                              )}
-                            </div>
+                        const imgClass = alert.event_type === "banner"
+                          ? "h-8 w-14 rounded object-cover"
+                          : "h-8 w-8 rounded-full object-cover";
+                        return isImage ? (
+                          <div className="mt-2 flex items-center gap-2">
+                            {oldVal
+                              ? <img src={oldVal} alt="before" className={imgClass} />
+                              : <span className="text-xs italic text-muted-foreground">None</span>}
+                            <span className="text-muted-foreground text-xs">→</span>
+                            {newVal
+                              ? <img src={newVal} alt="after" className={imgClass} />
+                              : <span className="text-xs italic text-muted-foreground">None</span>}
                           </div>
+                        ) : (
+                          <p className="mt-1 text-xs text-muted-foreground truncate">
+                            <span className="text-destructive line-through mr-1">{oldVal ?? "—"}</span>
+                            <span className="mx-1">→</span>
+                            <span className="text-[hsl(var(--safe))]">{newVal ?? "—"}</span>
+                          </p>
                         );
                       })()}
                     </div>
@@ -405,12 +403,12 @@ const Dashboard = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => handleThisWasMe(alert.id)}
-                        className="text-xs shrink-0 ml-4"
+                        className="text-xs shrink-0"
                       >
                         This was me
                       </Button>
                     ) : (
-                      <span className="text-xs text-muted-foreground">✓ Acknowledged</span>
+                      <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">✓ Acknowledged</span>
                     )}
                   </div>
                 </div>
