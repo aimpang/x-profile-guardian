@@ -102,6 +102,8 @@ Deno.serve(async (req: Request) => {
           x_display_name: xUser.name,
           x_avatar_url: xUser.profile_image_url?.replace("_normal", "") ?? null,
           last_snapshot: snapshot,
+          x_access_token: tokenData.access_token,
+          x_refresh_token: tokenData.refresh_token ?? null,
           subscription_status: "trial",
           trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
         },
