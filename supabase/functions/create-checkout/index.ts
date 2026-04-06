@@ -45,7 +45,7 @@ serve(async (req) => {
     if (!priceId) throw new Error(`Price ID for plan "${plan}" is not configured`);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+      apiVersion: "2023-10-16",
     });
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
