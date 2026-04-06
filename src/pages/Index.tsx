@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SparklesCore } from "@/components/ui/sparkles";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
@@ -9,18 +9,7 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
-      {/* Full-page sparkle background */}
-      <div className="fixed inset-0 z-0">
-        <SparklesCore
-          background="transparent"
-          minSize={0.6}
-          maxSize={1.4}
-          particleDensity={100}
-          particleColor="#1D9BF0"
-          speed={2}
-          className="h-full w-full"
-        />
-      </div>
+      <BackgroundPaths />
 
       <div className="relative z-10">
       {/* Nav */}
