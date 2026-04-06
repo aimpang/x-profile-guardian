@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Shield, ArrowLeft, Bell, CreditCard, Unplug } from "lucide-react";
+import { GlowCard } from "@/components/ui/glow-card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -73,7 +74,8 @@ const SettingsPage = () => {
       <div className="max-w-lg mx-auto px-6 py-10 space-y-6">
         {/* Push notifications */}
         {hasAccount && (
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+          <GlowCard>
+            <div className="p-5">
             <div className="flex items-center gap-3 mb-4">
               <Bell className="h-5 w-5 text-primary" />
               <h2 className="font-semibold text-foreground">Notifications</h2>
@@ -87,11 +89,13 @@ const SettingsPage = () => {
               </div>
               <Switch checked={pushEnabled} onCheckedChange={togglePush} />
             </div>
-          </div>
+            </div>
+          </GlowCard>
         )}
 
         {/* Billing */}
-        <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+        <GlowCard>
+          <div className="p-5">
           <div className="flex items-center gap-3 mb-4">
             <CreditCard className="h-5 w-5 text-primary" />
             <h2 className="font-semibold text-foreground">Billing</h2>
@@ -100,11 +104,13 @@ const SettingsPage = () => {
           <Button variant="outline" size="sm" onClick={() => toast.info("Stripe billing portal coming soon")}>
             Manage billing
           </Button>
-        </div>
+          </div>
+        </GlowCard>
 
         {/* Disconnect X */}
         {hasAccount && (
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+          <GlowCard>
+            <div className="p-5">
             <div className="flex items-center gap-3 mb-4">
               <Unplug className="h-5 w-5 text-destructive" />
               <h2 className="font-semibold text-foreground">Disconnect X account</h2>
@@ -113,22 +119,25 @@ const SettingsPage = () => {
             <Button variant="destructive" size="sm" onClick={handleDisconnect}>
               Disconnect
             </Button>
-          </div>
+            </div>
+          </GlowCard>
         )}
 
         {/* Account */}
-        <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
-          <h2 className="font-semibold text-foreground mb-3">Account</h2>
-          <p className="text-sm text-muted-foreground mb-1">{user?.email}</p>
-          <div className="flex gap-2 mt-4">
-            <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>
-              Log out
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
-              Delete account
-            </Button>
+        <GlowCard>
+          <div className="p-5">
+            <h2 className="font-semibold text-foreground mb-3">Account</h2>
+            <p className="text-sm text-muted-foreground mb-1">{user?.email}</p>
+            <div className="flex gap-2 mt-4">
+              <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>
+                Log out
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
+                Delete account
+              </Button>
+            </div>
           </div>
-        </div>
+        </GlowCard>
       </div>
     </div>
   );

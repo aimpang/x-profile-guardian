@@ -12,6 +12,7 @@ import {
   Slash,
   Loader2,
 } from "lucide-react";
+import { GlowCard } from "@/components/ui/glow-card";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -284,7 +285,8 @@ const Dashboard = () => {
 
         {/* Account Status Card */}
         {account ? (
-          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8">
+          <GlowCard>
+            <div className="p-8">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                 {account.x_avatar_url ? (
@@ -316,26 +318,29 @@ const Dashboard = () => {
                 ? "We're monitoring for any unauthorized changes."
                 : "Subscribe to resume monitoring."}
             </p>
-          </div>
+            </div>
+          </GlowCard>
         ) : (
-          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-12 text-center">
-            <Shield className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
-            <h2 className="text-2xl font-semibold text-foreground mb-3">Protect your X account</h2>
-            <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
-              Connect your X account via OAuth to start real-time monitoring against hacks
-            </p>
-            <Button
-              size="lg"
-              onClick={handleConnectX}
-              disabled={connectXLoading}
-              className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
-            >
-              {connectXLoading
-                ? <Loader2 className="h-4 w-4 animate-spin" />
-                : <ExternalLink className="h-4 w-4" />}
-              {connectXLoading ? "Redirecting to X..." : "Connect my X Account"}
-            </Button>
-          </div>
+          <GlowCard>
+            <div className="p-12 text-center">
+              <Shield className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
+              <h2 className="text-2xl font-semibold text-foreground mb-3">Protect your X account</h2>
+              <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
+                Connect your X account via OAuth to start real-time monitoring against hacks
+              </p>
+              <Button
+                size="lg"
+                onClick={handleConnectX}
+                disabled={connectXLoading}
+                className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
+              >
+                {connectXLoading
+                  ? <Loader2 className="h-4 w-4 animate-spin" />
+                  : <ExternalLink className="h-4 w-4" />}
+                {connectXLoading ? "Redirecting to X..." : "Connect my X Account"}
+              </Button>
+            </div>
+          </GlowCard>
         )}
 
         {/* Recent Alerts */}
@@ -343,10 +348,13 @@ const Dashboard = () => {
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">Recent Alerts</h2>
           {alerts.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 text-center">
+            <GlowCard>
+              <div className="p-8 text-center">
               <ShieldCheck className="h-14 w-14 text-[hsl(var(--safe))] mx-auto mb-4" />
               <p className="text-sm text-muted-foreground">No alerts yet — everything looks good</p>
-            </div>
+              </div>
+            </GlowCard>
+          
           ) : (
             <div className="space-y-3">
               {alerts.map((alert) => (
@@ -399,7 +407,8 @@ const Dashboard = () => {
         <div className="space-y-5">
           <h2 className="text-lg font-semibold text-foreground">Settings</h2>
 
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5 space-y-3">
+          <GlowCard>
+            <div className="p-5 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Bell className="h-5 w-5 text-foreground" />
@@ -419,9 +428,11 @@ const Dashboard = () => {
                 Connect your X account to enable push notifications.
               </p>
             )}
-          </div>
+            </div>
+          </GlowCard>
 
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+          <GlowCard>
+            <div className="p-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CreditCard className="h-5 w-5 text-foreground" />
@@ -456,10 +467,12 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
-          </div>
+            </div>
+          </GlowCard>
 
           {account && (
-            <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+            <GlowCard>
+              <div className="p-5">
               <div className="flex items-center gap-3 mb-3">
                 <Unplug className="h-5 w-5 text-destructive" />
                 <div>
@@ -472,7 +485,8 @@ const Dashboard = () => {
               <Button variant="destructive" size="sm" onClick={handleDisconnect}>
                 Disconnect
               </Button>
-            </div>
+              </div>
+            </GlowCard>
           )}
         </div>
 

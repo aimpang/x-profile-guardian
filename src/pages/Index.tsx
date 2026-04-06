@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check, Slash } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { GlowCard } from "@/components/ui/glow-card";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
@@ -63,15 +64,18 @@ const Index = () => {
             { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor the public profile of the account you own." },
             { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Using X’s official Activity API, we instantly detect changes to: username/handle, display name, bio, profile picture, and banner." },
           ].map((step, i) => (
-            <div key={i} className="p-6 rounded-xl border border-border bg-secondary/30 text-center">
-              <div className="flex justify-center mb-4">{step.icon}</div>
-              <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-            </div>
+            <GlowCard key={i}>
+              <div className="p-6 text-center">
+                <div className="flex justify-center mb-4">{step.icon}</div>
+                <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+              </div>
+            </GlowCard>
           ))}
 
           {/* Pricing card */}
-          <div className="p-6 rounded-xl border border-border bg-secondary/30 flex flex-col justify-between text-center">
+          <GlowCard>
+            <div className="p-6 flex flex-col justify-between text-center h-full">
             <div>
               <h3 className="text-base font-semibold text-foreground mb-3">Simple pricing</h3>
               <div className="text-3xl font-bold text-foreground mb-1">
@@ -97,7 +101,8 @@ const Index = () => {
             <Link to="/signup">
               <Button className="w-full" size="sm">Start free trial</Button>
             </Link>
-          </div>
+            </div>
+          </GlowCard>
         </div>
       </section>
 
