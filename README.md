@@ -46,3 +46,57 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 ---
 
 ## Architecture
+
+---
+
+## Roadmap
+
+**v1 (Current MVP)**
+- Core real-time alerts via XAA
+- Mobile push + email
+- Clean dashboard with before/after
+- Stripe billing (14-day trial → $9/month or $89/year)
+
+**v1.5 (Planned)**
+- Optional "Analyze with Grok" button on alerts (user-initiated)
+- Grok-generated support report draft for X (manual)
+
+**v2 (Future)**
+- Smarter Grok-powered insights and recovery tools
+
+---
+
+## Philosophy
+
+- Minimal and calm ("set it and forget it")
+- Honest: We detect and alert — we do not prevent hacks
+- Privacy-first: Only monitor the account you explicitly authorize
+- Compliant: Built strictly within X’s API rules
+
+---
+
+## Status
+
+Actively building. Core alert system + dashboard nearly complete.
+
+---
+
+## License
+
+MIT
+
+---
+
+Would you like me to make any changes?
+
+For example:
+- Make it shorter?
+- Add installation / local development section?
+- Change the tone?
+- Add screenshots placeholder?
+
+Just tell me what you'd like to adjust and I'll update it immediately. 
+
+Once you're happy with the README, we can move on to finishing the X OAuth flow or Stripe. 
+
+How does this look?
