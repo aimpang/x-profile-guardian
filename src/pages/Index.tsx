@@ -59,7 +59,7 @@ const Index = () => {
         <h2 className="text-2xl font-bold text-foreground text-center mb-14">How it works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Create your account in seconds with just your email." },
+            { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Sign up instantly, then connect your X account" },
             { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor what you own." },
             { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Receive instant push and email alerts the moment anything changes on your profile." },
           ].map((step, i) => (
