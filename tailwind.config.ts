@@ -73,6 +73,11 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      boxShadow: {
+        "focus-ring": "0 0 0 2px hsl(var(--ds-background-100)), 0 0 0 4px hsl(var(--ds-focus-color))",
+        "border-small": "var(--ds-shadow-border), var(--ds-shadow-small)",
+        menu: "var(--ds-shadow-border), 0px 1px 1px rgba(0,0,0,0.02), 0px 4px 8px -4px rgba(0,0,0,0.04), 0px 16px 24px -8px rgba(0,0,0,0.06)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
