@@ -258,10 +258,16 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground">Subscribe to keep your X account protected.</p>
               </div>
             </div>
-            <Button size="sm" onClick={() => handleCheckout()} disabled={checkoutLoading} className="shrink-0">
-              {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Subscribe — $9/month
-            </Button>
+            <div className="flex gap-2 shrink-0">
+              <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading}>
+                {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                $89/yr
+              </Button>
+              <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading}>
+                {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                $9/mo
+              </Button>
+            </div>
           </div>
         )}
         {isTrial && trialDaysLeft <= 5 && trialDaysLeft > 0 && (
@@ -438,10 +444,16 @@ const Dashboard = () => {
                   Manage billing
                 </Button>
               ) : (
-                <Button size="sm" onClick={() => handleCheckout()} disabled={checkoutLoading}>
-                  {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                  Subscribe — $9/month
-                </Button>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading}>
+                    {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                    $89/yr
+                  </Button>
+                  <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading}>
+                    {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                    $9/mo
+                  </Button>
+                </div>
               )}
             </div>
           </div>

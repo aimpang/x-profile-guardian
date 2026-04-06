@@ -77,6 +77,7 @@ const Index = () => {
               <div className="text-3xl font-bold text-foreground mb-1">
                 $9<span className="text-sm font-normal text-muted-foreground">/mo</span>
               </div>
+              <p className="text-xs text-muted-foreground">Or $89/yr <span className="text-safe">— save 17%</span></p>
               <p className="text-xs text-muted-foreground mb-5">After 14-day free trial</p>
               <ul className="text-left space-y-2.5 mb-5">
                 {[
