@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DottedSurface } from "@/components/ui/dotted-surface";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
@@ -32,24 +33,26 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="px-6 pt-24 pb-20 text-center max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-sm text-muted-foreground mb-8">
-          <Shield className="h-4 w-4 text-primary" />
-          Defend your X account
+      <section className="relative px-6 pt-24 pb-20 text-center max-w-3xl mx-auto">
+        <DottedSurface className="z-0" />
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-sm text-muted-foreground mb-8">
+            <Shield className="h-4 w-4 text-primary" />
+            Defend your X account
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground leading-tight mb-6">
+            Protect your X account<br />from hacks
+          </h1>
+          <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
+            Get instant alerts when your profile is changed — username, bio, avatar, or banner. Set it once, forget it forever.
+          </p>
+          <Link to="/signup">
+            <Button size="lg" className="text-base px-8 gap-2">
+              Start free trial <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+          <p className="text-sm text-muted-foreground mt-4">14-day free trial · No credit card required</p>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold text-foreground leading-tight mb-6">
-          Protect your X account<br />from hacks
-        </h1>
-        <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
-          Get instant alerts when your profile is changed — username, bio, avatar, or banner. Set it once, forget it forever.
-        </p>
-        <Link to="/signup">
-          <Button size="lg" className="text-base px-8 gap-2">
-            Start free trial <ArrowRight className="h-4 w-4" />
-          </Button>
-        </Link>
-        <p className="text-sm text-muted-foreground mt-4">14-day free trial · No credit card required</p>
       </section>
 
       {/* How it works */}
