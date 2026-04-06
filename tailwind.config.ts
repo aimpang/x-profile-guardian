@@ -95,6 +95,10 @@ export default {
             height: "0",
           },
         },
+        "fade-spin": {
+          "0%": { opacity: "1" },
+          "100%": { opacity: "0.15" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
