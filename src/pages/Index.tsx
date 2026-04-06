@@ -47,9 +47,9 @@ const Index = () => {
           Set once. Protected forever.
         </p>
         <Link to="/signup" className="mt-12">
-          <Button size="lg" className="text-lg px-12 py-7 gap-2">
+          <LiquidButton size="xxl" className="text-lg gap-2">
             Start 14-day free trial <ArrowRight className="h-5 w-5" />
-          </Button>
+          </LiquidButton>
         </Link>
         <p className="text-xs text-muted-foreground mt-4 tracking-wide">
           14-day free trial · Cancel anytime
