@@ -312,8 +312,8 @@ const Dashboard = () => {
                 : "Subscribe to resume monitoring."}
             </div>
           </GlowCard>
-        ) : (
-          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-12 text-center">
+          <GlowCard>
+            <div className="p-12 text-center">
             <Shield className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
             <h2 className="text-2xl font-semibold text-foreground mb-3">Protect your X account</h2>
             <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
