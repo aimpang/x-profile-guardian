@@ -104,7 +104,8 @@ const SettingsPage = () => {
           <Button variant="outline" size="sm" onClick={() => toast.info("Stripe billing portal coming soon")}>
             Manage billing
           </Button>
-        </div>
+          </div>
+        </GlowCard>
 
         {/* Disconnect X */}
         {hasAccount && (
