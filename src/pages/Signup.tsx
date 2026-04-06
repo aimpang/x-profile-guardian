@@ -19,13 +19,16 @@ const Signup = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     setLoading(false);
     if (error) {
       toast.error(error.message);
-    } else {
+    } else if (data.session) {
       toast.success("Account created! Welcome to XSentinel.");
       navigate("/dashboard");
+    } else {
+      toast.success("Account created! Check your email to confirm before signing in.");
+      navigate("/login");
     }
   };
 
