@@ -103,7 +103,7 @@ export function MinimalHeroBackground() {
         .vline:nth-child(4){ left: 20%; animation-delay: 520ms; }
         .vline:nth-child(5){ left: 50%; animation-delay: 640ms; }
         .vline:nth-child(6){ left: 80%; animation-delay: 760ms; }
-        .hline::after, .vline::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, transparent, rgba(29,155,240,.15), transparent); opacity:0; animation: shimmer 900ms ease-out forwards; }
+        .hline::after, .vline::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, transparent, rgba(250,250,250,.1), transparent); opacity:0; animation: shimmer 900ms ease-out forwards; }
         .hline:nth-child(1)::after{ animation-delay: 150ms; }
         .hline:nth-child(2)::after{ animation-delay: 280ms; }
         .hline:nth-child(3)::after{ animation-delay: 410ms; }
