@@ -73,6 +73,7 @@ const Dashboard = () => {
   const [subInfo, setSubInfo] = useState<SubscriptionInfo | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [connectXLoading, setConnectXLoading] = useState(false);
 
   const checkSubscription = async () => {
     try {
@@ -102,13 +103,49 @@ const Dashboard = () => {
     fetchData();
   }, [user]);
 
-  // Handle checkout success redirect
+  // Register OneSignal push token when account first loads
+  useEffect(() => {
+    if (!account || !pushEnabled) return;
+    const OneSignal = (window as any).OneSignal;
+    if (!OneSignal) return;
+
+    const appId = import.meta.env.VITE_ONESIGNAL_APP_ID;
+    if (!appId) return;
+
+    OneSignal.init({ appId, notifyButton: { enable: false } })
+      .then(() => OneSignal.Notifications.requestPermission())
+      .then(() => OneSignal.User?.PushSubscription?.id)
+      .then((playerId: string | undefined) => {
+        if (playerId) {
+          supabase
+            .from("connected_accounts")
+            .update({ push_token: playerId })
+            .eq("user_id", user!.id);
+        }
+      })
+      .catch((err: any) => console.error("[OneSignal]", err));
+  }, [account?.id]);
+
+  // Handle post-redirect states
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
-      toast.success("Subscription activated! Welcome to XGuard.");
+      toast.success("Subscription activated! Welcome to XSentinel.");
       checkSubscription();
     }
-  }, [searchParams]);
+    if (searchParams.get("x_connected") === "1" && user) {
+      supabase
+        .from("connected_accounts")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) {
+            setAccount(data);
+            setPushEnabled(data.push_enabled ?? true);
+          }
+        });
+    }
+  }, [searchParams, user]);
 
   const trialDaysLeft = subInfo?.trial_end
     ? Math.max(0, Math.ceil((new Date(subInfo.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
@@ -121,14 +158,24 @@ const Dashboard = () => {
   const isTrial = subStatus === "trialing" || subStatus === "trial";
   const isActive = subStatus === "active";
 
-  const handleConnectX = () => {
-    toast.info("X OAuth integration coming soon. This will connect your X account via OAuth.");
+  const handleConnectX = async () => {
+    setConnectXLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("x-oauth-start");
+      if (error || !data?.url) throw new Error(error?.message || "Failed to start OAuth");
+      window.location.href = data.url;
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect X account");
+      setConnectXLoading(false);
+    }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (plan: "monthly" | "yearly" = "monthly") => {
     setCheckoutLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout");
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { plan },
+      });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, "_blank");
@@ -193,7 +240,7 @@ const Dashboard = () => {
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
         <div className="flex items-center gap-2">
           <Shield className="h-5 w-5 text-primary" />
-          <span className="text-sm tracking-widest uppercase text-muted-foreground">XGuard</span>
+          <span className="text-sm tracking-widest uppercase text-muted-foreground">XSentinel</span>
         </div>
         <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 text-muted-foreground">
           <LogOut className="h-4 w-4" /> Log out
@@ -265,9 +312,13 @@ const Dashboard = () => {
             <Button
               size="lg"
               onClick={handleConnectX}
+              disabled={connectXLoading}
               className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
             >
-              <ExternalLink className="h-4 w-4" /> Connect my X Account
+              {connectXLoading
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <ExternalLink className="h-4 w-4" />}
+              {connectXLoading ? "Redirecting to X..." : "Connect my X Account"}
             </Button>
           </div>
         )}

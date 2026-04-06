@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import XOAuthCallback from "./pages/XOAuthCallback";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
@@ -49,6 +50,7 @@ const AnimatedRoutes = () => {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/alerts" element={<Navigate to="/dashboard" replace />} />
           <Route path="/settings" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/auth/x/callback" element={<XOAuthCallback />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />

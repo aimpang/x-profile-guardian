@@ -5,12 +5,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-twitter-webhooks-signature",
 };
 
-const ONESIGNAL_APP_ID = Deno.env.get("31b40850-42e4-4835-8579-4bfc004ddc04")!;
-const ONESIGNAL_REST_API_KEY = Deno.env.get(
-  "os_v2_app_gg2aqucc4redlblzjp6aato4asusa72qbmtuh3vhpgzpghzgfwfkxibn6kmfwk5lhjnbdwiqvujobsnl7yqkmhzzlgd7rdsmnvu7dgi",
-)!;
-const X_CONSUMER_SECRET = Deno.env.get("ikLWhBxiQNDEPBzSgpcu7QGstYh5LA8dq8UXMSv2cVtPa9r1i4")!;
-
 interface ProfileSnapshot {
   username?: string;
   display_name?: string;
@@ -18,6 +12,8 @@ interface ProfileSnapshot {
   profile_image?: string;
   banner?: string;
 }
+
+const X_CONSUMER_SECRET = Deno.env.get("X_CONSUMER_SECRET")!;
 
 async function verifyXSignature(req: Request, body: string): Promise<boolean> {
   const signatureHeader = req.headers.get("x-twitter-webhooks-signature");
@@ -30,48 +26,123 @@ async function verifyXSignature(req: Request, body: string): Promise<boolean> {
   const hmac = await crypto.subtle.sign(
     "HMAC",
     await crypto.subtle.importKey("raw", key, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]),
-    data,
+    data
   );
 
   const expected = Array.from(new Uint8Array(hmac))
-    .map((b) => b.toString(16).padStart(2, "0"))
+    .map(b => b.toString(16).padStart(2, "0"))
     .join("");
 
   return signature === expected;
 }
 
-async function sendPushNotification(token: string, title: string, body: string) {
+async function sendPushNotification(token: string, field: string, oldValue: any, newValue: any) {
+  const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
+  const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
+
   if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
-    console.log("[OneSignal] Missing keys - push skipped");
+    console.warn("[PUSH] OneSignal credentials not set, skipping");
     return;
   }
+
+  const fieldName = field.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
 
   try {
     const response = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+        "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`,
       },
       body: JSON.stringify({
         app_id: ONESIGNAL_APP_ID,
         include_player_ids: [token],
-        headings: { en: title },
-        contents: { en: body },
+        headings: { en: "🚨 XSentinel Alert" },
+        contents: { en: `Your ${fieldName} was changed` },
+        data: { field, oldValue, newValue },
         priority: 10,
       }),
     });
 
     const result = await response.json();
-    console.log("[OneSignal] Push sent:", result);
-  } catch (err) {
-    console.error("[OneSignal] Failed to send push:", err);
+    if (response.ok) {
+      console.log(`[PUSH] Sent for ${fieldName} change`);
+    } else {
+      console.error("[PUSH] OneSignal error:", result);
+    }
+  } catch (e) {
+    console.error("[PUSH] Failed:", e);
   }
 }
 
 async function sendEmailAlert(email: string, eventType: string, oldVal: any, newVal: any) {
-  console.log(`[EMAIL] ${email} | ${eventType} changed`);
-  // TODO: Add real email service later
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+
+  if (!RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not set");
+    return;
+  }
+
+  const fieldName = eventType.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "XSentinel Alerts <alerts@xsentinel.dev>",
+        to: [email],
+        subject: `🚨 XSentinel Alert: Your ${fieldName} was changed`,
+        html: `
+          <div style="font-family: system-ui, -apple-system, Arial, sans-serif; max-width: 620px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #000000; margin-bottom: 8px;">🚨 Profile Change Detected</h2>
+            <p style="color: #333; font-size: 16px;">Your X account profile has been updated.</p>
+
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; border: 1px solid #e0e0e0;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 12px 0; font-weight: 600; color: #444; width: 120px;">Field Changed</td>
+                  <td style="padding: 12px 0; color: #000;">${fieldName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; font-weight: 600; color: #444;">Before</td>
+                  <td style="padding: 12px 0; color: #555;">${oldVal[eventType] !== undefined && oldVal[eventType] !== null ? oldVal[eventType] : '<em>Not set</em>'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; font-weight: 600; color: #444;">After</td>
+                  <td style="padding: 12px 0; color: #000; font-weight: 500;">${newVal[eventType] !== undefined && newVal[eventType] !== null ? newVal[eventType] : '<em>Not set</em>'}</td>
+                </tr>
+              </table>
+            </div>
+
+            <p style="margin: 20px 0;">
+              <a href="https://xsentinel.dev"
+                 style="background: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                View in XSentinel Dashboard
+              </a>
+            </p>
+
+            <p style="color: #666; font-size: 14px; line-height: 1.5;">
+              This alert was sent because a change was detected on your X profile.<br>
+              You can mark this as "This was me" in the dashboard.
+            </p>
+          </div>
+        `,
+      }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      console.log(`✅ Email sent to ${email} for ${eventType}`);
+    } else {
+      console.error("Resend error:", result);
+    }
+  } catch (error) {
+    console.error("Failed to send email:", error);
+  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -114,7 +185,9 @@ Deno.serve(async (req: Request) => {
       .eq("x_user_id", x_user_id)
       .maybeSingle();
 
-    if (!account) return new Response("Account not found", { status: 404, headers: corsHeaders });
+    if (!account) {
+      return new Response("Account not found", { status: 404, headers: corsHeaders });
+    }
 
     if (account.subscription_status === "expired") {
       return new Response("Subscription expired", { status: 200, headers: corsHeaders });
@@ -133,15 +206,25 @@ Deno.serve(async (req: Request) => {
     await supabase.from("alerts").insert([alertData]);
 
     const newSnapshot = { ...snapshot, [field]: changePayload.after };
-    await supabase.from("connected_accounts").update({ last_snapshot: newSnapshot }).eq("id", account.id);
+    await supabase
+      .from("connected_accounts")
+      .update({ last_snapshot: newSnapshot })
+      .eq("id", account.id);
 
     const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
     const email = userData?.user?.email;
 
-    if (email) await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
+    if (email) {
+      await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
+    }
 
     if (account.push_enabled && account.push_token) {
-      await sendPushNotification(account.push_token, "🚨 XGuard Alert", `Your ${field.replace("_", " ")} was changed`);
+      await sendPushNotification(
+        account.push_token,
+        field,
+        alertData.old_data[field],
+        alertData.new_data[field]
+      );
     }
 
     return new Response("Alert processed", { status: 200, headers: corsHeaders });

@@ -4,10 +4,15 @@ import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const PRICE_ID = "price_1TJ8ehKigO2lC6r6zM0bHVgZ";
+// Price IDs stored as Supabase secrets (set STRIPE_PRICE_MONTHLY and STRIPE_PRICE_YEARLY)
+// Monthly fallback to the original hardcoded ID for backwards compatibility
+const PRICE_IDS: Record<string, string> = {
+  monthly: Deno.env.get("STRIPE_PRICE_MONTHLY") ?? "price_1TJ8ehKigO2lC6r6zM0bHVgZ",
+  yearly: Deno.env.get("STRIPE_PRICE_YEARLY") ?? "",
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -20,11 +25,24 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("No authorization header provided");
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !data.user?.email) throw new Error("User not authenticated or email not available");
     const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+
+    // Parse plan from request body (defaults to monthly)
+    let plan = "monthly";
+    try {
+      const body = await req.json();
+      if (body?.plan === "yearly") plan = "yearly";
+    } catch {
+      // No body or invalid JSON — use default
+    }
+
+    const priceId = PRICE_IDS[plan];
+    if (!priceId) throw new Error(`Price ID for plan "${plan}" is not configured`);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -39,7 +57,7 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [{ price: PRICE_ID, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
       subscription_data: {
         trial_period_days: 14,
