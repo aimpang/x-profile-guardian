@@ -124,7 +124,8 @@ const SettingsPage = () => {
         )}
 
         {/* Account */}
-        <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+        <GlowCard>
+          <div className="p-5">
           <h2 className="font-semibold text-foreground mb-3">Account</h2>
           <p className="text-sm text-muted-foreground mb-1">{user?.email}</p>
           <div className="flex gap-2 mt-4">
