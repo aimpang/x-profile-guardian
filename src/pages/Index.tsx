@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check, Slash } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { GlowCard } from "@/components/ui/glow-card";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
