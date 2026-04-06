@@ -95,7 +95,7 @@ const Signup = () => {
                 {/* Header */}
                 <div className="flex flex-col items-center gap-2 mb-8">
                   <Shield className="h-8 w-8 text-foreground" />
-                  <h1 className="text-xl font-semibold text-foreground">Create an account</h1>
+                  <h1 className="text-xl font-semibold text-foreground">Create your Sentinel</h1>
                   <p className="text-sm text-muted-foreground text-center">
                     Start protecting your X account in seconds
                   </p>
