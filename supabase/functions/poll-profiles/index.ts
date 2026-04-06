@@ -41,6 +41,9 @@ async function fetchXProfile(accessToken: string) {
 
 async function sendEmailAlert(resendKey: string, email: string, field: string, oldVal: any, newVal: any) {
   const fieldName = field.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  const notSet = `<span style="color:#bbb;font-style:italic;">Not set</span>`;
+  const oldDisplay = oldVal != null ? String(oldVal) : notSet;
+  const newDisplay = newVal != null ? String(newVal) : notSet;
   await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -70,11 +73,11 @@ async function sendEmailAlert(resendKey: string, email: string, field: string, o
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #777; vertical-align: top;">Previous</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #555; word-break: break-word;">${oldVal ?? "<span style='color:#bbb;font-style:italic;'>Not set</span>"}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #555; word-break: break-word;">${oldDisplay}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; color: #777; vertical-align: top;">Updated to</td>
-                <td style="padding: 10px 0; color: #111; font-weight: 500; word-break: break-word;">${newVal ?? "<span style='color:#bbb;font-style:italic;'>Not set</span>"}</td>
+                <td style="padding: 10px 0; color: #111; font-weight: 500; word-break: break-word;">${newDisplay}</td>
               </tr>
             </table>
           </div>
