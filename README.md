@@ -1,4 +1,4 @@
-# XGuard
+# X Sentinel
 
 **Instant alerts when your X profile changes.**  
 Set once. Protected forever.
@@ -28,7 +28,7 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 
 1. **Sign up** instantly with Google or email.
 2. **Connect your X account** via OAuth (we only monitor what you own).
-3. **Set it and forget it** — XGuard subscribes to your profile using XAA webhooks.
+3. **Set it and forget it** — X Sentinel subscribes to your profile using XAA webhooks.
 4. **Get alerted** the moment a change happens (push + email).
 5. View details in the dashboard and mark changes as "This was me" if legitimate.
 
