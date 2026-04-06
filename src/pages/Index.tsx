@@ -40,7 +40,7 @@ const Index = () => {
           XGuard
         </h1>
         <p className="mt-5 text-muted-foreground text-base sm:text-lg max-w-md">
-          Instant alerts when your profile is changed. Set it once, forget it forever.
+          Instant alerts the moment your X profile changes. Set once. Forget forever.
         </p>
         <Link to="/signup" className="mt-8">
           <Button size="lg" className="text-base px-8 gap-2">
