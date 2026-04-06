@@ -24,6 +24,7 @@ const Signup = () => {
     if (error) {
       toast.error(error.message);
     } else {
+      toast.success("Account created! Welcome to XGuard.");
       navigate("/dashboard");
     }
   };
