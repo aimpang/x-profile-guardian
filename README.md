@@ -9,18 +9,18 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 
 ---
 
-## Core Features
+## Core Features (v1)
 
 - Real-time detection of profile changes using X’s official Activity API (XAA)
 - Instant mobile push notifications + email alerts
 - Clear before/after comparison for every change
-- One-tap "This was me" to dismiss legitimate changes
-- Simple, secure onboarding: Sign up → Connect your X account via OAuth
-- We **only monitor the single account you own** — nothing else
+- One-tap "This was me" to mark legitimate changes
+- Simple onboarding: Sign up → Connect your X account via OAuth
+- We **only monitor the single account you own**
 
 ### Pricing
 - 14-day free trial
-- Then **$9/month** or **$89/year** (save ~17%)
+- Then **$9/month** or **$89/year**
 
 ---
 
@@ -34,6 +34,17 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 
 ---
 
+## Optional Grok Features (v1.5)
+
+After receiving an alert, users can manually trigger smart assistance:
+
+- **"Analyze with Grok"** — Grok provides a clear explanation and risk assessment of the change.
+- **"Generate report for X"** — Grok creates a polished, ready-to-use support ticket draft with before/after evidence.
+
+**Important:** These Grok features are **user-initiated only**. The user must click the button for each specific alert. Grok does not run automatically.
+
+---
+
 ## Tech Stack
 
 - **Frontend**: React + TypeScript + Tailwind
@@ -41,28 +52,22 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 - **Real-time monitoring**: X Activity API (XAA) webhooks
 - **Push notifications**: OneSignal
 - **Payments**: Stripe
-- **Authentication**: Google/Apple + X OAuth
+- **Optional AI layer**: Grok via XMCP (manual/user-triggered only)
 
 ---
 
 ## Architecture
+User → Frontend (React)
+↓
+Supabase Auth
+↓
+X OAuth → connected_accounts table
+↓
+XAA Webhook (Edge Function) → alerts table
+↓
+OneSignal Push + Email → User
+(Optional) User clicks → Grok Analysis (via XMCP) → Shows draft/report
 
----
-
-## Roadmap
-
-**v1 (Current MVP)**
-- Core real-time alerts via XAA
-- Mobile push + email
-- Clean dashboard with before/after
-- Stripe billing (14-day trial → $9/month or $89/year)
-
-**v1.5 (Planned)**
-- Optional "Analyze with Grok" button on alerts (user-initiated)
-- Grok-generated support report draft for X (manual)
-
-**v2 (Future)**
-- Smarter Grok-powered insights and recovery tools
 
 ---
 
@@ -71,7 +76,7 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 - Minimal and calm ("set it and forget it")
 - Honest: We detect and alert — we do not prevent hacks
 - Privacy-first: Only monitor the account you explicitly authorize
-- Compliant: Built strictly within X’s API rules
+- Compliant: Grok features are manual and user-initiated
 
 ---
 
@@ -79,24 +84,14 @@ Built for creators, influencers, and anyone who wants peace of mind about their 
 
 Actively building. Core alert system + dashboard nearly complete.
 
+**Next priorities:**
+- Complete X OAuth flow
+- Stripe billing integration
+- OneSignal mobile push
+- Polish & cleanup
+
 ---
 
 ## License
 
 MIT
-
----
-
-Would you like me to make any changes?
-
-For example:
-- Make it shorter?
-- Add installation / local development section?
-- Change the tone?
-- Add screenshots placeholder?
-
-Just tell me what you'd like to adjust and I'll update it immediately. 
-
-Once you're happy with the README, we can move on to finishing the X OAuth flow or Stripe. 
-
-How does this look?
