@@ -64,10 +64,11 @@ const Index = () => {
             { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor the public profile of the account you own." },
             { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Using X’s official Activity API, we instantly detect changes to: username/handle, display name, bio, profile picture, and banner." },
           ].map((step, i) => (
-            <div key={i} className="p-6 rounded-xl border border-border bg-secondary/30 text-center">
-              <div className="flex justify-center mb-4">{step.icon}</div>
-              <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+            <GlowCard key={i}>
+              <div className="p-6 text-center">
+                <div className="flex justify-center mb-4">{step.icon}</div>
+                <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
               </div>
             </GlowCard>
           ))}
