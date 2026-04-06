@@ -1,29 +1,27 @@
 
 
-# Rebuild Rich Dashboard
+# Add Terms, Privacy Pages + Footer Links
 
-The current Dashboard already has most of this structure from the last edit. Let me check what's actually rendering now vs what's expected.
+## New Files
 
-## Current State
+### `src/pages/Terms.tsx`
+Static page with the provided Terms of Service content. Dark themed, max-w-2xl centered, with a back link to home. Wrapped in the same min-h-screen layout.
 
-The existing `src/pages/Dashboard.tsx` already contains all four sections (header, status card, alerts, settings) with both connected/not-connected states. The code matches the requested layout closely.
+### `src/pages/Privacy.tsx`
+Static page with the provided Privacy Policy content. Same layout as Terms.
 
-## What Needs Fixing
+## Modified Files
 
-After reviewing the code, the structure is correct but may appear "empty" due to:
-1. The not-connected state card could be more visually prominent (larger padding, bigger icon)
-2. Settings section only shows when `account` exists — it should always show the trial info even when not connected
-3. The alerts and settings sections are hidden behind `{account && ...}` conditionals, making the page look bare in the not-connected state
+### `src/App.tsx`
+- Import `Terms` and `Privacy` components
+- Add routes: `<Route path="/terms" element={<Terms />} />` and `<Route path="/privacy" element={<Privacy />} />`
 
-## Changes to `src/pages/Dashboard.tsx`
+### `src/pages/Dashboard.tsx`
+- Replace the existing bottom footer (email + logout) with a version that also includes `Terms of Service · Privacy Policy` links
+- Keep the existing email display and logout button, just add the legal links as small muted text below
 
-1. **Not-connected state**: Increase shield icon to `h-20 w-20`, add more vertical padding (`p-12`), make the blue button larger (`size="lg"` with `px-10`)
-2. **Always show trial/subscription banner**: Move the trial warning banner outside the `account` conditional so users see "14 days left" even before connecting
-3. **Show empty alerts section even when not connected**: Display the "No alerts yet" empty state regardless of connection status, so the page has visual weight
-4. **Show settings section always**: Show push toggle and billing info even before connecting (disabled state for push toggle when no account)
-5. **Footer with email + logout**: Keep the bottom footer visible always
+### `src/pages/Index.tsx`
+- Add `Terms of Service · Privacy Policy` links to the existing `<footer>` section, next to or below the copyright line
 
-## Files Modified
-
-- `src/pages/Dashboard.tsx` — rebuild with all sections always visible, richer not-connected state
+## No other changes to the dashboard layout.
 
