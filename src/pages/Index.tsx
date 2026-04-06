@@ -8,9 +8,13 @@ const Index = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
+      {/* Full-page animated background */}
+      <DottedSurface className="fixed inset-0 z-0" />
+
+      <div className="relative z-10">
       {/* Nav */}
-      <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-5xl mx-auto">
+      <nav className="border-b border-border/50 backdrop-blur-sm px-6 py-4 flex items-center justify-between max-w-5xl mx-auto">
         <div className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-primary" />
           <span className="text-lg font-bold text-foreground">XGuard</span>
@@ -33,8 +37,8 @@ const Index = () => {
         </div>
       </nav>
 
-      <section className="relative px-6 pt-24 pb-20 text-center max-w-3xl mx-auto">
-        <DottedSurface className="z-0" />
+      {/* Hero */}
+      <section className="px-6 pt-24 pb-20 text-center max-w-3xl mx-auto">
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-sm text-muted-foreground mb-8">
             <Shield className="h-4 w-4 text-primary" />
