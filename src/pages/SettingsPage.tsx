@@ -74,7 +74,8 @@ const SettingsPage = () => {
       <div className="max-w-lg mx-auto px-6 py-10 space-y-6">
         {/* Push notifications */}
         {hasAccount && (
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+          <GlowCard>
+            <div className="p-5">
             <div className="flex items-center gap-3 mb-4">
               <Bell className="h-5 w-5 text-primary" />
               <h2 className="font-semibold text-foreground">Notifications</h2>
