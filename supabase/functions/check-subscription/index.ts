@@ -57,8 +57,8 @@ serve(async (req) => {
     }
 
     const sub = subscriptions.data[0];
-    const subStatus = sub.status; // trialing, active, past_due, canceled, etc.
-    const trialEnd = sub.trial_end ? new Date(sub.trial_end * 1000).toISOString() : null;
+    const subStatus = sub.status;
+    const trialEnd = sub.trial_end && sub.trial_end > 0 ? new Date(sub.trial_end * 1000).toISOString() : null;
     const currentPeriodEnd = new Date(sub.current_period_end * 1000).toISOString();
 
     return new Response(JSON.stringify({
