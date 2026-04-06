@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-twitter-webhooks-signature",
 };
 
 interface ProfileSnapshot {
@@ -13,15 +13,40 @@ interface ProfileSnapshot {
   banner?: string;
 }
 
-// TODO: Wire up OneSignal/FCM
-async function sendPushNotification(token: string, title: string, body: string) {
-  console.log(`[PUSH PLACEHOLDER] token=${token}, title=${title}, body=${body}`);
-  // TODO: call OneSignal/FCM here
+// ←←← PUT YOUR X APP CONSUMER SECRET HERE (keep it secret!)
+const X_CONSUMER_SECRET = Deno.env.get("X_CONSUMER_SECRET")!;
+
+async function verifyXSignature(req: Request, body: string): Promise<boolean> {
+  const signatureHeader = req.headers.get("x-twitter-webhooks-signature");
+  if (!signatureHeader || !X_CONSUMER_SECRET) return false;
+
+  const signature = signatureHeader.replace("sha256=", "");
+  const key = new TextEncoder().encode(X_CONSUMER_SECRET);
+  const data = new TextEncoder().encode(body);
+
+  const hmac = await crypto.subtle.sign(
+    "HMAC",
+    await crypto.subtle.importKey("raw", key, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]),
+    data,
+  );
+
+  const expected = Array.from(new Uint8Array(hmac))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  return signature === expected;
 }
 
-async function sendEmailAlert(email: string, eventType: string, oldVal: string, newVal: string) {
-  console.log(`[EMAIL PLACEHOLDER] to=${email}, event=${eventType}, old=${oldVal}, new=${newVal}`);
-  // TODO: integrate with email service (Resend, SendGrid, etc.)
+async function sendPushNotification(token: string, title: string, body: string) {
+  console.log(`[PUSH] ${title} → ${body} (token: ${token})`);
+  // TODO: Add real OneSignal / FCM call here later
+}
+
+async function sendEmailAlert(email: string, eventType: string, oldVal: any, newVal: any) {
+  console.log(
+    `[EMAIL] ${email} | ${eventType} changed | old: ${JSON.stringify(oldVal)} | new: ${JSON.stringify(newVal)}`,
+  );
+  // TODO: Add real email service (Resend, Postmark, etc.) here later
 }
 
 Deno.serve(async (req: Request) => {
@@ -29,25 +54,38 @@ Deno.serve(async (req: Request) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const bodyText = await req.text();
+  let payload;
+  try {
+    payload = JSON.parse(bodyText);
+  } catch {
+    return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
+  }
+
+  // Verify XAA signature (required for security)
+  if (!(await verifyXSignature(req, bodyText))) {
+    console.error("Invalid XAA webhook signature");
+    return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+  }
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    const payload = await req.json();
-
-    // Expected payload from X Activity API:
-    // { x_user_id: string, profile: { username, display_name, bio, profile_image, banner } }
-    const { x_user_id, profile } = payload;
-
-    if (!x_user_id || !profile) {
-      return new Response(JSON.stringify({ error: "Missing x_user_id or profile" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    const event = payload.data;
+    if (!event?.event_type?.startsWith("profile.update.")) {
+      return new Response("Not a profile update event", { status: 200, headers: corsHeaders });
     }
 
-    // Look up connected account
+    const x_user_id = event.filter?.user_id;
+    const changePayload = event.payload; // { before, after }
+
+    if (!x_user_id || !changePayload?.after) {
+      return new Response("Missing user_id or payload", { status: 400, headers: corsHeaders });
+    }
+
+    // Find connected account
     const { data: account, error: accError } = await supabase
       .from("connected_accounts")
       .select("*")
@@ -55,94 +93,51 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
 
     if (accError || !account) {
-      return new Response(JSON.stringify({ error: "Account not found" }), {
-        status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response("Account not found", { status: 404, headers: corsHeaders });
     }
 
-    // Check subscription status — skip alerts if expired
+    // Skip if subscription expired
     if (account.subscription_status === "expired") {
-      return new Response(JSON.stringify({ message: "Subscription expired, skipping alert" }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response("Subscription expired", { status: 200, headers: corsHeaders });
     }
 
     const snapshot: ProfileSnapshot = (account.last_snapshot as ProfileSnapshot) || {};
-    const changes: { event_type: string; old_data: any; new_data: any }[] = [];
 
-    // Compare each field
-    const fields: (keyof ProfileSnapshot)[] = ["username", "display_name", "bio", "profile_image", "banner"];
-    for (const field of fields) {
-      if (profile[field] !== undefined && profile[field] !== snapshot[field]) {
-        changes.push({
-          event_type: field,
-          old_data: { [field]: snapshot[field] || null },
-          new_data: { [field]: profile[field] },
-        });
-      }
-    }
+    // Extract the changed field (e.g. "profile.update.bio" → "bio")
+    const field = event.event_type.replace("profile.update.", "") as keyof ProfileSnapshot;
 
-    if (changes.length === 0) {
-      return new Response(JSON.stringify({ message: "No changes detected" }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Create alerts
-    const alertInserts = changes.map((c) => ({
+    // Create alert
+    const alertData = {
       user_id: account.user_id,
-      event_type: c.event_type,
-      old_data: c.old_data,
-      new_data: c.new_data,
-    }));
+      event_type: field,
+      old_data: { [field]: snapshot[field] || null },
+      new_data: { [field]: changePayload.after },
+    };
 
-    await supabase.from("alerts").insert(alertInserts);
+    await supabase.from("alerts").insert([alertData]);
 
-    // Update snapshot
-    const newSnapshot = { ...snapshot, ...profile };
-    await supabase
-      .from("connected_accounts")
-      .update({ last_snapshot: newSnapshot })
-      .eq("id", account.id);
+    // Update last_snapshot
+    const newSnapshot = { ...snapshot, [field]: changePayload.after };
+    await supabase.from("connected_accounts").update({ last_snapshot: newSnapshot }).eq("id", account.id);
 
     // Send notifications
-    // Get user email from auth
     const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
     const email = userData?.user?.email;
 
-    for (const change of changes) {
-      // Email notification
-      if (email) {
-        await sendEmailAlert(
-          email,
-          change.event_type,
-          JSON.stringify(change.old_data),
-          JSON.stringify(change.new_data)
-        );
-      }
-
-      // Push notification (if enabled and token exists)
-      if (account.push_enabled && account.push_token) {
-        await sendPushNotification(
-          account.push_token,
-          "⚠️ XGuard Alert",
-          `Your ${change.event_type.replace("_", " ")} was changed`
-        );
-      }
+    if (email) {
+      await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
     }
 
-    return new Response(JSON.stringify({ message: `${changes.length} alert(s) created` }), {
+    if (account.push_enabled && account.push_token) {
+      await sendPushNotification(account.push_token, "🚨 XGuard Alert", `Your ${field.replace("_", " ")} was changed`);
+    }
+
+    return new Response(JSON.stringify({ message: "Alert processed successfully", field }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Webhook error:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("XAA Webhook error:", error);
+    return new Response("Internal server error", { status: 500, headers: corsHeaders });
   }
 });
