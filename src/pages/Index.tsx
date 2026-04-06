@@ -13,7 +13,7 @@ const Index = () => {
       <nav className="px-6 py-5 flex items-center justify-between max-w-5xl mx-auto border-b border-border/50">
         <div className="flex items-center gap-2">
           <Shield className="h-5 w-5 text-primary" />
-          <span className="text-sm tracking-widest uppercase text-muted-foreground">XGuard</span>
+          <span className="text-sm tracking-widest uppercase text-muted-foreground">X Sentinel</span>
         </div>
         <div className="flex items-center gap-3">
           {user ? (
