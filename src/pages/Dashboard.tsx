@@ -289,6 +289,31 @@ const Dashboard = () => {
           )}
         </div>
 
+        {/* Footer */}
+        <Separator />
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">{user?.email}</p>
+          <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={handleLogout}>
+            Log out
+          </Button>
+        </div>
+        <div className="flex justify-center pt-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/terms">Terms</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/privacy">Privacy</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </div>
     </div>
   );
