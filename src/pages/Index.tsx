@@ -102,6 +102,7 @@ const Index = () => {
       <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} XGuard. Protect what's yours.
       </footer>
+      </div>
     </div>
   );
 };
