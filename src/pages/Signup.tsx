@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Shield } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/custom-toast";
+import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState<"form" | "success">("form");
+  const [initialCanvasVisible, setInitialCanvasVisible] = useState(true);
+  const [reverseCanvasVisible, setReverseCanvasVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -22,13 +22,22 @@ const Signup = () => {
     setLoading(false);
     if (error) {
       toast.error(error.message);
-    } else if (data.session) {
-      toast.success("Account created! Welcome to XSentinel.");
-      navigate("/dashboard");
-    } else {
-      toast.success("Account created! Check your email to confirm before signing in.");
-      navigate("/login");
+      return;
     }
+
+    // Trigger success animation
+    setReverseCanvasVisible(true);
+    setTimeout(() => setInitialCanvasVisible(false), 50);
+    setTimeout(() => {
+      setStep("success");
+      if (data.session) {
+        toast.success("Account created! Welcome to XSentinel.");
+        setTimeout(() => navigate("/dashboard"), 1500);
+      } else {
+        toast.success("Account created! Check your email to confirm.");
+        setTimeout(() => navigate("/login"), 2500);
+      }
+    }, 2000);
   };
 
   const handleGoogleSignIn = async () => {
@@ -40,85 +49,172 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center gap-2 mb-8">
-          <Shield className="h-8 w-8 text-foreground" />
-          <h1 className="text-xl font-semibold text-foreground">Create an account</h1>
-          <p className="text-sm text-muted-foreground text-center">
-            Start protecting your X account in seconds
-          </p>
-        </div>
-
-        <form onSubmit={handleSignup} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="bg-secondary/50 border-border"
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Canvas backgrounds */}
+      <div className="absolute inset-0">
+        {initialCanvasVisible && (
+          <div className="absolute inset-0">
+            <CanvasRevealEffect
+              animationSpeed={5}
+              containerClassName="bg-transparent"
+              colors={[[255, 255, 255]]}
+              opacities={[0.1, 0.1, 0.1, 0.15, 0.15, 0.15, 0.2, 0.2, 0.2, 0.3]}
+              dotSize={3}
+              showGradient={true}
             />
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                minLength={6}
-                required
-                className="pe-9 bg-secondary/50 border-border"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 end-0 flex items-center pe-3 text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
+        )}
+        {reverseCanvasVisible && (
+          <div className="absolute inset-0">
+            <CanvasRevealEffect
+              animationSpeed={15}
+              containerClassName="bg-transparent"
+              colors={[[255, 255, 255]]}
+              opacities={[0.1, 0.1, 0.1, 0.15, 0.15, 0.15, 0.2, 0.2, 0.2, 0.3]}
+              dotSize={3}
+              showGradient={false}
+              reverse={true}
+            />
           </div>
+        )}
+        <div className="absolute inset-0 bg-background/60" />
+      </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Creating account..." : "Start free trial"}
-          </Button>
-        </form>
+      {/* Content */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-6">
+        <div className="w-full max-w-sm">
+          <AnimatePresence mode="wait">
+            {step === "form" ? (
+              <motion.div
+                key="form"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                {/* Header */}
+                <div className="flex flex-col items-center gap-2 mb-8">
+                  <Shield className="h-8 w-8 text-foreground" />
+                  <h1 className="text-xl font-semibold text-foreground">Create an account</h1>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Start protecting your X account in seconds
+                  </p>
+                </div>
 
-        <div className="my-6 flex items-center gap-3">
-          <Separator className="flex-1" />
-          <span className="text-xs text-muted-foreground">or</span>
-          <Separator className="flex-1" />
+                {/* Google */}
+                <button
+                  onClick={handleGoogleSignIn}
+                  className="w-full flex items-center justify-center gap-2 rounded-full py-3 px-4 border border-border/50 bg-secondary/30 backdrop-blur-sm text-foreground text-sm font-medium hover:bg-secondary/50 transition-colors"
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="currentColor" />
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="currentColor" />
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="currentColor" />
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="currentColor" />
+                  </svg>
+                  Sign in with Google
+                </button>
+
+                {/* Divider */}
+                <div className="my-6 flex items-center gap-3">
+                  <div className="flex-1 h-px bg-border/50" />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <div className="flex-1 h-px bg-border/50" />
+                </div>
+
+                {/* Email + Password */}
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      required
+                      className="w-full backdrop-blur-sm text-foreground border border-border/50 bg-secondary/20 rounded-full py-3 px-4 focus:outline-none focus:border-foreground/30 text-center text-sm"
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      minLength={6}
+                      required
+                      className="w-full backdrop-blur-sm text-foreground border border-border/50 bg-secondary/20 rounded-full py-3 px-4 focus:outline-none focus:border-foreground/30 text-center text-sm"
+                    />
+                    {email && password.length >= 6 && (
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                      >
+                        <span className="text-sm font-bold">→</span>
+                      </button>
+                    )}
+                  </div>
+                  {(!email || password.length < 6) && (
+                    <button
+                      type="submit"
+                      disabled={loading || !email || password.length < 6}
+                      className="w-full rounded-full py-3 px-4 bg-secondary/30 border border-border/50 text-muted-foreground text-sm font-medium cursor-not-allowed opacity-50"
+                    >
+                      {loading ? "Creating account..." : "Start free trial"}
+                    </button>
+                  )}
+                </form>
+
+                {/* Footer */}
+                <p className="text-xs text-muted-foreground text-center mt-6">
+                  14-day free trial · Cancel anytime
+                </p>
+                <p className="text-sm text-muted-foreground text-center mt-3">
+                  Already have an account?{" "}
+                  <Link to="/login" className="text-foreground hover:underline font-medium">
+                    Sign in
+                  </Link>
+                </p>
+                <p className="text-[10px] text-muted-foreground/60 text-center mt-4 leading-relaxed">
+                  By signing up, you agree to our{" "}
+                  <Link to="/terms" className="underline">Terms</Link> and{" "}
+                  <Link to="/privacy" className="underline">Privacy Notice</Link>.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center text-center"
+              >
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-foreground">You're in!</h2>
+                  <p className="text-muted-foreground mt-1">Welcome to XSentinel</p>
+                </div>
+                <div className="w-16 h-16 rounded-full border-2 border-foreground flex items-center justify-center mb-6">
+                  <motion.svg
+                    className="w-8 h-8 text-foreground"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <motion.path
+                      d="M5 13l4 4L19 7"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.6, delay: 0.3 }}
+                    />
+                  </motion.svg>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
-        <Button
-          variant="outline"
-          className="w-full gap-2 border-border text-muted-foreground"
-          onClick={handleGoogleSignIn}
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="currentColor" />
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="currentColor" />
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="currentColor" />
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="currentColor" />
-          </svg>
-          Continue with Google
-        </Button>
-
-        <p className="text-sm text-muted-foreground text-center mt-4">14-day free trial · Cancel Anytime</p>
-        <p className="text-sm text-muted-foreground text-center mt-2">
-          Already have an account?{" "}
-          <Link to="/login" className="text-foreground hover:underline font-medium">
-            Sign in
-          </Link>
-        </p>
       </div>
     </div>
   );
