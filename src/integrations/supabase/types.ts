@@ -14,7 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alerts: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          is_legitimate: boolean | null
+          new_data: Json | null
+          old_data: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          is_legitimate?: boolean | null
+          new_data?: Json | null
+          old_data?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          is_legitimate?: boolean | null
+          new_data?: Json | null
+          old_data?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      connected_accounts: {
+        Row: {
+          connected_at: string | null
+          id: string
+          last_snapshot: Json | null
+          push_enabled: boolean | null
+          push_token: string | null
+          subscription_status: string | null
+          trial_ends_at: string | null
+          user_id: string
+          x_avatar_url: string | null
+          x_display_name: string | null
+          x_user_id: string
+          x_username: string
+        }
+        Insert: {
+          connected_at?: string | null
+          id?: string
+          last_snapshot?: Json | null
+          push_enabled?: boolean | null
+          push_token?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          user_id: string
+          x_avatar_url?: string | null
+          x_display_name?: string | null
+          x_user_id: string
+          x_username: string
+        }
+        Update: {
+          connected_at?: string | null
+          id?: string
+          last_snapshot?: Json | null
+          push_enabled?: boolean | null
+          push_token?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          user_id?: string
+          x_avatar_url?: string | null
+          x_display_name?: string | null
+          x_user_id?: string
+          x_username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
