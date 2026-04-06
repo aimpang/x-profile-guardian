@@ -99,7 +99,8 @@ const Index = () => {
             <Link to="/signup">
               <Button className="w-full" size="sm">Start free trial</Button>
             </Link>
-          </div>
+            </div>
+          </GlowCard>
         </div>
       </section>
 
