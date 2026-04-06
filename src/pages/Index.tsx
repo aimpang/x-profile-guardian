@@ -34,23 +34,23 @@ const Index = () => {
       </nav>
 
       {/* Hero */}
-      <section className="flex flex-col items-center text-center px-6 pt-24 pb-20 max-w-3xl mx-auto">
-        <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6">
+      <section className="flex flex-col items-center text-center px-6 pt-28 pb-24 max-w-3xl mx-auto">
+        <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8">
           Protect your X identity
         </p>
-        <h1 className="font-semibold text-foreground leading-[1.05] tracking-tight" style={{ fontSize: "clamp(36px, 6vw, 64px)" }}>
+        <h1 className="font-bold text-foreground leading-[1.05] tracking-tight" style={{ fontSize: "clamp(38px, 7vw, 68px)" }}>
           Instant alerts when your X profile changes
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+        <p className="mt-5 text-lg text-muted-foreground">
           Set once. Protected forever.
         </p>
-        <Link to="/signup" className="mt-10">
-          <Button size="lg" className="text-base px-10 py-6 gap-2 text-lg">
+        <Link to="/signup" className="mt-12">
+          <Button size="lg" className="text-lg px-12 py-7 gap-2">
             Start 14-day free trial <ArrowRight className="h-5 w-5" />
           </Button>
         </Link>
         <p className="text-xs text-muted-foreground mt-4 tracking-wide">
-          No credit card required · Cancel anytime
+          14-day free trial · Cancel anytime
         </p>
       </section>
 
@@ -61,7 +61,7 @@ const Index = () => {
           {[
             { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Create your account in seconds with just your email." },
             { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor what you own." },
-            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Receive instant push and email alerts the second your profile changes." },
+            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Receive instant push and email alerts the moment anything changes on your profile." },
           ].map((step, i) => (
             <div key={i} className="p-6 rounded-xl border border-border bg-secondary/30 text-center">
               <div className="flex justify-center mb-4">{step.icon}</div>
