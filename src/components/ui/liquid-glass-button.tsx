@@ -81,7 +81,6 @@ function LiquidButton({
             background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
-            filter: "url(#glass-distortion)",
             border: "1px solid rgba(255,255,255,0.18)",
           }}
         />
