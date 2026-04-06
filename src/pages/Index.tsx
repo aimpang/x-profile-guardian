@@ -35,7 +35,7 @@ const Index = () => {
 
       {/* Hero — full viewport */}
       <section className="flex flex-col items-center justify-center text-center px-6" style={{ minHeight: "calc(100vh - 65px)" }}>
-        <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground mb-4">Defend your X account</p>
+        <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground mb-4 mx-[55px]">Defend your X account</p>
         <h1 className="font-semibold text-foreground leading-[0.95]" style={{ fontSize: "clamp(48px, 10vw, 96px)" }}>
           XGuard
         </h1>
