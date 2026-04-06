@@ -38,6 +38,7 @@ const Signup = () => {
       return;
     }
     if (result.redirected) return;
+    toast.success("Welcome to XGuard!");
     navigate("/dashboard");
   };
 

@@ -38,6 +38,7 @@ const Login = () => {
       return;
     }
     if (result.redirected) return;
+    toast.success("Welcome back!");
     navigate("/dashboard");
   };
 
