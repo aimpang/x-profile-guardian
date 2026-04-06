@@ -143,10 +143,10 @@ const Dashboard = () => {
           </div>
         ) : (
           <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 mb-8 text-center">
-            <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-foreground mb-2">Connect your X account</h2>
-            <p className="text-sm text-muted-foreground mb-6">Authorize via OAuth so we can monitor your profile for unauthorized changes.</p>
-            <Button onClick={handleConnectX} className="gap-2">
+          <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
+            <h2 className="text-xl font-semibold text-foreground mb-2">Connect your X account</h2>
+            <p className="text-sm text-muted-foreground mb-8">Connect your X account to start protection</p>
+            <Button size="lg" onClick={handleConnectX} className="gap-2 px-8">
               <ExternalLink className="h-4 w-4" /> Connect my X Account
             </Button>
           </div>
