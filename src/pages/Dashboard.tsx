@@ -310,25 +310,28 @@ const Dashboard = () => {
               {isActive || isTrial
                 ? "We're monitoring for any unauthorized changes."
                 : "Subscribe to resume monitoring."}
+            </p>
             </div>
           </GlowCard>
+        ) : (
           <GlowCard>
             <div className="p-12 text-center">
-            <Shield className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
-            <h2 className="text-2xl font-semibold text-foreground mb-3">Protect your X account</h2>
-            <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
-              Connect your X account via OAuth to start real-time monitoring against hacks
-            </p>
-            <Button
-              size="lg"
-              onClick={handleConnectX}
-              disabled={connectXLoading}
-              className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
-            >
-              {connectXLoading
-                ? <Loader2 className="h-4 w-4 animate-spin" />
-                : <ExternalLink className="h-4 w-4" />}
-              {connectXLoading ? "Redirecting to X..." : "Connect my X Account"}
+              <Shield className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
+              <h2 className="text-2xl font-semibold text-foreground mb-3">Protect your X account</h2>
+              <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
+                Connect your X account via OAuth to start real-time monitoring against hacks
+              </p>
+              <Button
+                size="lg"
+                onClick={handleConnectX}
+                disabled={connectXLoading}
+                className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
+              >
+                {connectXLoading
+                  ? <Loader2 className="h-4 w-4 animate-spin" />
+                  : <ExternalLink className="h-4 w-4" />}
+                {connectXLoading ? "Redirecting to X..." : "Connect my X Account"}
+              </Button>
             </div>
           </GlowCard>
         )}
