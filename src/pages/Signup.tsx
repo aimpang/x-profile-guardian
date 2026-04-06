@@ -113,7 +113,7 @@ const Signup = () => {
           Continue with Google
         </Button>
 
-        <p className="text-sm text-muted-foreground text-center mt-4">14-day free trial · No credit card required</p>
+        <p className="text-sm text-muted-foreground text-center mt-4">14-day free trial · Cancel Anytime</p>
         <p className="text-sm text-muted-foreground text-center mt-2">
           Already have an account?{" "}
           <Link to="/login" className="text-foreground hover:underline font-medium">
