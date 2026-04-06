@@ -180,117 +180,113 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Recent Alerts */}
-        {account && (
-          <>
-            <Separator />
-            <div>
-              <h2 className="text-lg font-semibold text-foreground mb-4">Recent Alerts</h2>
-              {alerts.length === 0 ? (
-                <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 text-center">
-                  <ShieldCheck className="h-14 w-14 text-[hsl(var(--safe))] mx-auto mb-4" />
-                  <p className="text-sm text-muted-foreground">No alerts yet — everything looks good</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {alerts.map(alert => (
-                    <div
-                      key={alert.id}
-                      className={`rounded-xl border p-4 ${alert.is_legitimate ? "border-border bg-secondary/50" : "border-destructive/30 bg-destructive/5"}`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-foreground">
-                            {eventLabels[alert.event_type] || alert.event_type} changed
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
-                          </p>
-                          {alert.old_data && (
-                            <div className="mt-2 text-xs">
-                              <span className="text-muted-foreground">Before: </span>
-                              <span className="text-destructive line-through">{JSON.stringify(alert.old_data)}</span>
-                            </div>
-                          )}
-                          {alert.new_data && (
-                            <div className="text-xs">
-                              <span className="text-muted-foreground">After: </span>
-                              <span className="text-[hsl(var(--safe))]">{JSON.stringify(alert.new_data)}</span>
-                            </div>
-                          )}
-                        </div>
-                        {!alert.is_legitimate ? (
-                          <Button variant="outline" size="sm" onClick={() => handleThisWasMe(alert.id)} className="text-xs shrink-0 ml-4">
-                            This was me
-                          </Button>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">✓ Acknowledged</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* Recent Alerts — always visible */}
+        <Separator />
+        <div>
+          <h2 className="text-lg font-semibold text-foreground mb-4">Recent Alerts</h2>
+          {alerts.length === 0 ? (
+            <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 text-center">
+              <ShieldCheck className="h-14 w-14 text-[hsl(var(--safe))] mx-auto mb-4" />
+              <p className="text-sm text-muted-foreground">No alerts yet — everything looks good</p>
             </div>
-          </>
-        )}
-
-        {/* Settings */}
-        {account && (
-          <>
-            <Separator />
-            <div className="space-y-5">
-              <h2 className="text-lg font-semibold text-foreground">Settings</h2>
-
-              <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Bell className="h-5 w-5 text-foreground" />
+          ) : (
+            <div className="space-y-3">
+              {alerts.map(alert => (
+                <div
+                  key={alert.id}
+                  className={`rounded-xl border p-4 ${alert.is_legitimate ? "border-border bg-secondary/50" : "border-destructive/30 bg-destructive/5"}`}
+                >
+                  <div className="flex items-start justify-between">
                     <div>
-                      <Label className="text-foreground">Mobile push alerts</Label>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {pushEnabled ? "Push & email alerts enabled" : "You'll still receive email alerts"}
+                      <p className="text-sm font-medium text-foreground">
+                        {eventLabels[alert.event_type] || alert.event_type} changed
                       </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
+                      </p>
+                      {alert.old_data && (
+                        <div className="mt-2 text-xs">
+                          <span className="text-muted-foreground">Before: </span>
+                          <span className="text-destructive line-through">{JSON.stringify(alert.old_data)}</span>
+                        </div>
+                      )}
+                      {alert.new_data && (
+                        <div className="text-xs">
+                          <span className="text-muted-foreground">After: </span>
+                          <span className="text-[hsl(var(--safe))]">{JSON.stringify(alert.new_data)}</span>
+                        </div>
+                      )}
                     </div>
+                    {!alert.is_legitimate ? (
+                      <Button variant="outline" size="sm" onClick={() => handleThisWasMe(alert.id)} className="text-xs shrink-0 ml-4">
+                        This was me
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">✓ Acknowledged</span>
+                    )}
                   </div>
-                  <Switch checked={pushEnabled} onCheckedChange={togglePush} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Settings — always visible */}
+        <Separator />
+        <div className="space-y-5">
+          <h2 className="text-lg font-semibold text-foreground">Settings</h2>
+
+          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Bell className="h-5 w-5 text-foreground" />
+                <div>
+                  <Label className="text-foreground">Mobile push alerts</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {pushEnabled ? "Push & email alerts enabled" : "You'll still receive email alerts"}
+                  </p>
                 </div>
               </div>
+              <Switch checked={pushEnabled} onCheckedChange={togglePush} disabled={!account} />
+            </div>
+          </div>
 
-              <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
-                <div className="flex items-center gap-3 mb-3">
-                  <CreditCard className="h-5 w-5 text-foreground" />
-                  <div>
-                    <Label className="text-foreground">Subscription</Label>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {isExpired
-                        ? "Trial ended — subscribe to continue"
-                        : isTrial
-                          ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
-                          : "Active — $9/month"}
-                    </p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => toast.info("Stripe billing portal coming soon")}>
-                  Manage billing
-                </Button>
-              </div>
-
-              <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
-                <div className="flex items-center gap-3 mb-3">
-                  <Unplug className="h-5 w-5 text-destructive" />
-                  <div>
-                    <Label className="text-foreground">Disconnect X account</Label>
-                    <p className="text-xs text-muted-foreground mt-0.5">Stop monitoring and remove your connected account</p>
-                  </div>
-                </div>
-                <Button variant="destructive" size="sm" onClick={handleDisconnect}>
-                  Disconnect
-                </Button>
+          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <CreditCard className="h-5 w-5 text-foreground" />
+              <div>
+                <Label className="text-foreground">Subscription</Label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {isExpired
+                    ? "Trial ended — subscribe to continue"
+                    : isTrial
+                      ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
+                      : account
+                        ? "Active — $9/month"
+                        : "14-day free trial when you connect"}
+                </p>
               </div>
             </div>
-          </>
-        )}
+            <Button variant="outline" size="sm" onClick={() => toast.info("Stripe billing portal coming soon")}>
+              Manage billing
+            </Button>
+          </div>
+
+          {account && (
+            <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <Unplug className="h-5 w-5 text-destructive" />
+                <div>
+                  <Label className="text-foreground">Disconnect X account</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">Stop monitoring and remove your connected account</p>
+                </div>
+              </div>
+              <Button variant="destructive" size="sm" onClick={handleDisconnect}>
+                Disconnect
+              </Button>
+            </div>
+          )}
+        </div>
 
         {/* Footer */}
         <Separator />
