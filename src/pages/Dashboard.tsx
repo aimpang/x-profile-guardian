@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Shield, ShieldCheck, ExternalLink, AlertTriangle, Bell, CreditCard, Unplug, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -296,6 +296,11 @@ const Dashboard = () => {
             Log out
           </Button>
         </div>
+        <p className="text-xs text-muted-foreground text-center pt-2">
+          <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
+          {" · "}
+          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+        </p>
       </div>
     </div>
   );

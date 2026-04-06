@@ -90,7 +90,12 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} XGuard. Protect what's yours.
+        <p>© {new Date().getFullYear()} XGuard. Protect what's yours.</p>
+        <p className="mt-2">
+          <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
+          {" · "}
+          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+        </p>
       </footer>
     </>
   );
