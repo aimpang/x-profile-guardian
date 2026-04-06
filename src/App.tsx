@@ -61,7 +61,6 @@ const AnimatedRoutes = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      
       <BrowserRouter>
         <AuthProvider>
           <AppLayout>
