@@ -451,7 +451,7 @@ const Dashboard = () => {
                 </Button>
               )}
             </div>
-          </div>
+          </GlowCard>
 
           {account && (
             <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
