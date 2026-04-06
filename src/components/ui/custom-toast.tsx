@@ -218,10 +218,8 @@ const ToastContainer = () => {
       <div
         className="relative transition-all duration-300"
         style={{
-          height: isHovered
-            ? containerHeight + (visibleToasts.length - 1) * 10
-            : (toasts[toasts.length - 1]?.measuredHeight ?? 63) +
-              Math.min(toasts.length - 1, lastVisibleCount - 1) * 20,
+          height: visibleToasts.reduce((acc, t) => acc + (t.measuredHeight ?? 63), 0) +
+            Math.max(0, visibleToasts.length - 1) * 10,
           width: 356,
         }}
       >
