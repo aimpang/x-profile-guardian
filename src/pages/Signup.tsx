@@ -38,7 +38,7 @@ const Signup = () => {
       return;
     }
     if (result.redirected) return;
-    toast.success("Welcome to XGuard!");
+    toast.success("Welcome to X Sentinel!");
     navigate("/dashboard");
   };
 

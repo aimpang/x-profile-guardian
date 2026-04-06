@@ -12,7 +12,7 @@ const Terms = () => (
       <p className="text-sm text-muted-foreground mb-10">Effective: April 2026</p>
 
       <p className="text-muted-foreground mb-8">
-        XGuard (the "Service") provides real-time alerts when your connected X account's profile changes.
+        X Sentinel (the "Service") provides real-time alerts when your connected X account's profile changes.
       </p>
 
       <div className="space-y-8 text-sm text-muted-foreground">

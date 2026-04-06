@@ -102,7 +102,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t border-border px-6 py-8 flex flex-col items-center gap-3 text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} XGuard. Protect what's yours.</p>
+        <p>© {new Date().getFullYear()} X Sentinel. Protect what's yours.</p>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

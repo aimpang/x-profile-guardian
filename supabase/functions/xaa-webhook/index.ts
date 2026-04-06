@@ -141,7 +141,7 @@ Deno.serve(async (req: Request) => {
     if (email) await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
 
     if (account.push_enabled && account.push_token) {
-      await sendPushNotification(account.push_token, "🚨 XGuard Alert", `Your ${field.replace("_", " ")} was changed`);
+      await sendPushNotification(account.push_token, "🚨 X Sentinel Alert", `Your ${field.replace("_", " ")} was changed`);
     }
 
     return new Response("Alert processed", { status: 200, headers: corsHeaders });
