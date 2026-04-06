@@ -310,8 +310,8 @@ const Dashboard = () => {
               {isActive || isTrial
                 ? "We're monitoring for any unauthorized changes."
                 : "Subscribe to resume monitoring."}
-            </p>
-          </div>
+            </div>
+          </GlowCard>
         ) : (
           <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-12 text-center">
             <Shield className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
