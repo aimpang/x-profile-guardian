@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, ShieldCheck, ExternalLink, AlertTriangle, Bell, CreditCard, Unplug, LogOut } from "lucide-react";
+import { Shield, ShieldCheck, ExternalLink, AlertTriangle, Bell, CreditCard, Unplug, LogOut, Slash } from "lucide-react";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
