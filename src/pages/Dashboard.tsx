@@ -106,7 +106,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Nav */}
+      {/* Header */}
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
         <div className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-foreground" />
@@ -119,7 +119,7 @@ const Dashboard = () => {
 
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-8">
 
-        {/* ── 1. Account Status ── */}
+        {/* Trial/Expired Banners */}
         {isExpired && (
           <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
@@ -139,6 +139,7 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Account Status Card */}
         {account ? (
           <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8">
             <div className="flex items-center gap-4">
@@ -163,7 +164,7 @@ const Dashboard = () => {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mt-4 text-center">
-              Your account is secure. We're watching for changes 24/7.
+              We're monitoring for any unauthorized changes.
             </p>
           </div>
         ) : (
@@ -179,7 +180,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* ── 2. Recent Alerts ── */}
+        {/* Recent Alerts */}
         {account && (
           <>
             <Separator />
@@ -234,14 +235,13 @@ const Dashboard = () => {
           </>
         )}
 
-        {/* ── 3. Settings ── */}
+        {/* Settings */}
         {account && (
           <>
             <Separator />
             <div className="space-y-5">
               <h2 className="text-lg font-semibold text-foreground">Settings</h2>
 
-              {/* Push toggle */}
               <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -257,7 +257,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Billing */}
               <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
                 <div className="flex items-center gap-3 mb-3">
                   <CreditCard className="h-5 w-5 text-foreground" />
@@ -277,7 +276,6 @@ const Dashboard = () => {
                 </Button>
               </div>
 
-              {/* Disconnect */}
               <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
                 <div className="flex items-center gap-3 mb-3">
                   <Unplug className="h-5 w-5 text-destructive" />
@@ -294,7 +292,7 @@ const Dashboard = () => {
           </>
         )}
 
-        {/* Account info */}
+        {/* Footer */}
         <Separator />
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">{user?.email}</p>
