@@ -89,7 +89,8 @@ const SettingsPage = () => {
               </div>
               <Switch checked={pushEnabled} onCheckedChange={togglePush} />
             </div>
-          </div>
+            </div>
+          </GlowCard>
         )}
 
         {/* Billing */}
