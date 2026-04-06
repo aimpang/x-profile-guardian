@@ -454,6 +454,7 @@ const Dashboard = () => {
                 </Button>
               )}
             </div>
+            </div>
           </GlowCard>
 
           {account && (
