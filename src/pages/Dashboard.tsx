@@ -203,16 +203,18 @@ const Dashboard = () => {
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-8">
         {/* Trial/Expired Banners */}
         {isExpired && (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-foreground">Your subscription has ended</p>
-              <p className="text-sm text-muted-foreground">Subscribe to keep your X account protected.</p>
-              <Button size="sm" className="mt-3" onClick={handleCheckout} disabled={checkoutLoading}>
-                {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Subscribe — $9/month
-              </Button>
+          <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 flex items-center justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Your subscription has ended</p>
+                <p className="text-sm text-muted-foreground">Subscribe to keep your X account protected.</p>
+              </div>
             </div>
+            <Button size="sm" onClick={handleCheckout} disabled={checkoutLoading} className="shrink-0">
+              {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Subscribe — $9/month
+            </Button>
           </div>
         )}
         {isTrial && trialDaysLeft <= 5 && trialDaysLeft > 0 && (
