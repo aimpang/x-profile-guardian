@@ -258,7 +258,7 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground">Subscribe to keep your X account protected.</p>
               </div>
             </div>
-            <Button size="sm" onClick={handleCheckout} disabled={checkoutLoading} className="shrink-0">
+            <Button size="sm" onClick={() => handleCheckout()} disabled={checkoutLoading} className="shrink-0">
               {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Subscribe — $9/month
             </Button>
