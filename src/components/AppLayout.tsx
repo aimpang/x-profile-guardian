@@ -1,9 +1,11 @@
-import { EtherealBeamsBackground } from "@/components/ui/ethereal-beams";
+import { WebGLShader } from "@/components/ui/web-gl-shader";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="relative min-h-screen bg-background">
-      <EtherealBeamsBackground />
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        <WebGLShader />
+      </div>
       <div className="relative z-10">
         {children}
       </div>
