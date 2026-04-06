@@ -73,7 +73,8 @@ const Index = () => {
           ))}
 
           {/* Pricing card */}
-          <div className="p-6 rounded-xl border border-border bg-secondary/30 flex flex-col justify-between text-center">
+          <GlowCard>
+            <div className="p-6 flex flex-col justify-between text-center h-full">
             <div>
               <h3 className="text-base font-semibold text-foreground mb-3">Simple pricing</h3>
               <div className="text-3xl font-bold text-foreground mb-1">
