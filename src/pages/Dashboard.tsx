@@ -264,19 +264,26 @@ const Dashboard = () => {
         <div className="space-y-5">
           <h2 className="text-lg font-semibold text-foreground">Settings</h2>
 
-          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
+          <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Bell className="h-5 w-5 text-foreground" />
                 <div>
-                  <Label className="text-foreground">Mobile push alerts</Label>
+                  <Label className="text-foreground font-medium">Mobile push alerts</Label>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {pushEnabled ? "Push & email alerts enabled" : "You'll still receive email alerts"}
+                    {pushEnabled
+                      ? "You'll receive instant push notifications on your phone when your X profile changes."
+                      : "You'll still receive email alerts"}
                   </p>
                 </div>
               </div>
               <Switch checked={pushEnabled} onCheckedChange={togglePush} disabled={!account} />
             </div>
+            {!account && (
+              <p className="text-xs text-muted-foreground italic pl-8">
+                Connect your X account to enable push notifications.
+              </p>
+            )}
           </div>
 
           <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">

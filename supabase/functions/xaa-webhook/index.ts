@@ -38,8 +38,39 @@ async function verifyXSignature(req: Request, body: string): Promise<boolean> {
 }
 
 async function sendPushNotification(token: string, title: string, body: string) {
-  console.log(`[PUSH] ${title} → ${body} (token: ${token})`);
-  // TODO: Add real OneSignal / FCM call here later
+  const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
+  const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
+
+  if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
+    console.warn("[PUSH] OneSignal not configured — skipping push notification");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        include_player_ids: [token],
+        headings: { en: title },
+        contents: { en: body },
+        priority: 10,
+      }),
+    });
+
+    const result = await res.text();
+    if (!res.ok) {
+      console.error(`[PUSH] OneSignal error (${res.status}):`, result);
+    } else {
+      console.log("[PUSH] Notification sent successfully");
+    }
+  } catch (err) {
+    console.error("[PUSH] Failed to send notification:", err);
+  }
 }
 
 async function sendEmailAlert(email: string, eventType: string, oldVal: any, newVal: any) {
