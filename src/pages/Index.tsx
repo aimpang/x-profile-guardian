@@ -51,10 +51,10 @@ const Index = () => {
         <p className="text-xs text-muted-foreground mt-3">14-day free trial · No credit card required</p>
       </section>
 
-      {/* How it works */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
+      {/* How it works + Pricing */}
+      <section className="px-6 py-24 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold text-foreground text-center mb-12">How it works</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { icon: <Zap className="h-8 w-8 text-primary" />, title: "Sign up", desc: "Create your account in seconds with just an email." },
             { icon: <Shield className="h-8 w-8 text-primary" />, title: "Connect X", desc: "Authorize your X account via OAuth. We only monitor your own profile." },
@@ -66,27 +66,26 @@ const Index = () => {
               <p className="text-sm text-muted-foreground">{step.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
 
-      {/* Pricing */}
-      <section className="px-6 py-24 max-w-lg mx-auto text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-4">Simple pricing</h2>
-        <p className="text-muted-foreground mb-10">One plan. Full protection.</p>
-        <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8">
-          <div className="text-4xl font-bold text-foreground mb-1">$9<span className="text-lg font-normal text-muted-foreground">/month</span></div>
-          <p className="text-sm text-muted-foreground mb-6">After 14-day free trial</p>
-          <ul className="text-left space-y-3 mb-8">
-            {["1 X account protected", "Real-time profile monitoring", "Push & email alerts", "Alert history with before/after", "\"This was me\" quick dismiss"].map((f, i) => (
-              <li key={i} className="flex items-center gap-3 text-sm text-foreground">
-                <Check className="h-4 w-4 text-safe flex-shrink-0" />
-                {f}
-              </li>
-            ))}
-          </ul>
-          <Link to="/signup">
-            <Button className="w-full" size="lg">Start free trial</Button>
-          </Link>
+          {/* Pricing card */}
+          <div className="text-center p-6 rounded-xl border border-border bg-secondary/50 backdrop-blur-sm flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Simple pricing</h3>
+              <div className="text-3xl font-bold text-foreground mb-1">$9<span className="text-sm font-normal text-muted-foreground">/mo</span></div>
+              <p className="text-xs text-muted-foreground mb-4">After 14-day free trial</p>
+              <ul className="text-left space-y-2 mb-4">
+                {["1 X account", "Real-time monitoring", "Push & email alerts", "Alert history", "Quick dismiss"].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-xs text-foreground">
+                    <Check className="h-3 w-3 text-safe flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Link to="/signup">
+              <Button className="w-full" size="sm">Start free trial</Button>
+            </Link>
+          </div>
         </div>
       </section>
 
