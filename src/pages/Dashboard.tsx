@@ -1,7 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, ShieldCheck, ExternalLink, AlertTriangle, Bell, CreditCard, Unplug, LogOut, Slash } from "lucide-react";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Shield,
+  ShieldCheck,
+  ExternalLink,
+  AlertTriangle,
+  Bell,
+  CreditCard,
+  Unplug,
+  LogOut,
+  Slash,
+} from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -89,7 +105,7 @@ const Dashboard = () => {
 
   const handleThisWasMe = async (id: string) => {
     await supabase.from("alerts").update({ is_legitimate: true }).eq("id", id);
-    setAlerts(prev => prev.map(a => a.id === id ? { ...a, is_legitimate: true } : a));
+    setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, is_legitimate: true } : a)));
   };
 
   const handleLogout = async () => {
@@ -119,7 +135,6 @@ const Dashboard = () => {
       </nav>
 
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-8">
-
         {/* Trial/Expired Banners */}
         {isExpired && (
           <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 flex items-start gap-3">
@@ -127,7 +142,9 @@ const Dashboard = () => {
             <div>
               <p className="text-sm font-medium text-foreground">Your trial has ended</p>
               <p className="text-sm text-muted-foreground">Subscribe to keep your X account protected.</p>
-              <Button size="sm" className="mt-3">Subscribe — $9/month</Button>
+              <Button size="sm" className="mt-3">
+                Subscribe — $9/month
+              </Button>
             </div>
           </div>
         )}
@@ -135,7 +152,10 @@ const Dashboard = () => {
           <div className="rounded-xl border border-[hsl(var(--warning))]/30 bg-[hsl(var(--warning))]/10 p-4 flex items-center gap-3">
             <AlertTriangle className="h-5 w-5 text-[hsl(var(--warning))]" />
             <p className="text-sm text-foreground">
-              <span className="font-medium">{trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""}</span> left in your free trial.
+              <span className="font-medium">
+                {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""}
+              </span>{" "}
+              left in your free trial.
             </p>
           </div>
         )}
@@ -154,9 +174,7 @@ const Dashboard = () => {
                 )}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-foreground text-lg">
-                  {account.x_display_name || account.x_username}
-                </p>
+                <p className="font-semibold text-foreground text-lg">{account.x_display_name || account.x_username}</p>
                 <p className="text-sm text-muted-foreground">@{account.x_username}</p>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-[hsl(var(--safe))]/15 px-4 py-2">
@@ -175,7 +193,11 @@ const Dashboard = () => {
             <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
               Connect your X account via OAuth to start real-time protection against hacks
             </p>
-            <Button size="lg" onClick={handleConnectX} className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white">
+            <Button
+              size="lg"
+              onClick={handleConnectX}
+              className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
+            >
               <ExternalLink className="h-4 w-4" /> Connect my X Account
             </Button>
           </div>
@@ -192,7 +214,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {alerts.map(alert => (
+              {alerts.map((alert) => (
                 <div
                   key={alert.id}
                   className={`rounded-xl border p-4 ${alert.is_legitimate ? "border-border bg-secondary/50" : "border-destructive/30 bg-destructive/5"}`}
@@ -219,7 +241,12 @@ const Dashboard = () => {
                       )}
                     </div>
                     {!alert.is_legitimate ? (
-                      <Button variant="outline" size="sm" onClick={() => handleThisWasMe(alert.id)} className="text-xs shrink-0 ml-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleThisWasMe(alert.id)}
+                        className="text-xs shrink-0 ml-4"
+                      >
                         This was me
                       </Button>
                     ) : (
@@ -279,7 +306,9 @@ const Dashboard = () => {
                 <Unplug className="h-5 w-5 text-destructive" />
                 <div>
                   <Label className="text-foreground">Disconnect X account</Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">Stop monitoring and remove your connected account</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Stop monitoring and remove your connected account
+                  </p>
                 </div>
               </div>
               <Button variant="destructive" size="sm" onClick={handleDisconnect}>
@@ -291,25 +320,29 @@ const Dashboard = () => {
 
         {/* Footer */}
         <Separator />
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">{user?.email}</p>
-          <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={handleLogout}>
-            Log out
-          </Button>
-        </div>
         <div className="flex justify-center pt-2">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbSeparator>
+                <Slash className="h-3 w-3" />
+              </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbLink asChild><Link to="/terms">Terms</Link></BreadcrumbLink>
+                <BreadcrumbLink asChild>
+                  <Link to="/terms">Terms</Link>
+                </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbSeparator>
+                <Slash className="h-3 w-3" />
+              </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbLink asChild><Link to="/privacy">Privacy</Link></BreadcrumbLink>
+                <BreadcrumbLink asChild>
+                  <Link to="/privacy">Privacy</Link>
+                </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
