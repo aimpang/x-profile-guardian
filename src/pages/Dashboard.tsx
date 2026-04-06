@@ -293,13 +293,22 @@ const Dashboard = () => {
                 <p className="font-semibold text-foreground text-lg">{account.x_display_name || account.x_username}</p>
                 <p className="text-sm text-muted-foreground">@{account.x_username}</p>
               </div>
-              <div className="flex items-center gap-2 rounded-full bg-[hsl(var(--safe))]/15 px-4 py-2">
-                <ShieldCheck className="h-4 w-4 text-[hsl(var(--safe))]" />
-                <span className="text-sm font-medium text-[hsl(var(--safe))]">Protected</span>
-              </div>
+              {isActive || isTrial ? (
+                <div className="flex items-center gap-2 rounded-full bg-[hsl(var(--safe))]/15 px-4 py-2">
+                  <ShieldCheck className="h-4 w-4 text-[hsl(var(--safe))]" />
+                  <span className="text-sm font-medium text-[hsl(var(--safe))]">Protected</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 rounded-full bg-destructive/15 px-4 py-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  <span className="text-sm font-medium text-destructive">Unprotected</span>
+                </div>
+              )}
             </div>
             <p className="text-sm text-muted-foreground mt-4 text-center">
-              We're monitoring for any unauthorized changes.
+              {isActive || isTrial
+                ? "We're monitoring for any unauthorized changes."
+                : "Subscribe to resume monitoring."}
             </p>
           </div>
         ) : (
