@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DottedSurface } from "@/components/ui/dotted-surface";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
