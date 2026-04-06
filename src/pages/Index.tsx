@@ -89,13 +89,23 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground">
+      <footer className="border-t border-border px-6 py-8 flex flex-col items-center gap-3 text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} XGuard. Protect what's yours.</p>
-        <p className="mt-2">
-          <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
-          {" · "}
-          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
-        </p>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild><Link to="/terms">Terms</Link></BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild><Link to="/privacy">Privacy</Link></BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </footer>
     </>
   );

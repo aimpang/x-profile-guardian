@@ -296,11 +296,23 @@ const Dashboard = () => {
             Log out
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground text-center pt-2">
-          <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
-          {" · "}
-          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
-        </p>
+        <div className="flex justify-center pt-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/terms">Terms</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/privacy">Privacy</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </div>
     </div>
   );
