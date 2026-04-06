@@ -64,14 +64,14 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <Shield className="h-8 w-8 text-primary animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Nav */}
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-5xl mx-auto">
         <div className="flex items-center gap-2">
@@ -118,7 +118,7 @@ const Dashboard = () => {
 
         {/* Connected account card */}
         {account ? (
-          <div className="rounded-2xl border border-border bg-secondary p-6 mb-8">
+          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-6 mb-8">
             <div className="flex items-center gap-4">
               <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                 {account.x_avatar_url ? (
@@ -142,7 +142,7 @@ const Dashboard = () => {
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-border bg-secondary p-8 mb-8 text-center">
+          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 mb-8 text-center">
             <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-lg font-semibold text-foreground mb-2">Connect your X account</h2>
             <p className="text-sm text-muted-foreground mb-6">Authorize via OAuth so we can monitor your profile for unauthorized changes.</p>
@@ -154,7 +154,7 @@ const Dashboard = () => {
 
         {/* Protected state or recent alerts */}
         {account && alerts.length === 0 && (
-          <div className="rounded-2xl border border-border bg-secondary p-8 text-center">
+          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 text-center">
             <ShieldCheck className="h-16 w-16 text-safe mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-foreground mb-2">Protected ✓</h2>
             <p className="text-sm text-muted-foreground">We're monitoring for any unauthorized changes.</p>

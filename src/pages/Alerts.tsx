@@ -48,7 +48,7 @@ const Alerts = () => {
   const allLegitimate = alerts.length > 0 && alerts.every(a => a.is_legitimate);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <nav className="border-b border-border px-6 py-4 flex items-center gap-4 max-w-5xl mx-auto">
         <Link to="/dashboard">
           <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4" /></Button>
@@ -67,7 +67,7 @@ const Alerts = () => {
         )}
 
         {!loading && alerts.length === 0 && (
-          <div className="rounded-2xl border border-border bg-secondary p-8 text-center">
+          <div className="rounded-2xl border border-border bg-secondary/50 backdrop-blur-sm p-8 text-center">
             <ShieldCheck className="h-16 w-16 text-safe mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-foreground mb-2">No alerts yet</h2>
             <p className="text-sm text-muted-foreground">Everything looks good — your account is secure.</p>
