@@ -1,65 +1,62 @@
 import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BackgroundPaths } from "@/components/ui/background-paths";
+import { MinimalHeroBackground } from "@/components/ui/hero-minimalism";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const { user } = useAuth();
 
   return (
-    <div className="relative min-h-screen bg-background">
-      <BackgroundPaths />
+    <div className="min-h-screen bg-background">
+      {/* Hero — full viewport */}
+      <section className="relative h-screen overflow-hidden">
+        <MinimalHeroBackground />
 
-      <div className="relative z-10">
-      {/* Nav */}
-      <nav className="border-b border-border/50 backdrop-blur-sm px-6 py-4 flex items-center justify-between max-w-5xl mx-auto">
-        <div className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-primary" />
-          <span className="text-lg font-bold text-foreground">XGuard</span>
-        </div>
-        <div className="flex items-center gap-3">
-          {user ? (
-            <Link to="/dashboard">
-              <Button size="sm">Dashboard</Button>
-            </Link>
-          ) : (
-            <>
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Log in</Button>
-              </Link>
-              <Link to="/signup">
-                <Button size="sm">Sign up</Button>
-              </Link>
-            </>
-          )}
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="px-6 pt-24 pb-20 text-center max-w-3xl mx-auto">
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-sm text-muted-foreground mb-8">
-            <Shield className="h-4 w-4 text-primary" />
-            Defend your X account
+        {/* Nav */}
+        <nav className="relative z-10 px-6 py-5 flex items-center justify-between max-w-5xl mx-auto">
+          <div className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-primary" />
+            <span className="text-sm tracking-widest uppercase text-muted-foreground">XGuard</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-foreground leading-tight mb-6">
-            Protect your X account<br />from hacks
+          <div className="flex items-center gap-3">
+            {user ? (
+              <Link to="/dashboard">
+                <Button size="sm" variant="outline" className="border-border bg-secondary/50 text-foreground">Dashboard</Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">Log in</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm" variant="outline" className="border-border bg-secondary/50 text-foreground">Sign up</Button>
+                </Link>
+              </>
+            )}
+          </div>
+        </nav>
+
+        {/* Center title */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center pointer-events-none px-6">
+          <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground mb-4">Defend your X account</p>
+          <h1 className="font-semibold text-foreground leading-[0.95]" style={{ fontSize: "clamp(48px, 10vw, 96px)" }}>
+            XGuard
           </h1>
-          <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
-            Get instant alerts when your profile is changed — username, bio, avatar, or banner. Set it once, forget it forever.
+          <p className="mt-5 text-muted-foreground text-base sm:text-lg max-w-md">
+            Instant alerts when your profile is changed. Set it once, forget it forever.
           </p>
-          <Link to="/signup">
+          <Link to="/signup" className="pointer-events-auto mt-8">
             <Button size="lg" className="text-base px-8 gap-2">
               Start free trial <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <p className="text-sm text-muted-foreground mt-4">14-day free trial · No credit card required</p>
+          <p className="text-xs text-muted-foreground mt-3">14-day free trial · No credit card required</p>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="px-6 py-20 max-w-4xl mx-auto">
+      <section className="px-6 py-24 max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold text-foreground text-center mb-12">How it works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {[
@@ -77,7 +74,7 @@ const Index = () => {
       </section>
 
       {/* Pricing */}
-      <section className="px-6 py-20 max-w-lg mx-auto text-center">
+      <section className="px-6 py-24 max-w-lg mx-auto text-center">
         <h2 className="text-2xl font-bold text-foreground mb-4">Simple pricing</h2>
         <p className="text-muted-foreground mb-10">One plan. Full protection.</p>
         <div className="rounded-2xl border border-border bg-secondary p-8">
@@ -101,7 +98,6 @@ const Index = () => {
       <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} XGuard. Protect what's yours.
       </footer>
-      </div>
     </div>
   );
 };
