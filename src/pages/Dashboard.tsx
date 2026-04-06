@@ -329,8 +329,8 @@ const Dashboard = () => {
                 ? <Loader2 className="h-4 w-4 animate-spin" />
                 : <ExternalLink className="h-4 w-4" />}
               {connectXLoading ? "Redirecting to X..." : "Connect my X Account"}
-            </Button>
-          </div>
+            </div>
+          </GlowCard>
         )}
 
         {/* Recent Alerts */}
