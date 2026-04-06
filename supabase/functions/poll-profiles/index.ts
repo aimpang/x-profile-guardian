@@ -48,33 +48,44 @@ async function sendEmailAlert(resendKey: string, email: string, field: string, o
       Authorization: `Bearer ${resendKey}`,
     },
     body: JSON.stringify({
-      from: "XSentinel Alerts <alerts@xsentinel.dev>",
+      from: "XSentinel <alerts@xsentinel.dev>",
       to: [email],
-      subject: `🚨 XSentinel Alert: Your ${fieldName} was changed`,
+      subject: `Security Alert: Your X ${fieldName} Was Changed`,
       html: `
-        <div style="font-family: system-ui, -apple-system, Arial, sans-serif; max-width: 620px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #000; margin-bottom: 8px;">🚨 Profile Change Detected</h2>
-          <p style="color: #333; font-size: 16px;">Your X account profile was updated.</p>
-          <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; border: 1px solid #e0e0e0;">
-            <table style="width: 100%; border-collapse: collapse;">
+        <div style="font-family: system-ui, -apple-system, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 24px; background: #ffffff;">
+          <div style="margin-bottom: 32px;">
+            <p style="font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin: 0 0 12px;">XSentinel</p>
+            <h1 style="font-size: 22px; font-weight: 700; color: #111; margin: 0 0 8px; line-height: 1.3;">Profile Change Detected</h1>
+            <p style="font-size: 15px; color: #555; margin: 0; line-height: 1.6;">
+              A change was detected on your connected X account. If you made this change, no action is needed. If you did not, please secure your account immediately.
+            </p>
+          </div>
+
+          <div style="background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 8px; padding: 24px; margin-bottom: 28px;">
+            <p style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin: 0 0 16px;">Change Summary</p>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
               <tr>
-                <td style="padding: 12px 0; font-weight: 600; color: #444; width: 120px;">Field</td>
-                <td style="padding: 12px 0; color: #000;">${fieldName}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #777; width: 110px; vertical-align: top;">Field</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #111; font-weight: 600;">${fieldName}</td>
               </tr>
               <tr>
-                <td style="padding: 12px 0; font-weight: 600; color: #444;">Before</td>
-                <td style="padding: 12px 0; color: #555;">${oldVal ?? "<em>Not set</em>"}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #777; vertical-align: top;">Previous</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #555; word-break: break-word;">${oldVal ?? "<span style='color:#bbb;font-style:italic;'>Not set</span>"}</td>
               </tr>
               <tr>
-                <td style="padding: 12px 0; font-weight: 600; color: #444;">After</td>
-                <td style="padding: 12px 0; color: #000; font-weight: 500;">${newVal ?? "<em>Not set</em>"}</td>
+                <td style="padding: 10px 0; color: #777; vertical-align: top;">Updated to</td>
+                <td style="padding: 10px 0; color: #111; font-weight: 500; word-break: break-word;">${newVal ?? "<span style='color:#bbb;font-style:italic;'>Not set</span>"}</td>
               </tr>
             </table>
           </div>
-          <p style="margin: 20px 0;">
-            <a href="https://xsentinel.dev" style="background: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
-              View in Dashboard
-            </a>
+
+          <a href="https://xsentinel.dev/dashboard" style="display: inline-block; background: #000; color: #fff; padding: 13px 28px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; letter-spacing: 0.01em;">
+            Review in Dashboard
+          </a>
+
+          <p style="font-size: 12px; color: #aaa; margin-top: 36px; line-height: 1.7; border-top: 1px solid #eee; padding-top: 24px;">
+            You received this alert because your X account is monitored by XSentinel.<br>
+            Manage your notification preferences at <a href="https://xsentinel.dev/dashboard" style="color: #888;">xsentinel.dev</a>.
           </p>
         </div>
       `,
@@ -93,8 +104,8 @@ async function sendPushAlert(appId: string, restKey: string, pushToken: string, 
     body: JSON.stringify({
       app_id: appId,
       include_player_ids: [pushToken],
-      headings: { en: "🚨 XSentinel Alert" },
-      contents: { en: `Your ${fieldName} was changed` },
+      headings: { en: "Profile Change Detected" },
+      contents: { en: `Your X ${fieldName} was changed. Tap to review.` },
       data: { field, oldVal, newVal },
       priority: 10,
     }),
