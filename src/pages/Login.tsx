@@ -49,7 +49,7 @@ const Login = () => {
           <Shield className="h-8 w-8 text-foreground" />
           <h1 className="text-xl font-semibold text-foreground">Welcome back</h1>
           <p className="text-sm text-muted-foreground text-center">
-            Sign in to your XGuard account
+            Sign in to your X Sentinel account
           </p>
         </div>
 
