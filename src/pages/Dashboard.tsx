@@ -354,22 +354,22 @@ const Dashboard = () => {
           </div>
 
           <div className="rounded-xl border border-border bg-secondary/50 backdrop-blur-sm p-5">
-            <div className="flex items-center gap-3 mb-3">
-              <CreditCard className="h-5 w-5 text-foreground" />
-              <div>
-                <Label className="text-foreground">Subscription</Label>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {isExpired
-                    ? "Subscription ended — subscribe to continue"
-                    : isTrial
-                      ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
-                      : isActive
-                        ? "Active — $9/month"
-                        : "Start with a 14-day free trial"}
-                </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CreditCard className="h-5 w-5 text-foreground" />
+                <div>
+                  <Label className="text-foreground">Subscription</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {isExpired
+                      ? "Subscription ended — subscribe to continue"
+                      : isTrial
+                        ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
+                        : isActive
+                          ? "Active — $9/month"
+                          : "Start with a 14-day free trial"}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2">
               {(subInfo?.subscribed) ? (
                 <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={portalLoading}>
                   {portalLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
