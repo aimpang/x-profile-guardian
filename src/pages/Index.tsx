@@ -60,8 +60,8 @@ const Index = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
             { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Sign up instantly, then connect your X account" },
-            { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor what you own." },
-            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Receive instant push and email alerts the moment anything changes on your profile." },
+            { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor the public profile of the account you own." },
+            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Using X’s official Activity API (XAA), we instantly detect changes to: username/handle, display name, bio, profile picture, and banner." },
           ].map((step, i) => (
             <div key={i} className="p-6 rounded-xl border border-border bg-secondary/30 text-center">
               <div className="flex justify-center mb-4">{step.icon}</div>
