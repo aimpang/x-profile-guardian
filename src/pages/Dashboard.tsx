@@ -370,18 +370,35 @@ const Dashboard = () => {
                       <p className="text-xs text-muted-foreground mt-1">
                         {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
                       </p>
-                      {alert.old_data && (
-                        <div className="mt-2 text-xs">
-                          <span className="text-muted-foreground">Before: </span>
-                          <span className="text-destructive line-through">{JSON.stringify(alert.old_data)}</span>
-                        </div>
-                      )}
-                      {alert.new_data && (
-                        <div className="text-xs">
-                          <span className="text-muted-foreground">After: </span>
-                          <span className="text-[hsl(var(--safe))]">{JSON.stringify(alert.new_data)}</span>
-                        </div>
-                      )}
+                      {(() => {
+                        const oldVal = alert.old_data?.[alert.event_type] ?? null;
+                        const newVal = alert.new_data?.[alert.event_type] ?? null;
+                        const isImage = alert.event_type === "profile_image" || alert.event_type === "banner";
+                        return (
+                          <div className="mt-2 space-y-1.5">
+                            <div className="text-xs flex items-start gap-1.5">
+                              <span className="text-muted-foreground shrink-0">Before:</span>
+                              {oldVal == null ? (
+                                <span className="italic text-muted-foreground">Not set</span>
+                              ) : isImage ? (
+                                <img src={oldVal} alt="before" className="h-8 w-8 rounded object-cover" />
+                              ) : (
+                                <span className="text-destructive line-through break-all">{oldVal}</span>
+                              )}
+                            </div>
+                            <div className="text-xs flex items-start gap-1.5">
+                              <span className="text-muted-foreground shrink-0">After:</span>
+                              {newVal == null ? (
+                                <span className="italic text-muted-foreground">Not set</span>
+                              ) : isImage ? (
+                                <img src={newVal} alt="after" className="h-8 w-8 rounded object-cover" />
+                              ) : (
+                                <span className="text-[hsl(var(--safe))] break-all">{newVal}</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                     {!alert.is_legitimate ? (
                       <Button
