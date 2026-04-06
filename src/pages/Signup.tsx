@@ -24,7 +24,7 @@ const Signup = () => {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Account created! Welcome to XGuard.");
+      toast.success("Account created! Welcome to X Sentinel.");
       navigate("/dashboard");
     }
   };
