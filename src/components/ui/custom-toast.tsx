@@ -188,18 +188,11 @@ const ToastContainer = () => {
 
   const getFinalTransform = (index: number, length: number) => {
     if (index === length - 1) return "none";
-    const offset = length - 1 - index;
-    let translateY = toasts[length - 1]?.measuredHeight || 63;
+    let translateY = 0;
     for (let i = length - 1; i > index; i--) {
-      if (isHovered) {
-        translateY += (toasts[i - 1]?.measuredHeight || 63) + 10;
-      } else {
-        translateY += 20;
-      }
+      translateY += (toasts[i]?.measuredHeight || 63) + 10;
     }
-    const z = -offset;
-    const scale = isHovered ? 1 : 1 - 0.05 * offset;
-    return `translate3d(0, calc(100% - ${translateY}px), ${z}px) scale(${scale})`;
+    return `translateY(-${translateY}px)`;
   };
 
   const handleMouseEnter = () => {
