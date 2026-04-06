@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check, Slash } from "lucide-react";
+import { LiquidButton } from "@/components/ui/liquid-glass-button";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/ui/glow-card";
@@ -46,9 +47,9 @@ const Index = () => {
           Set once. Protected forever.
         </p>
         <Link to="/signup" className="mt-12">
-          <Button size="lg" className="text-lg px-12 py-7 gap-2">
+          <LiquidButton size="xxl" className="text-lg gap-2">
             Start 14-day free trial <ArrowRight className="h-5 w-5" />
-          </Button>
+          </LiquidButton>
         </Link>
         <p className="text-xs text-muted-foreground mt-4 tracking-wide">
           14-day free trial · Cancel anytime
