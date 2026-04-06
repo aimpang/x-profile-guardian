@@ -105,7 +105,7 @@ const Dashboard = () => {
   // Handle checkout success redirect
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
-      toast.success("Subscription activated! Welcome to XGuard.");
+      toast.success("Subscription activated! Welcome to X Sentinel.");
       checkSubscription();
     }
   }, [searchParams]);
