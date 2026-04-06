@@ -89,6 +89,30 @@ export type Database = {
         }
         Relationships: []
       }
+      x_oauth_states: {
+        Row: {
+          code_verifier: string
+          created_at: string
+          id: string
+          state: string
+          user_id: string
+        }
+        Insert: {
+          code_verifier: string
+          created_at?: string
+          id?: string
+          state: string
+          user_id: string
+        }
+        Update: {
+          code_verifier?: string
+          created_at?: string
+          id?: string
+          state?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
