@@ -110,7 +110,7 @@ const Dashboard = () => {
     const OneSignal = (window as any).OneSignal;
     if (!OneSignal) return;
 
-    const appId = import.meta.env.VITE_ONESIGNAL_APP_ID;
+    const appId = import.meta.env.VITE_ONESIGNAL_APP_ID || "31b40850-42e4-4835-8579-4bfc004ddc04";
     if (!appId) return;
 
     OneSignal.init({ appId, notifyButton: { enable: false } })
