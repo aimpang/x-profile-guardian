@@ -48,7 +48,7 @@ const Alerts = () => {
   const allLegitimate = alerts.length > 0 && alerts.every(a => a.is_legitimate);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <nav className="border-b border-border px-6 py-4 flex items-center gap-4 max-w-5xl mx-auto">
         <Link to="/dashboard">
           <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4" /></Button>

@@ -52,14 +52,14 @@ const SettingsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <Shield className="h-8 w-8 text-primary animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <nav className="border-b border-border px-6 py-4 flex items-center gap-4 max-w-5xl mx-auto">
         <Link to="/dashboard">
           <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4" /></Button>
