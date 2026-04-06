@@ -429,7 +429,7 @@ const Dashboard = () => {
                   Manage billing
                 </Button>
               ) : (
-                <Button size="sm" onClick={handleCheckout} disabled={checkoutLoading}>
+                <Button size="sm" onClick={() => handleCheckout()} disabled={checkoutLoading}>
                   {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                   Subscribe — $9/month
                 </Button>
