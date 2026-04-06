@@ -344,7 +344,7 @@ const Dashboard = () => {
               <p className="text-sm text-muted-foreground">No alerts yet — everything looks good</p>
               </div>
             </GlowCard>
-            </div>
+          
           ) : (
             <div className="space-y-3">
               {alerts.map((alert) => (
