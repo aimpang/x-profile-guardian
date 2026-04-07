@@ -19,10 +19,10 @@ const Signup = () => {
 
   useSEO({
     title: "Sign up - XSentinel | Free 30-day Trial",
-    description: "Create your XSentinel account and get instant protection for your X account. Start your free 30-day trial today, no credit card required upfront.",
+    description: "Create your XSentinel account and get instant protection for your X account. Start your free 30-day trial today. Cancel anytime.",
     keywords: "signup, sign up, create account, free trial, XSentinel, X account protection",
     ogTitle: "Sign up for XSentinel - Protect Your X Account",
-    ogDescription: "Start your free 30-day trial of XSentinel. No payment required upfront.",
+    ogDescription: "Start your free 30-day trial of XSentinel. Cancel anytime.",
     noindex: false
   });
 

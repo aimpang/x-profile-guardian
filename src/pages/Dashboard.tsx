@@ -400,7 +400,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm font-semibold text-foreground">Free trial active</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} remaining — no credit card required to cancel.
+                    {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} remaining in your free trial.
                   </p>
                 </div>
               </div>
@@ -554,8 +554,8 @@ const Dashboard = () => {
                   </>
                 ) : (
                   <>
-                    <p className="text-sm text-muted-foreground mb-2 max-w-xs mx-auto">Start your 14-day free trial</p>
-                    <p className="text-xs text-muted-foreground/60 mb-8 max-w-xs mx-auto">No payment required now.</p>
+                    <p className="text-sm text-muted-foreground mb-2 max-w-xs mx-auto">Start your 30-day free trial</p>
+                    <p className="text-xs text-muted-foreground/60 mb-8 max-w-xs mx-auto">Cancel anytime during your trial.</p>
                     <Button size="lg" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading} className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white">
                       {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
                       {checkoutLoading ? "Starting trial..." : "Connect to X"}
@@ -823,7 +823,7 @@ const Dashboard = () => {
                         ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
                         : isActive
                         ? "Active — billed via Lemon Squeezy"
-                        : "Start with a 14-day free trial"}
+                        : "Start with a 30-day free trial"}
                     </p>
                   </div>
                 </div>
