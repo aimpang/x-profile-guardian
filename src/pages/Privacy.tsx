@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
-const Privacy = () => (
+const Privacy = () => {
+  useSEO({
+    title: "Privacy Policy - XSentinel",
+    description: "Learn how XSentinel protects your data, how we use OAuth credentials, and your privacy rights.",
+    keywords: "privacy policy, data protection, privacy, XSentinel, account monitoring",
+    ogTitle: "Privacy Policy - XSentinel",
+    noindex: false,
+    canonical: "https://xsentinel.dev/privacy"
+  });
+
+  return (
   <div className="min-h-screen bg-background text-foreground">
     <div className="max-w-2xl mx-auto px-6 py-16">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10">
@@ -139,6 +150,7 @@ const Privacy = () => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default Privacy;

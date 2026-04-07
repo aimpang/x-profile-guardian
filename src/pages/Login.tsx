@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/custom-toast";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
+import { useSEO } from "@/hooks/useSEO";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,6 +15,15 @@ const Login = () => {
   const [initialCanvasVisible, setInitialCanvasVisible] = useState(true);
   const [reverseCanvasVisible, setReverseCanvasVisible] = useState(false);
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Log in - XSentinel",
+    description: "Sign in to your XSentinel account to monitor your X profile for unauthorized changes.",
+    keywords: "login, sign in, XSentinel account, security monitoring",
+    ogTitle: "Log in - XSentinel",
+    ogDescription: "Access your XSentinel account to manage your X account security.",
+    noindex: false
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { useSEO } from "@/hooks/useSEO";
 
 // ─── slide transition variants ────────────────────────────────────────────────
 const slideVariants = {
@@ -37,6 +38,14 @@ const Onboarding = () => {
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
   const [connectLoading, setConnectLoading] = useState(false);
+
+  useSEO({
+    title: "Onboarding - XSentinel",
+    description: "Learn how XSentinel protects your X account with real-time monitoring and instant alerts.",
+    keywords: "onboarding, setup, tutorial, X account protection",
+    ogTitle: "Get Started with XSentinel",
+    noindex: true // Onboarding is authenticated, no need to index
+  });
 
   const done = useCallback(() => {
     localStorage.setItem(ONBOARDING_KEY, "1");

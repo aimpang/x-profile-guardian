@@ -1,14 +1,39 @@
+# Sitemap
+Sitemap: https://xsentinel.dev/sitemap.xml
+
+# All bots
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /auth/
+Crawl-delay: 1
+
+# Google Bot - aggressive crawl
 User-agent: Googlebot
 Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /auth/
+Crawl-delay: 0
 
+# Bing Bot
 User-agent: Bingbot
+Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /auth/
+Crawl-delay: 1
+
+# Social media bots - allow everything for OG previews
+User-agent: facebookexternalhit
 Allow: /
 
 User-agent: Twitterbot
 Allow: /
 
-User-agent: facebookexternalhit
+User-agent: LinkedInBot
 Allow: /
 
-User-agent: *
+User-agent: WhatsApp
 Allow: /

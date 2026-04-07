@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
-const Terms = () => (
+const Terms = () => {
+  useSEO({
+    title: "Terms of Service - XSentinel",
+    description: "Read XSentinel's terms of service, including eligibility, billing, and usage policies for X account monitoring.",
+    keywords: "terms of service, terms, legal, XSentinel, account monitoring",
+    ogTitle: "Terms of Service - XSentinel",
+    noindex: false,
+    canonical: "https://xsentinel.dev/terms"
+  });
+
+  return (
   <div className="min-h-screen bg-background text-foreground">
     <div className="max-w-2xl mx-auto px-6 py-16">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10">
@@ -143,6 +154,7 @@ const Terms = () => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default Terms;

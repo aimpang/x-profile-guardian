@@ -6,10 +6,23 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbS
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/ui/glow-card";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSEO } from "@/hooks/useSEO";
 
 const Index = () => {
   const { user } = useAuth();
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
+
+  useSEO({
+    title: "XSentinel - Real-time X Account Security Monitoring",
+    description: "Monitor your X (Twitter) account for unauthorized changes in real-time. Get instant alerts when your profile, bio, banner, or verified status changes. Protect your X identity with 24/7 monitoring.",
+    keywords: "X security, Twitter account monitoring, unauthorized changes alerts, account protection, identity security, real-time monitoring",
+    ogTitle: "XSentinel - Real-time X Account Protection",
+    ogDescription: "Get instant alerts when your X account is hacked or modified. Monitor all profile changes in real-time.",
+    ogImage: "https://xsentinel.dev/og-image.png",
+    twitterTitle: "XSentinel - Real-time X Account Protection",
+    twitterDescription: "Protect your X account with real-time change monitoring and instant alerts.",
+    twitterImage: "https://xsentinel.dev/og-image.png"
+  });
 
   return (
     <>

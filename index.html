@@ -3,31 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+
     <title>XSentinel - Real-time X Account Security Monitoring</title>
-    <meta name="description" content="Monitor your X (Twitter) account for unauthorized changes in real-time. Get instant alerts and protect your profile." />
+    <meta name="description" content="Monitor your X (Twitter) account for unauthorized changes in real-time. Get instant alerts and protect your profile from unauthorized access." />
+    <meta name="keywords" content="X security, Twitter account monitoring, unauthorized changes alerts, account protection, identity security" />
     <meta name="author" content="XSentinel" />
+    <meta name="theme-color" content="#000000" />
     <meta name="google-site-verification" content="tQSAye_821jGg_WGlcUbBLaiqhz3_NQgO5V5oU1TBX8" />
+    <meta name="msvalidate.01" content="3F3B5B3B3B3B3B3B3B3B3B3B3B3B3B3B" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://xsentinel.dev/" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.json" />
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="XSentinel - Protect Your X Account" />
-    <meta property="og:description" content="Monitor your X (Twitter) account for unauthorized changes in real-time. Get instant alerts and protect your profile." />
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://cdn.onesignal.com" />
+    <link rel="dns-prefetch" href="https://cdn.onesignal.com" />
+
+    <!-- Open Graph (1.91:1 optimal for sharing) -->
+    <meta property="og:title" content="XSentinel - Real-time X Account Protection" />
+    <meta property="og:description" content="Get instant alerts when your X account is hacked or modified. Protect your identity with real-time monitoring." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://xsentinel.dev" />
-    <meta property="og:image" content="https://xsentinel.dev/logo.png" />
-    <meta property="og:image:width" content="1024" />
-    <meta property="og:image:height" content="1024" />
+    <meta property="og:url" content="https://xsentinel.dev/" />
+    <meta property="og:image" content="https://xsentinel.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="XSentinel - X Account Security Monitoring Dashboard" />
     <meta property="og:site_name" content="XSentinel" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@XSentinelApp" />
-    <meta name="twitter:title" content="XSentinel - Protect Your X Account" />
-    <meta name="twitter:description" content="Monitor your X (Twitter) account for unauthorized changes in real-time. Get instant alerts and protect your profile." />
-    <meta name="twitter:image" content="https://xsentinel.dev/logo.png" />
+    <meta name="twitter:creator" content="@XSentinelApp" />
+    <meta name="twitter:title" content="XSentinel - Real-time X Account Protection" />
+    <meta name="twitter:description" content="Get instant alerts when your X account is hacked or modified. Protect your identity with real-time monitoring." />
+    <meta name="twitter:image" content="https://xsentinel.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="XSentinel dashboard showing real-time account protection" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "XSentinel",
+      "url": "https://xsentinel.dev",
+      "logo": "https://xsentinel.dev/logo.png",
+      "sameAs": ["https://twitter.com/XSentinelApp"],
+      "description": "Real-time X account security monitoring and protection service"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "XSentinel",
+      "description": "Monitor your X account for unauthorized changes in real-time and get instant alerts",
+      "url": "https://xsentinel.dev",
+      "applicationCategory": "SecurityApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "9",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2026-12-31"
+      },
+      "image": "https://xsentinel.dev/logo.png",
+      "author": {
+        "@type": "Organization",
+        "name": "XSentinel"
+      },
+      "operatingSystem": "Web"
+    }
+    </script>
 
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   </head>

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/custom-toast";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
+import { useSEO } from "@/hooks/useSEO";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -14,6 +15,15 @@ const Signup = () => {
   const [initialCanvasVisible, setInitialCanvasVisible] = useState(true);
   const [reverseCanvasVisible, setReverseCanvasVisible] = useState(false);
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Sign up - XSentinel | Free 14-day Trial",
+    description: "Create your XSentinel account and get instant protection for your X account. Start your free 14-day trial today, no credit card required upfront.",
+    keywords: "signup, sign up, create account, free trial, XSentinel, X account protection",
+    ogTitle: "Sign up for XSentinel - Protect Your X Account",
+    ogDescription: "Start your free 14-day trial of XSentinel. No payment required upfront.",
+    noindex: false
+  });
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
