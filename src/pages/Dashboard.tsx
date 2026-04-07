@@ -22,6 +22,11 @@ import {
   BadgeCheck,
   TrendingDown,
   Clock,
+  Download,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+  LifeBuoy,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -60,6 +65,15 @@ interface ConnectedAccount {
   monitoring_error: boolean | null;
   followers_count: number | null;
   last_checked_at: string | null;
+  last_snapshot: {
+    username?: string;
+    display_name?: string;
+    bio?: string;
+    profile_image?: string;
+    banner?: string;
+    followers?: number;
+    verified?: boolean;
+  } | null;
 }
 
 interface Alert {
@@ -183,6 +197,8 @@ const Dashboard = () => {
   const [portalLoading, setPortalLoading] = useState(false);
   const [connectXLoading, setConnectXLoading] = useState(false);
   const [dataReady, setDataReady] = useState(false);
+  const [snapshotOpen, setSnapshotOpen] = useState(false);
+  const [expandedAlertId, setExpandedAlertId] = useState<string | null>(null);
 
   const checkSubscription = async () => {
     try {
@@ -342,6 +358,27 @@ const Dashboard = () => {
   const handleThisWasMe = async (id: string) => {
     await supabase.from("alerts").update({ is_legitimate: true }).eq("id", id);
     setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, is_legitimate: true } : a)));
+  };
+
+  const handleExportCSV = () => {
+    if (!alerts.length) return;
+    const headers = ["Date", "Type", "Before", "After", "Acknowledged"];
+    const rows = alerts.map((a) => {
+      const oldVal = a.old_data?.[a.event_type] ?? "";
+      const newVal = a.new_data?.[a.event_type] ?? "";
+      const date = a.created_at ? new Date(a.created_at).toLocaleString() : "";
+      const ack = a.is_legitimate ? "Yes" : "No";
+      return [date, a.event_type, String(oldVal), String(newVal), ack]
+        .map((v) => `"${v.replace(/"/g, '""')}"`);
+    });
+    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `xsentinel-alerts-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleLogout = async () => {
@@ -621,6 +658,90 @@ const Dashboard = () => {
           </motion.div>
         )}
 
+        {/* Snapshot viewer */}
+        {account?.last_snapshot && (
+          <motion.div variants={itemVariants}>
+            <GlowCard>
+              <button
+                className="w-full p-5 flex items-center justify-between gap-3 text-left"
+                onClick={() => setSnapshotOpen((o) => !o)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                    <Eye className="h-4 w-4 text-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Last known profile snapshot</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {account.last_checked_at
+                        ? `Captured ${new Date(account.last_checked_at).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}`
+                        : "Most recent scan"}
+                    </p>
+                  </div>
+                </div>
+                {snapshotOpen
+                  ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+                  : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+              </button>
+              {snapshotOpen && (
+                <div className="px-5 pb-5 border-t border-border/40">
+                  <div className="pt-4 flex gap-4">
+                    {account.last_snapshot.profile_image && (
+                      <img
+                        src={account.last_snapshot.profile_image}
+                        alt="snapshot avatar"
+                        className="h-16 w-16 rounded-full object-cover shrink-0 border border-border/40"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0 space-y-2">
+                      {account.last_snapshot.display_name && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Display name</p>
+                          <p className="text-sm text-foreground font-medium truncate">{account.last_snapshot.display_name}</p>
+                        </div>
+                      )}
+                      {account.last_snapshot.username && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Username</p>
+                          <p className="text-sm text-foreground font-mono">@{account.last_snapshot.username}</p>
+                        </div>
+                      )}
+                      {typeof account.last_snapshot.verified === "boolean" && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Verified</p>
+                          <p className="text-sm text-foreground">{account.last_snapshot.verified ? "Yes" : "No"}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {account.last_snapshot.bio && (
+                    <div className="mt-3">
+                      <p className="text-xs text-muted-foreground mb-1">Bio</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed whitespace-pre-wrap border border-border/40 rounded-lg bg-secondary/30 px-3 py-2.5">{account.last_snapshot.bio}</p>
+                    </div>
+                  )}
+                  {account.last_snapshot.banner && (
+                    <div className="mt-3">
+                      <p className="text-xs text-muted-foreground mb-1">Banner</p>
+                      <img
+                        src={account.last_snapshot.banner}
+                        alt="snapshot banner"
+                        className="w-full h-20 rounded-lg object-cover border border-border/40"
+                      />
+                    </div>
+                  )}
+                  {account.last_snapshot.followers != null && (
+                    <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Users className="h-3 w-3" />
+                      {account.last_snapshot.followers.toLocaleString()} followers at last check
+                    </div>
+                  )}
+                </div>
+              )}
+            </GlowCard>
+          </motion.div>
+        )}
+
         {/* Recent alerts */}
         <motion.div variants={itemVariants}>
           <div className="flex items-center justify-between mb-3">
@@ -628,9 +749,19 @@ const Dashboard = () => {
               Recent Alerts
             </h2>
             {alerts.length > 0 && (
-              <span className="text-xs text-muted-foreground">
-                {alerts.length} event{alerts.length !== 1 ? "s" : ""}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground">
+                  {alerts.length} event{alerts.length !== 1 ? "s" : ""}
+                </span>
+                <button
+                  onClick={handleExportCSV}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  title="Export alerts as CSV"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Export
+                </button>
+              </div>
             )}
           </div>
           {alerts.length === 0 ? (
@@ -695,6 +826,31 @@ const Dashboard = () => {
                               })
                             : ""}
                         </p>
+                        {/* What to do — only on unacknowledged, non-follower alerts */}
+                        {!alert.is_legitimate && alert.event_type !== "followers" && (
+                          <div>
+                            <button
+                              className="mt-2 flex items-center gap-1 text-xs text-amber-400/80 hover:text-amber-400 transition-colors"
+                              onClick={() => setExpandedAlertId(expandedAlertId === alert.id ? null : alert.id)}
+                            >
+                              <LifeBuoy className="h-3 w-3" />
+                              {expandedAlertId === alert.id ? "Hide" : "What should I do?"}
+                            </button>
+                            {expandedAlertId === alert.id && (
+                              <div className="mt-2 rounded-lg bg-amber-500/8 border border-amber-500/20 px-3 py-3 space-y-1.5 text-xs">
+                                <p className="font-semibold text-amber-400">If you didn't make this change:</p>
+                                <ol className="space-y-1 text-muted-foreground list-decimal list-inside">
+                                  <li>Go to <a href="https://x.com/settings/security" target="_blank" rel="noopener noreferrer" className="text-[#1D9BF0] hover:underline">x.com/settings/security</a> immediately</li>
+                                  <li>Change your X password right now</li>
+                                  <li>Revoke all third-party app access except XSentinel</li>
+                                  <li>Enable two-factor authentication if not already on</li>
+                                  <li>Check your connected email — it may also be compromised</li>
+                                </ol>
+                                <p className="text-muted-foreground/60 pt-0.5">If you made this change yourself, click "This was me" to dismiss.</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
                         {isFollowers ? (
                           <p className="mt-1.5 text-xs flex items-center gap-1.5">
                             <span className="text-red-400 font-semibold">
