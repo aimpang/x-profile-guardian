@@ -486,9 +486,9 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground">@{account.x_username}</p>
                   </div>
                   {isProtected ? (
-                    <div className="relative flex items-center shrink-0">
-                      <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-pulse-ring" />
-                      <span className="absolute inset-0 rounded-full bg-emerald-500/10 animate-pulse-ring-slow" />
+                    <div className="relative flex items-center shrink-0 p-2 -m-2">
+                      <span className="absolute inset-2 rounded-full bg-emerald-500/20 animate-pulse-ring" />
+                      <span className="absolute inset-2 rounded-full bg-emerald-500/10 animate-pulse-ring-slow" />
                       <div className="relative flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-3.5 py-1.5">
                         <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
                         <span className="text-xs font-semibold text-emerald-400 tracking-wider">PROTECTED</span>
