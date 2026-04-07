@@ -827,10 +827,15 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                {subInfo?.subscribed ? (
+                {isActive && subInfo?.subscribed ? (
                   <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={portalLoading} className="text-xs">
                     {portalLoading && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />}
                     Manage
+                  </Button>
+                ) : isTrial ? (
+                  <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={portalLoading} className="text-xs text-muted-foreground">
+                    {portalLoading && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />}
+                    Cancel trial
                   </Button>
                 ) : (
                   <div className="flex gap-2">
