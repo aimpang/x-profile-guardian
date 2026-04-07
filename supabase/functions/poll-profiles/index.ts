@@ -326,7 +326,13 @@ Deno.serve(async (req: Request) => {
       for (const field of fields) {
         const oldVal = snapshot[field] ?? null;
         const newVal = current[field] ?? null;
-        if (oldVal === newVal) continue;
+        // For verified (boolean), treat null/undefined as false to avoid
+        // false positives when field is missing from old snapshot
+        if (field === "verified") {
+          if (Boolean(oldVal) === Boolean(newVal)) continue;
+        } else {
+          if (oldVal === newVal) continue;
+        }
 
         // Always insert alert record
         await supabase.from("alerts").insert([{

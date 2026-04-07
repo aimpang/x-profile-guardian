@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python \"C:\\\\Users\\\\PC-AIMPANG\\\\.claude\\\\skills\\\\webapp-testing\\\\scripts\\\\with_server.py\" --help)",
+      "Bash(python \"C:\\\\Users\\\\PC-AIMPANG\\\\.claude\\\\skills\\\\webapp-testing\\\\scripts\\\\with_server.py\" --server \"npm run dev\" --port 8080 -- python test_comprehensive.py)",
+      "Bash(npm list:*)",
+      "Bash(npm install:*)",
+      "Bash(python \"C:\\\\Users\\\\PC-AIMPANG\\\\.claude\\\\skills\\\\webapp-testing\\\\scripts\\\\with_server.py\" --server \"npm run dev\" --port 8080 --timeout 60 -- python test_comprehensive.py)",
+      "Bash(pip install:*)",
+      "Bash(playwright install:*)",
+      "Bash(python -m playwright install)",
+      "Bash(python \"C:\\\\Users\\\\PC-AIMPANG\\\\.claude\\\\skills\\\\webapp-testing\\\\scripts\\\\with_server.py\" --server \"npm run dev\" --port 8080 --timeout 60 -- python test_inspect.py)",
+      "Bash(python \"C:\\\\Users\\\\PC-AIMPANG\\\\.claude\\\\skills\\\\webapp-testing\\\\scripts\\\\with_server.py\" --server \"npm run dev\" --port 8080 --timeout 60 -- python test_inspect_login.py)",
+      "WebFetch(domain:github.com)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3000)",
+      "Bash(taskkill:*)",
+      "Bash(cmd:*)",
+      "Bash(python scripts/with_server.py --help)",
+      "Bash(python e2e_test.py)",
+      "Bash(python -c ':*)",
+      "Bash(claude mcp:*)",
+      "mcp__stitch__create_project",
+      "mcp__stitch__generate_screen_from_text",
+      "mcp__stitch__list_screens",
+      "mcp__stitch__get_screen",
+      "Bash(curl:*)"
+    ]
+  }
+}

@@ -70,7 +70,7 @@ Deno.serve(async (req: Request) => {
 
     // Fetch X user profile
     const profileRes = await fetch(
-      "https://api.twitter.com/2/users/me?user.fields=profile_image_url,description,name,username",
+      "https://api.twitter.com/2/users/me?user.fields=profile_image_url,description,name,username,profile_banner_url,verified",
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
@@ -82,13 +82,14 @@ Deno.serve(async (req: Request) => {
     const profileData = await profileRes.json();
     const xUser = profileData.data;
 
-    // Build initial profile snapshot
+    // Build initial profile snapshot (must match all fields polled in poll-profiles)
     const snapshot = {
       username: xUser.username,
       display_name: xUser.name,
       bio: xUser.description ?? "",
       profile_image: xUser.profile_image_url?.replace("_normal", "") ?? null,
-      banner: null,
+      banner: xUser.profile_banner_url ?? null,
+      verified: xUser.verified ?? false,
     };
 
     // Upsert connected_accounts (service role bypasses the trigger restriction)

@@ -346,9 +346,15 @@ const Dashboard = () => {
               )}
             </div>
             {account.monitoring_error ? (
-              <p className="text-xs text-destructive mt-2 text-center font-medium">
-                ⚠ Monitoring paused — X token expired. Reconnect your account below.
-              </p>
+              <div className="mt-2 flex flex-col items-center gap-2">
+                <p className="text-xs text-destructive font-medium">
+                  ⚠ Monitoring paused — X token expired.
+                </p>
+                <Button size="sm" variant="outline" onClick={handleConnectX} disabled={connectXLoading} className="gap-1.5 text-xs h-7">
+                  {connectXLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <ExternalLink className="h-3 w-3" />}
+                  Reconnect X Account
+                </Button>
+              </div>
             ) : (
               <p className="text-xs text-muted-foreground mt-2 text-center">
                 {isActive || isTrial
@@ -531,7 +537,7 @@ const Dashboard = () => {
                       : isTrial
                         ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
                         : isActive
-                          ? "Active — $9/month"
+                          ? "Active — billed via Stripe"
                           : "Start with a 14-day free trial"}
                   </p>
                 </div>
