@@ -85,30 +85,57 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
         "fade-spin": {
           "0%": { opacity: "1" },
           "100%": { opacity: "0.15" },
+        },
+        "pulse-ring": {
+          "0%": { transform: "scale(1)", opacity: "0.6" },
+          "100%": { transform: "scale(2.2)", opacity: "0" },
+        },
+        "pulse-ring-slow": {
+          "0%": { transform: "scale(1)", opacity: "0.3" },
+          "100%": { transform: "scale(2.8)", opacity: "0" },
+        },
+        "scan-y": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(400%)" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-5px)" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "border-spin": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        "number-in": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-spin": "fade-spin 1.2s linear infinite",
+        "pulse-ring": "pulse-ring 1.6s ease-out infinite",
+        "pulse-ring-slow": "pulse-ring-slow 2.2s ease-out infinite 0.4s",
+        "scan-y": "scan-y 3s linear infinite",
+        "float": "float 4s ease-in-out infinite",
+        "shimmer": "shimmer 2.5s linear infinite",
+        "number-in": "number-in 0.4s ease-out forwards",
       },
     },
   },
