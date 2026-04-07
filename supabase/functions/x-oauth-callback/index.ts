@@ -106,7 +106,7 @@ Deno.serve(async (req: Request) => {
           x_access_token: tokenData.access_token,
           x_refresh_token: tokenData.refresh_token ?? null,
           subscription_status: "trial",
-          trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+          trial_ends_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         },
         { onConflict: "user_id" }
       )

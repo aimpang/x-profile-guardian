@@ -62,7 +62,7 @@ const Terms = () => {
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">4. Free Trial &amp; Billing</h2>
           <ul className="list-disc pl-5 space-y-2">
-            <li>New accounts receive a 14-day free trial with full access to all features.</li>
+            <li>New accounts receive a 30-day free trial with full access to all features.</li>
             <li>After the trial, continued access requires a paid subscription: $9 USD/month or $89 USD/year.</li>
             <li>Billing is handled by Lemon Squeezy. Your payment method is charged at the start of each billing period.</li>
             <li>You may cancel at any time. Access continues until the end of the current paid period. No refunds are issued for partial periods.</li>

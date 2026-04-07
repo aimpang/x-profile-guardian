@@ -18,11 +18,11 @@ const Signup = () => {
   const navigate = useNavigate();
 
   useSEO({
-    title: "Sign up - XSentinel | Free 14-day Trial",
-    description: "Create your XSentinel account and get instant protection for your X account. Start your free 14-day trial today, no credit card required upfront.",
+    title: "Sign up - XSentinel | Free 30-day Trial",
+    description: "Create your XSentinel account and get instant protection for your X account. Start your free 30-day trial today, no credit card required upfront.",
     keywords: "signup, sign up, create account, free trial, XSentinel, X account protection",
     ogTitle: "Sign up for XSentinel - Protect Your X Account",
-    ogDescription: "Start your free 14-day trial of XSentinel. No payment required upfront.",
+    ogDescription: "Start your free 30-day trial of XSentinel. No payment required upfront.",
     noindex: false
   });
 
@@ -182,7 +182,7 @@ const Signup = () => {
 
                 {/* Footer */}
                 <p className="text-xs text-muted-foreground text-center mt-6">
-                  14-day free trial · Cancel anytime
+                  30-day free trial · Cancel anytime
                 </p>
                 <p className="text-sm text-muted-foreground text-center mt-3">
                   Already have an account?{" "}

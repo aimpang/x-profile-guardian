@@ -42,11 +42,11 @@ const Index = () => {
         </p>
         <Link to="/signup" className="mt-12">
           <LiquidButton size="xxl" className="text-lg gap-2">
-            Start 14-day free trial <ArrowRight className="h-5 w-5" />
+            Start 30-day free trial <ArrowRight className="h-5 w-5" />
           </LiquidButton>
         </Link>
         <p className="text-xs text-muted-foreground mt-4 tracking-wide">
-          14-day free trial · Cancel anytime
+          30-day free trial · Cancel anytime
         </p>
       </section>
 
@@ -133,7 +133,7 @@ const Index = () => {
               {billingPeriod === "yearly" && (
                 <p className="text-xs text-safe font-medium">Save 17% vs monthly</p>
               )}
-              <p className="text-xs text-muted-foreground mt-3">After 14-day free trial</p>
+              <p className="text-xs text-muted-foreground mt-3">After 30-day free trial</p>
             </div>
 
             {/* Features list - minimal */}
@@ -158,7 +158,7 @@ const Index = () => {
             <div>
               <Link to={`/signup?plan=${billingPeriod}`}>
                 <Button className="px-8" size="lg">
-                  Start 14-day free trial <ArrowRight className="w-4 h-4 ml-2" />
+                  Start 30-day free trial <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             </div>

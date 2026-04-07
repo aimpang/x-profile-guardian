@@ -437,7 +437,7 @@ const Dashboard = () => {
               ) : (
                 <>
                   <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
-                    Start your 14-day free trial by connecting your X account
+                    Start your 30-day free trial by connecting your X account
                   </p>
                   <p className="text-xs text-muted-foreground/70 mb-8 max-w-xs mx-auto">
                     No payment required now. You'll be guided through a quick setup with Lemon Squeezy.
@@ -610,7 +610,7 @@ const Dashboard = () => {
                         ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
                         : isActive
                           ? "Active — billed via Lemon Squeezy"
-                          : "Start with a 14-day free trial"}
+                          : "Start with a 30-day free trial"}
                   </p>
                 </div>
               </div>
