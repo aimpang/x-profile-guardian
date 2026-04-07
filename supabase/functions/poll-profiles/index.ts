@@ -211,8 +211,85 @@ Deno.serve(async (req: Request) => {
 
       const profile = await fetchXProfile(accessToken);
       if (!profile) {
+        // Mark monitoring error + send one-time email if not already flagged
+        if (!account.monitoring_error) {
+          await supabase.from("connected_accounts")
+            .update({ monitoring_error: true })
+            .eq("id", account.id);
+          const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
+          const email = userData?.user?.email;
+          if (email && resendKey) {
+            await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
+              body: JSON.stringify({
+                from: "XSentinel <alerts@xsentinel.dev>",
+                reply_to: "support@xsentinel.dev",
+                to: [email],
+                subject: "Action required: Reconnect your X account",
+                html: `
+                  <div style="font-family:system-ui,-apple-system,Arial,sans-serif;max-width:600px;margin:0 auto;padding:40px 24px;background:#ffffff;">
+                    <p style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin:0 0 12px;">XSentinel</p>
+                    <h1 style="font-size:20px;font-weight:700;color:#111;margin:0 0 8px;">Monitoring paused for @${account.x_username}</h1>
+                    <p style="font-size:14px;color:#555;margin:0 0 24px;line-height:1.6;">We're unable to reach your X account. Your OAuth token may have expired or been revoked. Reconnect to resume protection.</p>
+                    <a href="https://xsentinel.dev/dashboard" style="display:inline-block;background:#000;color:#fff;padding:13px 28px;text-decoration:none;border-radius:6px;font-size:14px;font-weight:600;">Reconnect X Account</a>
+                    <p style="font-size:12px;color:#aaa;margin-top:36px;line-height:1.7;border-top:1px solid #eee;padding-top:24px;">
+                      XSentinel · <a href="https://xsentinel.dev/dashboard" style="color:#888;">Manage preferences</a> · Reply for support.
+                    </p>
+                  </div>`,
+              }),
+            });
+          }
+        }
         results.push(`${account.x_username}: failed to fetch profile`);
         continue;
+      }
+
+      // Clear monitoring error on success
+      if (account.monitoring_error) {
+        await supabase.from("connected_accounts")
+          .update({ monitoring_error: false })
+          .eq("id", account.id);
+      }
+
+      // Trial expiry warning (48h before, sent once)
+      if (
+        account.subscription_status === "trial" &&
+        account.trial_ends_at &&
+        !account.trial_warning_sent_at
+      ) {
+        const hoursLeft = (new Date(account.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60);
+        if (hoursLeft <= 48 && hoursLeft > 0) {
+          const daysLeft = Math.ceil(hoursLeft / 24);
+          const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
+          const email = userData?.user?.email;
+          if (email && resendKey) {
+            await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
+              body: JSON.stringify({
+                from: "XSentinel <alerts@xsentinel.dev>",
+                reply_to: "support@xsentinel.dev",
+                to: [email],
+                subject: `Your XSentinel trial ends in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`,
+                html: `
+                  <div style="font-family:system-ui,-apple-system,Arial,sans-serif;max-width:600px;margin:0 auto;padding:40px 24px;background:#ffffff;">
+                    <p style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin:0 0 12px;">XSentinel</p>
+                    <h1 style="font-size:20px;font-weight:700;color:#111;margin:0 0 8px;">Your trial ends in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}</h1>
+                    <p style="font-size:14px;color:#555;margin:0 0 8px;line-height:1.6;">@${account.x_username} is currently protected. Subscribe to keep monitoring active after your trial ends.</p>
+                    <p style="font-size:14px;color:#555;margin:0 0 24px;line-height:1.6;"><strong>$9/month</strong> or <strong>$89/year</strong> (save 17%).</p>
+                    <a href="https://xsentinel.dev/dashboard" style="display:inline-block;background:#000;color:#fff;padding:13px 28px;text-decoration:none;border-radius:6px;font-size:14px;font-weight:600;">Subscribe Now</a>
+                    <p style="font-size:12px;color:#aaa;margin-top:36px;line-height:1.7;border-top:1px solid #eee;padding-top:24px;">
+                      XSentinel · <a href="https://xsentinel.dev/dashboard" style="color:#888;">Manage preferences</a> · Reply for support.
+                    </p>
+                  </div>`,
+              }),
+            });
+          }
+          await supabase.from("connected_accounts")
+            .update({ trial_warning_sent_at: new Date().toISOString() })
+            .eq("id", account.id);
+        }
       }
 
       const currentFollowers: number | null = profile.public_metrics?.followers_count ?? null;
@@ -231,6 +308,19 @@ Deno.serve(async (req: Request) => {
       const fields: (keyof ProfileSnapshot)[] = ["username", "display_name", "bio", "profile_image", "banner", "verified"];
       const prevFollowers: number | null = snapshot.followers ?? null;
 
+      // Dedup: fetch fields alerted in last 5 min — skip email/push (still record alert)
+      const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      const { data: recentAlerts } = await supabase
+        .from("alerts")
+        .select("event_type")
+        .eq("user_id", account.user_id)
+        .gte("created_at", fiveMinAgo);
+      const recentFields = new Set(recentAlerts?.map((a: any) => a.event_type) ?? []);
+
+      // Fetch user email once per account
+      const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
+      const userEmail = userData?.user?.email;
+
       const changed: string[] = [];
 
       for (const field of fields) {
@@ -238,7 +328,7 @@ Deno.serve(async (req: Request) => {
         const newVal = current[field] ?? null;
         if (oldVal === newVal) continue;
 
-        // Insert alert
+        // Always insert alert record
         await supabase.from("alerts").insert([{
           user_id: account.user_id,
           event_type: field,
@@ -246,16 +336,14 @@ Deno.serve(async (req: Request) => {
           new_data: { [field]: newVal },
         }]);
 
-        // Fetch user email
-        const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
-        const email = userData?.user?.email;
-
-        if (email && resendKey) {
-          await sendEmailAlert(resendKey, email, field, oldVal, newVal);
-        }
-
-        if (account.push_enabled && account.push_token && oneSignalAppId && oneSignalKey) {
-          await sendPushAlert(oneSignalAppId, oneSignalKey, account.push_token, field, oldVal, newVal);
+        // Only notify if no alert for this field in last 5 min
+        if (!recentFields.has(field)) {
+          if (userEmail && resendKey) {
+            await sendEmailAlert(resendKey, userEmail, field, oldVal, newVal);
+          }
+          if (account.push_enabled && account.push_token && oneSignalAppId && oneSignalKey) {
+            await sendPushAlert(oneSignalAppId, oneSignalKey, account.push_token, field, oldVal, newVal);
+          }
         }
 
         changed.push(field);
@@ -273,14 +361,13 @@ Deno.serve(async (req: Request) => {
             new_data: { followers: currentFollowers },
           }]);
 
-          const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
-          const email = userData?.user?.email;
-
-          if (email && resendKey) {
-            await sendEmailAlert(resendKey, email, "followers", prevFollowers, currentFollowers);
-          }
-          if (account.push_enabled && account.push_token && oneSignalAppId && oneSignalKey) {
-            await sendPushAlert(oneSignalAppId, oneSignalKey, account.push_token, "followers", prevFollowers, currentFollowers);
+          if (!recentFields.has("followers")) {
+            if (userEmail && resendKey) {
+              await sendEmailAlert(resendKey, userEmail, "followers", prevFollowers, currentFollowers);
+            }
+            if (account.push_enabled && account.push_token && oneSignalAppId && oneSignalKey) {
+              await sendPushAlert(oneSignalAppId, oneSignalKey, account.push_token, "followers", prevFollowers, currentFollowers);
+            }
           }
 
           changed.push("followers");

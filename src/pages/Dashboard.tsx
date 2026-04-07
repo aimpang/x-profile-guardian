@@ -38,6 +38,7 @@ interface ConnectedAccount {
   trial_ends_at: string | null;
   push_enabled: boolean | null;
   digest_enabled: boolean | null;
+  monitoring_error: boolean | null;
   followers_count: number | null;
   last_checked_at: string | null;
 }
@@ -344,11 +345,17 @@ const Dashboard = () => {
                 <span>Last checked {new Date(account.last_checked_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              {isActive || isTrial
-                ? "Monitoring for unauthorized changes."
-                : "Subscribe to resume monitoring."}
-            </p>
+            {account.monitoring_error ? (
+              <p className="text-xs text-destructive mt-2 text-center font-medium">
+                ⚠ Monitoring paused — X token expired. Reconnect your account below.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                {isActive || isTrial
+                  ? "Monitoring for unauthorized changes."
+                  : "Subscribe to resume monitoring."}
+              </p>
+            )}
             </div>
           </GlowCard>
         ) : (
