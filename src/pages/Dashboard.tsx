@@ -271,6 +271,12 @@ const Dashboard = () => {
     (subInfo?.status && subInfo.status !== "none" ? subInfo.status : null)
     ?? account?.subscription_status
     ?? "none";
+  console.log("[DEBUG]", {
+    subInfoStatus: subInfo?.status,
+    accountSubStatus: account?.subscription_status,
+    subStatus,
+    searchParams: window.location.search,
+  });
   const isExpired = subStatus === "expired" || subStatus === "canceled" || subStatus === "past_due";
   const isTrial = subStatus === "trialing" || subStatus === "trial";
   const isActive = subStatus === "active";
