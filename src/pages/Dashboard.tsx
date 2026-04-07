@@ -394,7 +394,7 @@ const Dashboard = () => {
             </GlowCard>
           
           ) : (
-            <div className="space-y-3">
+            <div className="max-h-[520px] overflow-y-auto space-y-3 pr-1 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
               {alerts.map((alert) => (
                 <div
                   key={alert.id}
