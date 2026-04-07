@@ -36,6 +36,8 @@ interface ConnectedAccount {
   subscription_status: string | null;
   trial_ends_at: string | null;
   push_enabled: boolean | null;
+  followers_count: number | null;
+  last_checked_at: string | null;
 }
 
 interface Alert {
@@ -319,9 +321,20 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
-            <p className="text-sm text-muted-foreground mt-4 text-center">
+            <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              {account.followers_count != null && (
+                <span>{account.followers_count.toLocaleString()} followers</span>
+              )}
+              {account.followers_count != null && account.last_checked_at && (
+                <span className="text-border">·</span>
+              )}
+              {account.last_checked_at && (
+                <span>Last checked {new Date(account.last_checked_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2 text-center">
               {isActive || isTrial
-                ? "We're monitoring for any unauthorized changes."
+                ? "Monitoring for unauthorized changes."
                 : "Subscribe to resume monitoring."}
             </p>
             </div>

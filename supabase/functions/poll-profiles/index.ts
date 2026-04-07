@@ -42,17 +42,34 @@ async function fetchXProfile(accessToken: string) {
 
 async function sendEmailAlert(resendKey: string, email: string, field: string, oldVal: any, newVal: any) {
   const fieldName = field.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-  const notSet = `<span style="color:#bbb;font-style:italic;">Not set</span>`;
-  const oldDisplay = oldVal != null ? String(oldVal) : notSet;
-  const newDisplay = newVal != null ? String(newVal) : notSet;
+  const isImage = field === "profile_image" || field === "banner";
+
+  const renderValue = (val: any) => {
+    if (val == null) return `<span style="color:#bbb;font-style:italic;">Not set</span>`;
+    if (isImage) return `<img src="${val}" alt="${fieldName}" style="max-width:200px;max-height:80px;border-radius:6px;object-fit:cover;display:block;margin-top:4px;" />`;
+    return `<span style="word-break:break-word;">${String(val)}</span>`;
+  };
+
+  const isUnauthorized = field !== "followers";
+  const securityCta = isUnauthorized ? `
+    <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:16px;margin-bottom:24px;">
+      <p style="font-size:13px;color:#856404;margin:0 0 8px;font-weight:600;">Was this you?</p>
+      <p style="font-size:13px;color:#856404;margin:0 0 12px;">If you did not make this change, secure your account immediately.</p>
+      <a href="https://x.com/settings/security" style="display:inline-block;background:#856404;color:#fff;padding:10px 20px;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">
+        Go to X Security Settings →
+      </a>
+    </div>` : "";
+
   await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${resendKey}`,
     },
+    reply_to: "support@xsentinel.dev",
     body: JSON.stringify({
       from: "XSentinel <alerts@xsentinel.dev>",
+      reply_to: "support@xsentinel.dev",
       to: [email],
       subject: `Security Alert: Your X ${fieldName} Was Changed`,
       html: `
@@ -61,11 +78,11 @@ async function sendEmailAlert(resendKey: string, email: string, field: string, o
             <p style="font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin: 0 0 12px;">XSentinel</p>
             <h1 style="font-size: 22px; font-weight: 700; color: #111; margin: 0 0 8px; line-height: 1.3;">Profile Change Detected</h1>
             <p style="font-size: 15px; color: #555; margin: 0; line-height: 1.6;">
-              A change was detected on your connected X account. If you made this change, no action is needed. If you did not, please secure your account immediately.
+              A change was detected on your connected X account.
             </p>
           </div>
 
-          <div style="background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 8px; padding: 24px; margin-bottom: 28px;">
+          <div style="background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
             <p style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin: 0 0 16px;">Change Summary</p>
             <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
               <tr>
@@ -74,14 +91,16 @@ async function sendEmailAlert(resendKey: string, email: string, field: string, o
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #777; vertical-align: top;">Previous</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #555; word-break: break-word;">${oldDisplay}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #555;">${renderValue(oldVal)}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; color: #777; vertical-align: top;">Updated to</td>
-                <td style="padding: 10px 0; color: #111; font-weight: 500; word-break: break-word;">${newDisplay}</td>
+                <td style="padding: 10px 0; color: #111; font-weight: 500;">${renderValue(newVal)}</td>
               </tr>
             </table>
           </div>
+
+          ${securityCta}
 
           <a href="https://xsentinel.dev/dashboard" style="display: inline-block; background: #000; color: #fff; padding: 13px 28px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; letter-spacing: 0.01em;">
             Review in Dashboard
@@ -89,7 +108,7 @@ async function sendEmailAlert(resendKey: string, email: string, field: string, o
 
           <p style="font-size: 12px; color: #aaa; margin-top: 36px; line-height: 1.7; border-top: 1px solid #eee; padding-top: 24px;">
             You received this alert because your X account is monitored by XSentinel.<br>
-            Manage your notification preferences at <a href="https://xsentinel.dev/dashboard" style="color: #888;">xsentinel.dev</a>.
+            <a href="https://xsentinel.dev/dashboard" style="color: #888;">Manage preferences</a> · Reply to this email for support.
           </p>
         </div>
       `,
@@ -257,12 +276,17 @@ Deno.serve(async (req: Request) => {
         }
       }
 
-      // Update snapshot
-      if (changed.length > 0 || prevFollowers !== currentFollowers) {
-        await supabase
-          .from("connected_accounts")
-          .update({ last_snapshot: current, followers_count: currentFollowers })
-          .eq("id", account.id);
+      // Update snapshot + last_checked_at always
+      await supabase
+        .from("connected_accounts")
+        .update({
+          last_snapshot: current,
+          followers_count: currentFollowers,
+          last_checked_at: new Date().toISOString(),
+        })
+        .eq("id", account.id);
+
+      if (changed.length > 0) {
         results.push(`${account.x_username}: changed [${changed.join(", ")}]`);
       } else {
         results.push(`${account.x_username}: no changes`);
