@@ -1,11 +1,13 @@
 import { forwardRef } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Shield } from "lucide-react";
+import { ONBOARDING_KEY } from "@/pages/Onboarding";
 
 const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => {
     const { user, loading } = useAuth();
+    const location = useLocation();
 
     if (loading) {
       return (
@@ -16,6 +18,11 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
     }
 
     if (!user) return <Navigate to="/login" replace />;
+
+    // First-time users → onboarding (skip if already on /onboarding)
+    if (!localStorage.getItem(ONBOARDING_KEY) && location.pathname !== "/onboarding") {
+      return <Navigate to="/onboarding" replace />;
+    }
 
     return <div ref={ref}>{children}</div>;
   }
