@@ -193,12 +193,15 @@ Deno.serve(async (req: Request) => {
     try {
       let accessToken = account.x_access_token;
 
-      // Try to refresh token if we have a refresh token
-      if (account.x_refresh_token && clientId && clientSecret) {
+      // First attempt with current access token
+      let profile = await fetchXProfile(accessToken);
+
+      // Only refresh if the current token failed AND we have a refresh token
+      if (!profile && account.x_refresh_token && clientId && clientSecret) {
         const refreshed = await refreshXToken(clientId, clientSecret, account.x_refresh_token);
         if (refreshed?.access_token) {
           accessToken = refreshed.access_token;
-          // Save new tokens
+          // Save new tokens before using them
           await supabase
             .from("connected_accounts")
             .update({
@@ -206,10 +209,11 @@ Deno.serve(async (req: Request) => {
               x_refresh_token: refreshed.refresh_token ?? account.x_refresh_token,
             })
             .eq("id", account.id);
+          // Retry profile fetch with new token
+          profile = await fetchXProfile(accessToken);
         }
       }
 
-      const profile = await fetchXProfile(accessToken);
       if (!profile) {
         // Mark monitoring error + send one-time email if not already flagged
         if (!account.monitoring_error) {
