@@ -59,78 +59,117 @@ const Index = () => {
         </p>
       </section>
 
-      {/* How it works + Pricing */}
-      <section className="px-6 py-20 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold text-foreground text-center mb-14">How it works</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {[
-            { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Sign up instantly, then connect your X account" },
-            { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor the public profile of the account you own." },
-            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "We check every minute. Any change to username, bio, profile picture, banner, or verified badge triggers an instant email alert. Follower drops are monitored too." },
-          ].map((step, i) => (
-            <GlowCard key={i}>
-              <div className="p-6 text-center">
-                <div className="flex justify-center mb-4">{step.icon}</div>
-                <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-              </div>
-            </GlowCard>
-          ))}
+      {/* How it works */}
+      <section className="px-6 py-24 max-w-4xl mx-auto">
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-foreground mb-2">How it works</h2>
+          <p className="text-sm text-muted-foreground">Three simple steps to protect your X account</p>
+        </div>
 
-          {/* Pricing card */}
-          <GlowCard>
-            <div className="p-6 flex flex-col justify-between text-center h-full">
-            <div>
-              <h3 className="text-base font-semibold text-foreground mb-3">Simple pricing</h3>
+        {/* Minimal Timeline */}
+        <div className="space-y-16 relative">
+          {/* Vertical connector line */}
+          <div className="absolute left-[30px] top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 to-primary/10" />
 
-              {/* Billing toggle */}
-              <div className="flex gap-2 justify-center mb-4">
-                <Button
-                  size="sm"
-                  variant={billingPeriod === "monthly" ? "default" : "outline"}
-                  onClick={() => setBillingPeriod("monthly")}
-                  className="text-xs"
-                >
-                  Monthly
-                </Button>
-                <Button
-                  size="sm"
-                  variant={billingPeriod === "yearly" ? "default" : "outline"}
-                  onClick={() => setBillingPeriod("yearly")}
-                  className="text-xs"
-                >
-                  Yearly
-                </Button>
-              </div>
+          {/* Step 1 - Left aligned */}
+          <div className="flex gap-8 items-start">
+            <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center relative z-10">
+              <span className="text-2xl font-light text-primary">01</span>
+            </div>
+            <div className="pt-2 flex-1">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Sign up</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">Create your XSentinel account instantly. Takes less than a minute.</p>
+            </div>
+          </div>
 
-              <div className="text-3xl font-bold text-foreground mb-1">
-                {billingPeriod === "monthly" ? "$9" : "$89"}<span className="text-sm font-normal text-muted-foreground">/{billingPeriod === "monthly" ? "mo" : "yr"}</span>
+          {/* Step 2 - Right aligned */}
+          <div className="flex gap-8 items-start flex-row-reverse">
+            <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center relative z-10">
+              <span className="text-2xl font-light text-primary">02</span>
+            </div>
+            <div className="pt-2 flex-1 text-right">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Connect X account</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">Authorize via OAuth. We only access your public profile. Never store passwords.</p>
+            </div>
+          </div>
+
+          {/* Step 3 - Left aligned */}
+          <div className="flex gap-8 items-start">
+            <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center relative z-10">
+              <span className="text-2xl font-light text-primary">03</span>
+            </div>
+            <div className="pt-2 flex-1">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Get protected</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">Real-time monitoring checks every minute. Instant alerts on any changes to your profile.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section - Refined */}
+      <section className="px-6 py-20 max-w-4xl mx-auto">
+        <div className="bg-gradient-to-br from-secondary/40 to-secondary/20 border border-border/50 rounded-lg p-12">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl font-bold text-foreground mb-2">Simple pricing</h2>
+            <p className="text-sm text-muted-foreground mb-8">Start free. Upgrade anytime. Cancel whenever.</p>
+
+            {/* Billing toggle */}
+            <div className="flex gap-2 mb-8">
+              <Button
+                size="sm"
+                variant={billingPeriod === "monthly" ? "default" : "ghost"}
+                onClick={() => setBillingPeriod("monthly")}
+                className="text-sm font-medium"
+              >
+                Monthly
+              </Button>
+              <Button
+                size="sm"
+                variant={billingPeriod === "yearly" ? "default" : "ghost"}
+                onClick={() => setBillingPeriod("yearly")}
+                className="text-sm font-medium"
+              >
+                Yearly
+              </Button>
+            </div>
+
+            {/* Price display */}
+            <div className="mb-8">
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-5xl font-light text-foreground">{billingPeriod === "monthly" ? "$9" : "$89"}</span>
+                <span className="text-sm text-muted-foreground">/{billingPeriod === "monthly" ? "month" : "year"}</span>
               </div>
               {billingPeriod === "yearly" && (
-                <p className="text-xs text-safe mb-3">Save 17% vs monthly</p>
+                <p className="text-xs text-safe font-medium">Save 17% vs monthly</p>
               )}
-              <p className="text-xs text-muted-foreground mb-5">After 14-day free trial</p>
-              <ul className="text-left space-y-2.5 mb-5">
-                {[
-                  "1 X account protected",
-                  "Monitors bio, avatar, banner, username & verified badge",
-                  "Follower drop alerts (≥50 or ≥5% drop)",
-                  "Instant email alerts + weekly digest",
-                  "Full change history with before & after",
-                  "\"This was me\" dismiss",
-                ].map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-foreground">
-                    <Check className="h-3.5 w-3.5 text-safe flex-shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-xs text-muted-foreground mt-3">After 14-day free trial</p>
             </div>
+
+            {/* Features list - minimal */}
+            <ul className="space-y-3 mb-10">
+              {[
+                "Real-time monitoring every minute",
+                "Username, bio, avatar, banner, verified badge",
+                "Follower drop alerts (≥5% or ≥50 drop)",
+                "Instant email alerts + weekly digest",
+                "Full change history with before & after",
+                "Dismiss false positives with \"This was me\"",
+              ].map((feature, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-foreground">
+                  <span className="flex-shrink-0 w-4 h-4 rounded-full border border-primary/40 flex items-center justify-center mt-0.5">
+                    <Check className="w-2.5 h-2.5 text-primary" />
+                  </span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
             <Link to={`/signup?plan=${billingPeriod}`}>
-              <Button className="w-full" size="sm">Start free trial</Button>
+              <Button className="w-full sm:w-auto px-8" size="lg">
+                Start 14-day free trial <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
             </Link>
-            </div>
-          </GlowCard>
+          </div>
         </div>
       </section>
 
