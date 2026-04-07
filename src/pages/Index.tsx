@@ -14,7 +14,7 @@ const Index = () => {
       {/* Nav */}
       <nav className="px-6 py-5 flex items-center justify-between max-w-5xl mx-auto border-b border-border/50">
         <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-primary" />
+          <img src="/logo.png" alt="XSentinel" className="h-6 w-6 rounded-sm" />
           <span className="text-sm tracking-widest uppercase text-muted-foreground">XSentinel</span>
         </div>
         <div className="flex items-center gap-3">
