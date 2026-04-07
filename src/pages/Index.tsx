@@ -63,7 +63,7 @@ const Index = () => {
           {[
             { icon: <Zap className="h-7 w-7 text-primary" />, title: "Sign up", desc: "Sign up instantly, then connect your X account" },
             { icon: <Shield className="h-7 w-7 text-primary" />, title: "Connect X", desc: "Authorize your own X account via OAuth. We only monitor the public profile of the account you own." },
-            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "Using X’s official Activity API, we instantly detect changes to: username/handle, display name, bio, profile picture, and banner." },
+            { icon: <Bell className="h-7 w-7 text-primary" />, title: "Stay protected", desc: "We check your profile every minute. The moment a change is detected — username, display name, bio, profile picture, or banner — you get an alert." },
           ].map((step, i) => (
             <GlowCard key={i}>
               <div className="p-6 text-center">
@@ -88,7 +88,7 @@ const Index = () => {
                 {[
                   "1 X account protected",
                   "Real-time profile monitoring",
-                  "Instant push + email alerts",
+                  "Push + email alerts within minutes",
                   "Full change history",
                   "\"This was me\" quick dismiss",
                 ].map((f, i) => (
