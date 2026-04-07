@@ -493,18 +493,20 @@ const Dashboard = () => {
           {account && (
             <GlowCard>
               <div className="p-5">
-              <div className="flex items-center gap-3 mb-3">
-                <Unplug className="h-5 w-5 text-destructive" />
-                <div>
-                  <Label className="text-foreground">Disconnect X account</Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Stop monitoring and remove your connected account
-                  </p>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <Unplug className="h-5 w-5 text-destructive" />
+                  <div>
+                    <Label className="text-foreground">Disconnect X account</Label>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Stop monitoring and remove your connected account
+                    </p>
+                  </div>
                 </div>
+                <Button variant="destructive" size="sm" onClick={handleDisconnect} className="shrink-0">
+                  Disconnect
+                </Button>
               </div>
-              <Button variant="destructive" size="sm" onClick={handleDisconnect}>
-                Disconnect
-              </Button>
               </div>
             </GlowCard>
           )}
