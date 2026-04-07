@@ -108,13 +108,13 @@ const Index = () => {
 
       {/* Pricing Section - Refined */}
       <section className="px-6 py-20 max-w-4xl mx-auto">
-        <div className="bg-gradient-to-br from-secondary/40 to-secondary/20 border border-border/50 rounded-lg p-12">
-          <div className="max-w-2xl">
+        <div className="bg-gradient-to-br from-secondary/40 to-secondary/20 border border-border/50 rounded-lg p-12 flex justify-center">
+          <div className="max-w-2xl text-center">
             <h2 className="text-2xl font-bold text-foreground mb-2">Simple pricing</h2>
             <p className="text-sm text-muted-foreground mb-8">Start free. Upgrade anytime. Cancel whenever.</p>
 
             {/* Billing toggle */}
-            <div className="flex gap-2 mb-8">
+            <div className="flex gap-2 mb-8 justify-center">
               <Button
                 size="sm"
                 variant={billingPeriod === "monthly" ? "default" : "ghost"}
@@ -135,7 +135,7 @@ const Index = () => {
 
             {/* Price display */}
             <div className="mb-8">
-              <div className="flex items-baseline gap-1 mb-1">
+              <div className="flex items-baseline gap-1 mb-1 justify-center">
                 <span className="text-5xl font-light text-foreground">{billingPeriod === "monthly" ? "$9" : "$89"}</span>
                 <span className="text-sm text-muted-foreground">/{billingPeriod === "monthly" ? "month" : "year"}</span>
               </div>
@@ -146,7 +146,7 @@ const Index = () => {
             </div>
 
             {/* Features list - minimal */}
-            <ul className="space-y-3 mb-10">
+            <ul className="space-y-3 mb-10 inline-block">
               {[
                 "Real-time monitoring every minute",
                 "Username, bio, avatar, banner, verified badge",
@@ -164,11 +164,13 @@ const Index = () => {
               ))}
             </ul>
 
-            <Link to={`/signup?plan=${billingPeriod}`}>
-              <Button className="w-full sm:w-auto px-8" size="lg">
-                Start 14-day free trial <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+            <div>
+              <Link to={`/signup?plan=${billingPeriod}`}>
+                <Button className="px-8" size="lg">
+                  Start 14-day free trial <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
