@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield, Zap, Bell, ArrowRight, Check, Slash } from "lucide-react";
+import { Shield, Zap, Bell, ArrowRight, Check, Slash, Download, Eye, LifeBuoy } from "lucide-react";
 import { LiquidButton } from "@/components/ui/liquid-glass-button";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -32,13 +32,13 @@ const Index = () => {
       {/* Hero */}
       <section className="flex flex-col items-center text-center px-6 pt-28 pb-24 max-w-3xl mx-auto">
         <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8">
-          Protect your X identity
+          X account security monitoring
         </p>
         <h1 className="font-bold text-foreground leading-[1.05] tracking-tight" style={{ fontSize: "clamp(38px, 7vw, 68px)" }}>
-          Your X account changes. You find out first.
+          Know the moment your X account is touched.
         </h1>
-        <p className="mt-5 text-lg text-muted-foreground">
-          Set once. Protected forever.
+        <p className="mt-5 text-lg text-muted-foreground max-w-xl">
+          Hackers change your username, bio, and profile picture to impersonate someone else — using your audience. XSentinel alerts you within 60 seconds.
         </p>
         <Link to="/signup" className="mt-12">
           <LiquidButton size="xxl" className="text-lg gap-2">
@@ -91,9 +91,39 @@ const Index = () => {
             </div>
             <div className="pt-2 flex-1">
               <h3 className="text-lg font-semibold text-foreground mb-2">Get protected</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">Real-time monitoring checks every minute. Instant alerts on any changes to your profile.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Monitoring starts immediately. We scan every minute and alert you the moment anything changes — before the damage spreads.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* What we monitor */}
+      <section className="px-6 py-20 max-w-4xl mx-auto">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl font-bold text-foreground mb-2">Everything we watch for you</h2>
+          <p className="text-sm text-muted-foreground">Any unauthorized change fires an instant alert to your email and phone</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { icon: Zap, title: "Username hijacked", desc: "The first thing attackers change. Lose your username and you lose your identity." },
+            { icon: Shield, title: "Profile picture swapped", desc: "Replaced with scam content to defraud your followers." },
+            { icon: Bell, title: "Bio rewritten", desc: "Crypto scams, phishing links, and impersonation start here." },
+            { icon: Eye, title: "Profile snapshot", desc: "See exactly what your account looked like at last check — username, bio, banner, avatar." },
+            { icon: LifeBuoy, title: "Recovery guide on every alert", desc: "Every suspicious change includes a step-by-step action plan so you know exactly what to do." },
+            { icon: Download, title: "Export your alert history", desc: "Download a full CSV of every detected change for your records." },
+          ].map(({ icon: Icon, title, desc }) => (
+            <GlowCard key={title}>
+              <div className="p-5 flex gap-4 items-start">
+                <div className="h-9 w-9 rounded-lg bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0">
+                  <Icon className="h-4 w-4 text-foreground/70" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-1">{title}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            </GlowCard>
+          ))}
         </div>
       </section>
 
@@ -137,14 +167,18 @@ const Index = () => {
             </div>
 
             {/* Features list - minimal */}
-            <ul className="space-y-3 mb-10 inline-block">
+            <ul className="space-y-3 mb-10 inline-block text-left">
               {[
-                "Real-time monitoring every minute",
-                "Username, bio, avatar, banner, verified badge",
+                "Monitoring every 60 seconds, 24/7",
+                "Alerts on username, bio, avatar, banner, verified badge",
                 "Follower drop alerts (≥5% or ≥50 drop)",
-                "Instant email alerts + weekly digest",
-                "Full change history with before & after",
+                "Instant email + mobile push alerts",
+                "Full change history with before & after proof",
+                "Profile snapshot — see your account as we last saw it",
+                "Step-by-step recovery guide on every suspicious alert",
+                "Export full alert history as CSV",
                 "Dismiss false positives with \"This was me\"",
+                "Weekly digest summary email",
               ].map((feature, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-foreground">
                   <span className="flex-shrink-0 w-4 h-4 rounded-full border border-primary/40 flex items-center justify-center mt-0.5">
