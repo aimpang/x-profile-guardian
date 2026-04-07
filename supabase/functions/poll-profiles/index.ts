@@ -11,6 +11,7 @@ interface ProfileSnapshot {
   bio?: string;
   profile_image?: string;
   banner?: string;
+  followers?: number;
 }
 
 async function refreshXToken(clientId: string, clientSecret: string, refreshToken: string) {
@@ -31,7 +32,7 @@ async function refreshXToken(clientId: string, clientSecret: string, refreshToke
 
 async function fetchXProfile(accessToken: string) {
   const res = await fetch(
-    "https://api.twitter.com/2/users/me?user.fields=profile_image_url,description,name,username,profile_banner_url",
+    "https://api.twitter.com/2/users/me?user.fields=profile_image_url,description,name,username,profile_banner_url,public_metrics",
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
   if (!res.ok) return null;
@@ -185,16 +186,20 @@ Deno.serve(async (req: Request) => {
         continue;
       }
 
+      const currentFollowers: number | null = profile.public_metrics?.followers_count ?? null;
+
       const current: ProfileSnapshot = {
         username: profile.username,
         display_name: profile.name,
         bio: profile.description ?? "",
         profile_image: profile.profile_image_url?.replace("_normal", "") ?? null,
         banner: profile.profile_banner_url ?? null,
+        followers: currentFollowers ?? undefined,
       };
 
       const snapshot: ProfileSnapshot = (account.last_snapshot as ProfileSnapshot) ?? {};
       const fields: (keyof ProfileSnapshot)[] = ["username", "display_name", "bio", "profile_image", "banner"];
+      const prevFollowers: number | null = snapshot.followers ?? null;
 
       const changed: string[] = [];
 
@@ -226,11 +231,37 @@ Deno.serve(async (req: Request) => {
         changed.push(field);
       }
 
+      // Follower drop detection
+      if (prevFollowers !== null && currentFollowers !== null && currentFollowers < prevFollowers) {
+        const drop = prevFollowers - currentFollowers;
+        const dropPct = drop / prevFollowers;
+        if (drop >= 50 || dropPct >= 0.05) {
+          await supabase.from("alerts").insert([{
+            user_id: account.user_id,
+            event_type: "followers",
+            old_data: { followers: prevFollowers },
+            new_data: { followers: currentFollowers },
+          }]);
+
+          const { data: userData } = await supabase.auth.admin.getUserById(account.user_id);
+          const email = userData?.user?.email;
+
+          if (email && resendKey) {
+            await sendEmailAlert(resendKey, email, "followers", prevFollowers, currentFollowers);
+          }
+          if (account.push_enabled && account.push_token && oneSignalAppId && oneSignalKey) {
+            await sendPushAlert(oneSignalAppId, oneSignalKey, account.push_token, "followers", prevFollowers, currentFollowers);
+          }
+
+          changed.push("followers");
+        }
+      }
+
       // Update snapshot
-      if (changed.length > 0) {
+      if (changed.length > 0 || prevFollowers !== currentFollowers) {
         await supabase
           .from("connected_accounts")
-          .update({ last_snapshot: current })
+          .update({ last_snapshot: current, followers_count: currentFollowers })
           .eq("id", account.id);
         results.push(`${account.x_username}: changed [${changed.join(", ")}]`);
       } else {

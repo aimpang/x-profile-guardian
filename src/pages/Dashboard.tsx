@@ -61,6 +61,7 @@ const eventLabels: Record<string, string> = {
   bio: "Bio",
   profile_image: "Profile picture",
   banner: "Banner",
+  followers: "Follower count",
 };
 
 const Dashboard = () => {
@@ -91,7 +92,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       const [accRes, alertRes] = await Promise.all([
         supabase.from("connected_accounts").select("*").eq("user_id", user.id).maybeSingle(),
-        supabase.from("alerts").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
+        supabase.from("alerts").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
       ]);
       if (accRes.data) {
         setAccount(accRes.data);
@@ -381,9 +382,19 @@ const Dashboard = () => {
                         const oldVal = alert.old_data?.[alert.event_type] ?? null;
                         const newVal = alert.new_data?.[alert.event_type] ?? null;
                         const isImage = alert.event_type === "profile_image" || alert.event_type === "banner";
+                        const isFollowers = alert.event_type === "followers";
                         const imgClass = alert.event_type === "banner"
                           ? "h-8 w-14 rounded object-cover"
                           : "h-8 w-8 rounded-full object-cover";
+                        if (isFollowers) {
+                          const drop = (oldVal ?? 0) - (newVal ?? 0);
+                          return (
+                            <p className="mt-1 text-xs flex items-center gap-1.5">
+                              <span className="text-destructive font-medium">−{drop.toLocaleString()} followers</span>
+                              <span className="text-muted-foreground">({oldVal?.toLocaleString()} → {newVal?.toLocaleString()})</span>
+                            </p>
+                          );
+                        }
                         return isImage ? (
                           <div className="mt-2 flex items-center gap-2">
                             {oldVal
