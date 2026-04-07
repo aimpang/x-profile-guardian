@@ -288,7 +288,12 @@ const Dashboard = () => {
           <GlowCard>
             <div className="p-8">
             <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+              <a
+                href={`https://x.com/${account.x_username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden hover:opacity-80 transition-opacity shrink-0"
+              >
                 {account.x_avatar_url ? (
                   <img src={account.x_avatar_url} alt={account.x_username} className="h-full w-full object-cover" />
                 ) : (
@@ -296,7 +301,7 @@ const Dashboard = () => {
                     {account.x_username.charAt(0).toUpperCase()}
                   </span>
                 )}
-              </div>
+              </a>
               <div className="flex-1">
                 <p className="font-semibold text-foreground text-lg">{account.x_display_name || account.x_username}</p>
                 <p className="text-sm text-muted-foreground">@{account.x_username}</p>
