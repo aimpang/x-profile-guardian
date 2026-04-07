@@ -256,8 +256,7 @@ const Dashboard = () => {
       {/* Header */}
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="XSentinel" className="h-6 w-6 rounded-sm" />
-          <span className="text-sm tracking-widest uppercase text-muted-foreground">XSentinel</span>
+          <img src="/wordmark.svg" alt="XSentinel" className="h-7" />
         </div>
         <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 text-muted-foreground">
           <LogOut className="h-4 w-4" /> Log out
