@@ -1,19 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { normalizeSnapshot, type ProfileSnapshot } from "../_shared/snapshot.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-poll-secret",
 };
-
-interface ProfileSnapshot {
-  username?: string;
-  display_name?: string;
-  bio?: string;
-  profile_image?: string;
-  banner?: string;
-  followers?: number;
-  verified?: boolean;
-}
 
 async function refreshXToken(clientId: string, clientSecret: string, refreshToken: string) {
   const res = await fetch("https://api.twitter.com/2/oauth2/token", {
@@ -298,17 +289,9 @@ Deno.serve(async (req: Request) => {
 
       const currentFollowers: number | null = profile.public_metrics?.followers_count ?? null;
 
-      const current: ProfileSnapshot = {
-        username: profile.username,
-        display_name: profile.name,
-        bio: profile.description ?? "",
-        profile_image: profile.profile_image_url?.replace("_normal", "") ?? null,
-        banner: profile.profile_banner_url ?? null,
-        followers: currentFollowers ?? undefined,
-        verified: profile.verified ?? false,
-      };
+      const current = normalizeSnapshot(profile);
 
-      const snapshot: ProfileSnapshot = (account.last_snapshot as ProfileSnapshot) ?? {};
+      const snapshot: ProfileSnapshot = normalizeSnapshot(account.last_snapshot || {});
       const fields: (keyof ProfileSnapshot)[] = ["username", "display_name", "bio", "profile_image", "banner", "verified"];
       const prevFollowers: number | null = snapshot.followers ?? null;
 
@@ -384,7 +367,7 @@ Deno.serve(async (req: Request) => {
         }
       }
 
-      // Update snapshot + last_checked_at always
+      // Update snapshot + last_checked_at always (normalized)
       await supabase
         .from("connected_accounts")
         .update({

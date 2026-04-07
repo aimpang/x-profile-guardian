@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { normalizeSnapshot, type ProfileSnapshot } from "../_shared/snapshot.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -82,15 +83,8 @@ Deno.serve(async (req: Request) => {
     const profileData = await profileRes.json();
     const xUser = profileData.data;
 
-    // Build initial profile snapshot (must match all fields polled in poll-profiles)
-    const snapshot = {
-      username: xUser.username,
-      display_name: xUser.name,
-      bio: xUser.description ?? "",
-      profile_image: xUser.profile_image_url?.replace("_normal", "") ?? null,
-      banner: xUser.profile_banner_url ?? null,
-      verified: xUser.verified ?? false,
-    };
+    // Build initial profile snapshot using normalized utility (matches poll-profiles)
+    const snapshot = normalizeSnapshot(xUser);
 
     // Upsert connected_accounts (service role bypasses the trigger restriction)
     const { data: account, error: upsertError } = await supabase

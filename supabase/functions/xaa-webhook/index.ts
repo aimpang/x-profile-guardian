@@ -1,17 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { normalizeSnapshot, type ProfileSnapshot } from "../_shared/snapshot.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-twitter-webhooks-signature",
 };
-
-interface ProfileSnapshot {
-  username?: string;
-  display_name?: string;
-  bio?: string;
-  profile_image?: string;
-  banner?: string;
-}
 
 const X_CONSUMER_SECRET = Deno.env.get("X_CONSUMER_SECRET")!;
 
@@ -193,19 +186,24 @@ Deno.serve(async (req: Request) => {
       return new Response("Subscription expired", { status: 200, headers: corsHeaders });
     }
 
-    const snapshot: ProfileSnapshot = (account.last_snapshot as ProfileSnapshot) || {};
-    const field = event.event_type.replace("profile.update.", "") as keyof ProfileSnapshot;
+    const snapshot: ProfileSnapshot = normalizeSnapshot(account.last_snapshot || {});
+    let eventField = event.event_type.replace("profile.update.", "");
+    const fieldMap: Record<string, keyof ProfileSnapshot> = {
+      'name': 'display_name',
+      'description': 'bio',
+    };
+    const canonicalField = (fieldMap[eventField] || eventField) as keyof ProfileSnapshot;
 
     const alertData = {
       user_id: account.user_id,
-      event_type: field,
-      old_data: { [field]: snapshot[field] || null },
-      new_data: { [field]: changePayload.after },
+      event_type: canonicalField,
+      old_data: { [canonicalField]: snapshot[canonicalField] || null },
+      new_data: { [canonicalField]: changePayload.after },
     };
 
     await supabase.from("alerts").insert([alertData]);
 
-    const newSnapshot = { ...snapshot, [field]: changePayload.after };
+    const newSnapshot = normalizeSnapshot({ ...snapshot, [canonicalField]: changePayload.after });
     await supabase
       .from("connected_accounts")
       .update({ last_snapshot: newSnapshot })
@@ -215,15 +213,15 @@ Deno.serve(async (req: Request) => {
     const email = userData?.user?.email;
 
     if (email) {
-      await sendEmailAlert(email, field, alertData.old_data, alertData.new_data);
+      await sendEmailAlert(email, canonicalField, alertData.old_data, alertData.new_data);
     }
 
     if (account.push_enabled && account.push_token) {
       await sendPushNotification(
         account.push_token,
-        field,
-        alertData.old_data[field],
-        alertData.new_data[field]
+        canonicalField,
+        alertData.old_data[canonicalField],
+        alertData.new_data[canonicalField]
       );
     }
 
