@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -19,8 +18,8 @@ serve(async (req) => {
   );
 
   try {
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    const apiKey = Deno.env.get("LEMONSQUEEZY_API_KEY");
+    if (!apiKey) throw new Error("LEMONSQUEEZY_API_KEY is not set");
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
@@ -31,42 +30,47 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const lsResponse = await fetch(
+      `https://api.lemonsqueezy.com/v1/subscriptions?filter[user_email]=${encodeURIComponent(user.email)}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Accept": "application/vnd.api+json",
+        },
+      }
+    );
 
-    if (customers.data.length === 0) {
+    if (!lsResponse.ok) {
+      const errText = await lsResponse.text();
+      throw new Error(`LemonSqueezy API error ${lsResponse.status}: ${errText}`);
+    }
+
+    const lsData = await lsResponse.json();
+    const subscriptions = lsData?.data ?? [];
+
+    if (subscriptions.length === 0) {
       return new Response(JSON.stringify({ subscribed: false, status: "none" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
 
-    const customerId = customers.data[0].id;
+    const sub = subscriptions[0].attributes;
+    const subStatus: string = sub.status;
 
-    // Check active or trialing subscriptions
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      limit: 1,
-    });
+    const isSubscribed = ["on_trial", "active"].includes(subStatus);
 
-    if (subscriptions.data.length === 0) {
-      return new Response(JSON.stringify({ subscribed: false, status: "none" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    }
-
-    const sub = subscriptions.data[0];
-    const subStatus = sub.status;
-    const trialEnd = sub.trial_end && sub.trial_end > 0 ? new Date(sub.trial_end * 1000).toISOString() : null;
-    const currentPeriodEnd = sub.current_period_end && sub.current_period_end > 0 ? new Date(sub.current_period_end * 1000).toISOString() : null;
+    // trial_ends_at and renews_at are already ISO 8601 strings — no Unix conversion needed
+    const trialEnd: string | null = sub.trial_ends_at ?? null;
+    const currentPeriodEnd: string | null = sub.renews_at ?? null;
+    const subscriptionId: string = String(subscriptions[0].id);
 
     return new Response(JSON.stringify({
-      subscribed: ["active", "trialing"].includes(subStatus),
+      subscribed: isSubscribed,
       status: subStatus,
       trial_end: trialEnd,
       current_period_end: currentPeriodEnd,
-      subscription_id: sub.id,
+      subscription_id: subscriptionId,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

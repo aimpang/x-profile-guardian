@@ -1,17 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-// Price IDs stored as Supabase secrets (set STRIPE_PRICE_MONTHLY and STRIPE_PRICE_YEARLY)
-// Monthly fallback to the original hardcoded ID for backwards compatibility
-const PRICE_IDS: Record<string, string> = {
-  monthly: Deno.env.get("STRIPE_PRICE_MONTHLY") ?? "price_1TJ8ehKigO2lC6r6zM0bHVgZ",
-  yearly: Deno.env.get("STRIPE_PRICE_YEARLY") ?? "",
 };
 
 serve(async (req) => {
@@ -41,33 +33,67 @@ serve(async (req) => {
       // No body or invalid JSON — use default
     }
 
-    const priceId = PRICE_IDS[plan];
-    if (!priceId) throw new Error(`Price ID for plan "${plan}" is not configured`);
+    const apiKey = Deno.env.get("LEMONSQUEEZY_API_KEY");
+    if (!apiKey) throw new Error("LEMONSQUEEZY_API_KEY is not set");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2023-10-16",
+    const storeId = Deno.env.get("LEMONSQUEEZY_STORE_ID");
+    if (!storeId) throw new Error("LEMONSQUEEZY_STORE_ID is not set");
+
+    const variantId = plan === "yearly"
+      ? Deno.env.get("LEMONSQUEEZY_VARIANT_YEARLY")
+      : Deno.env.get("LEMONSQUEEZY_VARIANT_MONTHLY");
+    if (!variantId) throw new Error(`LEMONSQUEEZY_VARIANT_${plan.toUpperCase()} is not set`);
+
+    const origin = req.headers.get("origin") ?? "http://localhost:3000";
+
+    const payload = {
+      data: {
+        type: "checkouts",
+        attributes: {
+          checkout_data: {
+            email: user.email,
+            custom: {
+              user_id: user.id,
+            },
+          },
+          product_options: {
+            redirect_url: `${origin}/dashboard?checkout=success`,
+          },
+          checkout_options: {
+            dark: true,
+          },
+        },
+        relationships: {
+          store: {
+            data: { type: "stores", id: storeId },
+          },
+          variant: {
+            data: { type: "variants", id: variantId },
+          },
+        },
+      },
+    };
+
+    const response = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/vnd.api+json",
+        "Accept": "application/vnd.api+json",
+      },
+      body: JSON.stringify(payload),
     });
 
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`LemonSqueezy API error ${response.status}: ${errText}`);
     }
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [{ price: priceId, quantity: 1 }],
-      mode: "subscription",
-      payment_method_collection: "always",
-      subscription_data: {
-        trial_period_days: 14,
-      },
-      success_url: `${req.headers.get("origin")}/dashboard?checkout=success`,
-      cancel_url: `${req.headers.get("origin")}/dashboard?checkout=canceled`,
-    });
+    const result = await response.json();
+    const url = result?.data?.attributes?.url;
+    if (!url) throw new Error("No checkout URL returned from LemonSqueezy");
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    return new Response(JSON.stringify({ url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

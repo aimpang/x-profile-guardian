@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -13,8 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    const apiKey = Deno.env.get("LEMONSQUEEZY_API_KEY");
+    if (!apiKey) throw new Error("LEMONSQUEEZY_API_KEY is not set");
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -31,21 +30,35 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    if (customers.data.length === 0) {
-      throw new Error("No Stripe customer found. Please subscribe first.");
+    // The customer portal URL is embedded directly in the subscription object —
+    // no separate session creation call is needed (unlike Stripe's billingPortal.sessions.create)
+    const lsResponse = await fetch(
+      `https://api.lemonsqueezy.com/v1/subscriptions?filter[user_email]=${encodeURIComponent(user.email)}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Accept": "application/vnd.api+json",
+        },
+      }
+    );
+
+    if (!lsResponse.ok) {
+      const errText = await lsResponse.text();
+      throw new Error(`LemonSqueezy API error ${lsResponse.status}: ${errText}`);
     }
 
-    const customerId = customers.data[0].id;
-    const origin = req.headers.get("origin") || "http://localhost:3000";
+    const lsData = await lsResponse.json();
+    const subscriptions = lsData?.data ?? [];
 
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: `${origin}/dashboard`,
-    });
+    if (subscriptions.length === 0) {
+      throw new Error("No active subscription found. Please subscribe first.");
+    }
 
-    return new Response(JSON.stringify({ url: portalSession.url }), {
+    // The portal URL is a pre-signed 24-hour link — open it immediately, do not cache or store it
+    const portalUrl: string | undefined = subscriptions[0]?.attributes?.urls?.customer_portal;
+    if (!portalUrl) throw new Error("Customer portal URL not available for this subscription.");
+
+    return new Response(JSON.stringify({ url: portalUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

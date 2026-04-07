@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, ArrowLeft, Bell, CreditCard, Unplug } from "lucide-react";
+import { Shield, ArrowLeft, Bell, CreditCard, Unplug, Loader2 } from "lucide-react";
 import { GlowCard } from "@/components/ui/glow-card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +15,7 @@ const SettingsPage = () => {
   const [pushEnabled, setPushEnabled] = useState(true);
   const [hasAccount, setHasAccount] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [portalLoading, setPortalLoading] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -36,6 +37,21 @@ const SettingsPage = () => {
     setPushEnabled(val);
     await supabase.from("connected_accounts").update({ push_enabled: val }).eq("user_id", user!.id);
     toast.success(val ? "Push alerts enabled" : "Push alerts disabled — you'll still receive emails");
+  };
+
+  const handleManageBilling = async () => {
+    setPortalLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to open billing portal");
+    } finally {
+      setPortalLoading(false);
+    }
   };
 
   const handleDisconnect = async () => {
@@ -101,7 +117,8 @@ const SettingsPage = () => {
             <h2 className="font-semibold text-foreground">Billing</h2>
           </div>
           <p className="text-sm text-muted-foreground mb-3">Manage your subscription and payment method.</p>
-          <Button variant="outline" size="sm" onClick={() => toast.info("Stripe billing portal coming soon")}>
+          <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={portalLoading}>
+            {portalLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             Manage billing
           </Button>
           </div>

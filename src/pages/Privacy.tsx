@@ -44,7 +44,7 @@ const Privacy = () => {
             <li><span className="text-foreground font-medium">OAuth tokens:</span> Access and refresh tokens for your connected X account, used solely to poll for profile changes on your behalf.</li>
             <li><span className="text-foreground font-medium">Alert history:</span> Records of detected profile changes, stored in your account.</li>
             <li><span className="text-foreground font-medium">Push notification token:</span> A device token (via OneSignal) if you enable push alerts.</li>
-            <li><span className="text-foreground font-medium">Billing data:</span> Subscription status. Payment details are handled exclusively by Stripe — we never see or store your card number.</li>
+            <li><span className="text-foreground font-medium">Billing data:</span> Subscription status. Payment details are handled exclusively by Lemon Squeezy — we never see or store your card number.</li>
           </ul>
         </section>
 
@@ -66,7 +66,7 @@ const Privacy = () => {
           <p className="mb-2">We do not sell your data. We share data only with the following trusted service providers, strictly for operating the Service:</p>
           <ul className="list-disc pl-5 space-y-2">
             <li><span className="text-foreground font-medium">Supabase</span> — database and authentication hosting (EU/US data centers).</li>
-            <li><span className="text-foreground font-medium">Stripe</span> — subscription billing. Subject to Stripe's Privacy Policy.</li>
+            <li><span className="text-foreground font-medium">Lemon Squeezy</span> — subscription billing. Subject to Lemon Squeezy's Privacy Policy.</li>
             <li><span className="text-foreground font-medium">Resend</span> — transactional email delivery.</li>
             <li><span className="text-foreground font-medium">OneSignal</span> — push notification delivery. Subject to OneSignal's Privacy Policy.</li>
             <li><span className="text-foreground font-medium">X (Twitter)</span> — we access X's API on your behalf using your authorized tokens.</li>
@@ -80,7 +80,7 @@ const Privacy = () => {
             <li>Your data is retained for as long as your account is active.</li>
             <li>Alert history is retained for 90 days, then automatically deleted.</li>
             <li>Upon account deletion, all personal data is permanently deleted within 30 days.</li>
-            <li>Stripe may retain billing records for legal compliance purposes beyond account deletion.</li>
+            <li>Lemon Squeezy may retain billing records for legal compliance purposes beyond account deletion.</li>
           </ul>
         </section>
 

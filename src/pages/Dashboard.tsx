@@ -429,7 +429,7 @@ const Dashboard = () => {
                     Start your 14-day free trial by connecting your X account
                   </p>
                   <p className="text-xs text-muted-foreground/70 mb-8 max-w-xs mx-auto">
-                    No payment required now. You'll be guided through a quick setup with Stripe.
+                    No payment required now. You'll be guided through a quick setup with Lemon Squeezy.
                   </p>
                   <Button
                     size="lg"
@@ -598,7 +598,7 @@ const Dashboard = () => {
                       : isTrial
                         ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in trial`
                         : isActive
-                          ? "Active — billed via Stripe"
+                          ? "Active — billed via Lemon Squeezy"
                           : "Start with a 14-day free trial"}
                   </p>
                 </div>
