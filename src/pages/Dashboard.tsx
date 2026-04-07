@@ -248,6 +248,9 @@ const Dashboard = () => {
       checkSubscription();
     }
     if (searchParams.get("x_connected") === "1" && user) {
+      // Reset subInfo so stale "none" from LemonSqueezy doesn't override
+      // the DB trial status we're about to load
+      setSubInfo(null);
       supabase.from("connected_accounts").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
         if (data) {
           setAccount(data);
