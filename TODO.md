@@ -1,15 +1,13 @@
-# Fix Onboarding Loop + Enforce Paid Access
-
-## Current Issue
-- Onboarding page 3 "Go to dashboard" calls `done()` -> navigate("/dashboard")
-- ProtectedRoute redirects back to onboarding if no connected_accounts
-- Creates infinite loop
-- Users can skip without payment or X connection
+# Dashboard High-Impact UI Improvements
 
 ## Plan
-1. [x] Update `src/components/ProtectedRoute.tsx`: allow onboarding skip key to prevent redirect loop after "Go to Dashboard"
-2. [ ] Reconcile paid-access enforcement in separate pass (subscription + account connection) without reintroducing loop
-3. [ ] Test flow: signup -> onboarding -> dashboard navigation
+1. [x] Refactor top dashboard status area into one unified "Protection Status" card with single primary CTA by state.
+2. [x] Add alert triage controls: All / Unacknowledged / Acknowledged.
+3. [x] Add lightweight severity badges per alert event type.
+4. [x] Run quick validation command for changed code.
+5. [ ] Summarize implemented UX improvements.
 
-## Next Steps
-- Validate redirect behavior in app flow
+## Notes
+- No additional testing requested by user at this stage.
+- Focus on high-impact UI/UX improvements in `src/pages/Dashboard.tsx`.
+- Validation run: `npm run test -- --runInBand` => 1 passed (1).

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import {
   Shield,
@@ -60,11 +60,11 @@ interface ConnectedAccount {
   x_avatar_url: string | null;
   subscription_status: string | null;
   trial_ends_at: string | null;
-  push_enabled: boolean | null;
-  digest_enabled: boolean | null;
-  monitoring_error: boolean | null;
-  followers_count: number | null;
-  last_checked_at: string | null;
+  push_enabled?: boolean | null;
+  digest_enabled?: boolean | null;
+  monitoring_error?: boolean | null;
+  followers_count?: number | null;
+  last_checked_at?: string | null;
   last_snapshot: {
     username?: string;
     display_name?: string;
@@ -102,7 +102,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] },
+    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] as [number, number, number, number] },
   },
 };
 
@@ -199,6 +199,7 @@ const Dashboard = () => {
   const [dataReady, setDataReady] = useState(false);
   const [snapshotOpen, setSnapshotOpen] = useState(false);
   const [expandedAlertId, setExpandedAlertId] = useState<string | null>(null);
+  const [alertFilter, setAlertFilter] = useState<"all" | "unacknowledged" | "acknowledged">("all");
 
   const checkSubscription = async () => {
     try {
@@ -397,6 +398,77 @@ const Dashboard = () => {
   const animatedAlerts = useCounter(alerts.length, dataReady);
   const animatedFollowers = useCounter(account?.followers_count ?? 0, dataReady);
 
+  const getAlertSeverity = (eventType: string): "high" | "medium" | "low" => {
+    if (eventType === "username" || eventType === "profile_image" || eventType === "banner") return "high";
+    if (eventType === "display_name" || eventType === "bio" || eventType === "verified") return "medium";
+    return "low";
+  };
+
+  const severityStyles: Record<"high" | "medium" | "low", string> = {
+    high: "bg-red-500/10 text-red-400 border border-red-500/20",
+    medium: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+    low: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+  };
+
+  const filteredAlerts = useMemo(() => {
+    if (alertFilter === "acknowledged") return alerts.filter((a) => !!a.is_legitimate);
+    if (alertFilter === "unacknowledged") return alerts.filter((a) => !a.is_legitimate);
+    return alerts;
+  }, [alerts, alertFilter]);
+
+  const primaryCta = useMemo(() => {
+    if (!account && !isProtected) {
+      return {
+        label: checkoutLoading ? "Starting trial..." : "Start free trial",
+        onClick: () => handleCheckout("monthly"),
+        loading: checkoutLoading,
+        icon: ExternalLink,
+      };
+    }
+    if (!account && isProtected) {
+      return {
+        label: connectXLoading ? "Redirecting to X..." : "Connect X now",
+        onClick: handleConnectX,
+        loading: connectXLoading,
+        icon: ExternalLink,
+      };
+    }
+    if (account?.monitoring_error) {
+      return {
+        label: connectXLoading ? "Redirecting to X..." : "Reconnect X",
+        onClick: handleConnectX,
+        loading: connectXLoading,
+        icon: ExternalLink,
+      };
+    }
+    if (isExpired) {
+      return {
+        label: checkoutLoading ? "Opening checkout..." : "Resume protection",
+        onClick: () => handleCheckout("monthly"),
+        loading: checkoutLoading,
+        icon: CreditCard,
+      };
+    }
+    if (isActive && subInfo?.subscribed) {
+      return {
+        label: portalLoading ? "Opening portal..." : "Manage billing",
+        onClick: handleManageBilling,
+        loading: portalLoading,
+        icon: CreditCard,
+      };
+    }
+    return null;
+  }, [
+    account,
+    isProtected,
+    isExpired,
+    isActive,
+    subInfo?.subscribed,
+    checkoutLoading,
+    connectXLoading,
+    portalLoading,
+  ]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -485,6 +557,61 @@ const Dashboard = () => {
             </div>
           </motion.div>
         )}
+
+        {/* Unified protection status */}
+        <motion.div variants={itemVariants}>
+          <GlowCard>
+            <div className="p-5 flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    Protection Status
+                  </p>
+                  <p className="text-sm text-foreground mt-1">
+                    {account?.monitoring_error
+                      ? "Monitoring paused due to expired X authorization."
+                      : !account && !isProtected
+                      ? "Start your free trial to activate protection."
+                      : !account && isProtected
+                      ? "Trial active. Connect your X account to begin monitoring."
+                      : isExpired
+                      ? "Subscription ended. Resume protection to continue monitoring."
+                      : isTrial
+                      ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? "s" : ""} left in your free trial.`
+                      : "Monitoring is active and running."}
+                  </p>
+                </div>
+                {isProtected ? (
+                  <span className="text-[10px] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    ACTIVE
+                  </span>
+                ) : (
+                  <span className="text-[10px] px-2 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+                    INACTIVE
+                  </span>
+                )}
+              </div>
+
+              {primaryCta && (
+                <div className="flex items-center gap-2">
+                  <Button onClick={primaryCta.onClick} disabled={primaryCta.loading} className="gap-2">
+                    {primaryCta.loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <primaryCta.icon className="h-4 w-4" />
+                    )}
+                    {primaryCta.label}
+                  </Button>
+                  {(!isExpired && !account) && (
+                    <Button variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading}>
+                      Yearly ($89/yr)
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          </GlowCard>
+        </motion.div>
 
         {/* Account status card */}
         <motion.div variants={itemVariants}>
@@ -758,23 +885,45 @@ const Dashboard = () => {
             <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Recent Alerts
             </h2>
-            {alerts.length > 0 && (
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-muted-foreground">
-                  {alerts.length} event{alerts.length !== 1 ? "s" : ""}
-                </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="inline-flex rounded-md border border-border/50 overflow-hidden">
                 <button
-                  onClick={handleExportCSV}
-                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                  title="Export alerts as CSV"
+                  onClick={() => setAlertFilter("all")}
+                  className={`px-2.5 py-1 text-xs ${alertFilter === "all" ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  <Download className="h-3.5 w-3.5" />
-                  Export
+                  All
+                </button>
+                <button
+                  onClick={() => setAlertFilter("unacknowledged")}
+                  className={`px-2.5 py-1 text-xs border-l border-border/50 ${alertFilter === "unacknowledged" ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Unacknowledged
+                </button>
+                <button
+                  onClick={() => setAlertFilter("acknowledged")}
+                  className={`px-2.5 py-1 text-xs border-l border-border/50 ${alertFilter === "acknowledged" ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Acknowledged
                 </button>
               </div>
-            )}
+              {alerts.length > 0 && (
+                <>
+                  <span className="text-xs text-muted-foreground">
+                    {filteredAlerts.length} shown
+                  </span>
+                  <button
+                    onClick={handleExportCSV}
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    title="Export alerts as CSV"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Export
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          {alerts.length === 0 ? (
+          {filteredAlerts.length === 0 ? (
             <GlowCard>
               <div className="p-8 text-center">
                 <div className="relative inline-flex mb-4">
@@ -787,7 +936,7 @@ const Dashboard = () => {
             </GlowCard>
           ) : (
             <div className="space-y-2 max-h-[520px] overflow-y-auto pr-0.5 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-              {alerts.map((alert, idx) => {
+              {filteredAlerts.map((alert, idx) => {
                 const cfg = eventConfig[alert.event_type];
                 const Icon = cfg?.Icon ?? Activity;
                 const accent = cfg?.accent ?? "#ffffff";
@@ -820,6 +969,9 @@ const Dashboard = () => {
                           <p className="text-sm font-medium text-foreground">
                             {cfg?.label ?? alert.event_type} changed
                           </p>
+                          <span className={`text-[10px] uppercase tracking-wider rounded px-1.5 py-0.5 ${severityStyles[getAlertSeverity(alert.event_type)]}`}>
+                            {getAlertSeverity(alert.event_type)}
+                          </span>
                           {alert.is_legitimate && (
                             <span className="text-xs text-muted-foreground/60 bg-secondary rounded px-1.5 py-0.5">
                               ✓ acknowledged
