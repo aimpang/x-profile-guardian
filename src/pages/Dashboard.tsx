@@ -498,65 +498,6 @@ const Dashboard = () => {
         initial="hidden"
         animate="visible"
       >
-        {isTrial && trialDaysLeft > 5 && (
-          <motion.div variants={itemVariants}>
-            <div className="rounded-xl border border-[#1D9BF0]/25 bg-[#1D9BF0]/5 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="h-9 w-9 rounded-lg bg-[#1D9BF0]/10 flex items-center justify-center shrink-0">
-                  <Zap className="h-4 w-4 text-[#1D9BF0]" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">Free trial active</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} remaining in your free trial.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 shrink-0">
-                <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading} className="text-xs border-border/60">
-                  {checkoutLoading && <Loader2 className="h-3 w-3 animate-spin mr-1" />}
-                  $89 / yr
-                </Button>
-                <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading} className="text-xs bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white border-0">
-                  {checkoutLoading && <Loader2 className="h-3 w-3 animate-spin mr-1" />}
-                  $9 / mo
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {isTrial && trialDaysLeft <= 5 && trialDaysLeft > 0 && (
-          <motion.div variants={itemVariants}>
-            <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-4 flex items-center gap-3">
-              <AlertTriangle className="h-4 w-4 text-yellow-400 shrink-0" />
-              <p className="text-sm text-foreground">
-                <span className="font-semibold text-yellow-400">
-                  {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""}
-                </span>{" "}
-                left in your free trial — subscribe to keep protection active.
-              </p>
-            </div>
-          </motion.div>
-        )}
-
-        {isExpired && (
-          <motion.div variants={itemVariants}>
-            <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 flex items-center justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="h-4 w-4 text-red-400 mt-0.5 shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Subscription ended</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Subscribe to resume monitoring your account.</p>
-                </div>
-              </div>
-              <div className="flex gap-2 shrink-0">
-                <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading} className="text-xs">$89/yr</Button>
-                <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading} className="text-xs">$9/mo</Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {/* Unified protection status */}
         <motion.div variants={itemVariants}>
@@ -618,12 +559,6 @@ const Dashboard = () => {
           {account ? (
             <GlowCard>
               <div className="p-6 relative overflow-hidden">
-                {isProtected && (
-                  <div
-                    className="absolute left-0 right-0 h-px opacity-15 animate-scan-y pointer-events-none"
-                    style={{ background: "linear-gradient(90deg, transparent 0%, #1D9BF0 50%, transparent 100%)" }}
-                  />
-                )}
                 <div className="flex items-center gap-4">
                   <a
                     href={`https://x.com/${account.x_username}`}
@@ -649,13 +584,9 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground">@{account.x_username}</p>
                   </div>
                   {isProtected ? (
-                    <div className="relative flex items-center shrink-0 p-2 -m-2">
-                      <span className="absolute inset-2 rounded-full bg-emerald-500/20 animate-pulse-ring" />
-                      <span className="absolute inset-2 rounded-full bg-emerald-500/10 animate-pulse-ring-slow" />
-                      <div className="relative flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-3.5 py-1.5">
-                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="text-xs font-semibold text-emerald-400 tracking-wider">PROTECTED</span>
-                      </div>
+                    <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-3 py-1 shrink-0">
+                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                      <span className="text-[10px] font-semibold text-emerald-400 tracking-wider">PROTECTED</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5 rounded-full bg-red-500/10 border border-red-500/25 px-3.5 py-1.5 shrink-0">
@@ -700,7 +631,7 @@ const Dashboard = () => {
             </GlowCard>
           ) : (
             <GlowCard>
-              <div className="p-12 text-center">
+              <div className="p-8 text-center">
                 <div className="relative inline-flex mb-6">
                   <Shield className="h-20 w-20 text-muted-foreground/30 animate-float" />
                 </div>
