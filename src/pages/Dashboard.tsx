@@ -395,11 +395,16 @@ const Dashboard = () => {
                               : <span className="text-xs italic text-muted-foreground">None</span>}
                           </div>
                         ) : (
-                          <p className="mt-1 text-xs text-muted-foreground truncate">
-                            <span className="text-destructive line-through mr-1">{oldVal ?? "—"}</span>
-                            <span className="mx-1">→</span>
-                            <span className="text-[hsl(var(--safe))]">{newVal ?? "—"}</span>
-                          </p>
+                          <div className="mt-1.5 space-y-0.5">
+                            <p className="text-xs flex gap-1.5 min-w-0">
+                              <span className="text-muted-foreground shrink-0">Before</span>
+                              <span className="text-destructive line-through truncate">{oldVal ?? "—"}</span>
+                            </p>
+                            <p className="text-xs flex gap-1.5 min-w-0">
+                              <span className="text-muted-foreground shrink-0">After</span>
+                              <span className="text-[hsl(var(--safe))] truncate">{newVal ?? "—"}</span>
+                            </p>
+                          </div>
                         );
                       })()}
                     </div>
