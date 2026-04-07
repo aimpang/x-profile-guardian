@@ -205,9 +205,13 @@ const Dashboard = () => {
         setAccount(accRes.data);
         setPushEnabled(accRes.data.push_enabled ?? true);
         setDigestEnabled(accRes.data.digest_enabled ?? true);
+        // Only check LemonSqueezy if the DB already shows active/paid subscription
+        // For trial users, DB value is the truth — LS has no record yet
+        if (accRes.data.subscription_status === "active") {
+          await checkSubscription();
+        }
       }
       if (alertRes.data) setAlerts(alertRes.data);
-      await checkSubscription();
       setLoading(false);
       setTimeout(() => setDataReady(true), 150);
     };
@@ -245,7 +249,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
       toast.success("Subscription activated! Welcome to XSentinel.");
-      checkSubscription();
+      // Don't call checkSubscription here — LS webhook may not have fired yet
     }
     if (searchParams.get("x_connected") === "1" && user) {
       // Reset subInfo so stale "none" from LemonSqueezy doesn't override
@@ -271,12 +275,7 @@ const Dashboard = () => {
     (subInfo?.status && subInfo.status !== "none" ? subInfo.status : null)
     ?? account?.subscription_status
     ?? "none";
-  console.log("[DEBUG]", {
-    subInfoStatus: subInfo?.status,
-    accountSubStatus: account?.subscription_status,
-    subStatus,
-    searchParams: window.location.search,
-  });
+
   const isExpired = subStatus === "expired" || subStatus === "canceled" || subStatus === "past_due";
   const isTrial = subStatus === "trialing" || subStatus === "trial";
   const isActive = subStatus === "active";
