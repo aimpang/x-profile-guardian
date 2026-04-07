@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { Navbar } from "@/components/shared/Navbar";
 
 const Terms = () => {
+  const navigate = useNavigate();
   useSEO({
     title: "Terms of Service - XSentinel",
     description: "Read XSentinel's terms of service, including eligibility, billing, and usage policies for X account monitoring.",
@@ -18,9 +19,12 @@ const Terms = () => {
     <Navbar />
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-2xl mx-auto px-6 py-16">
-      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10">
+      <button
+        onClick={() => navigate(-1)}
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10"
+      >
         <ArrowLeft className="h-4 w-4" /> Back
-      </Link>
+      </button>
 
       <h1 className="text-3xl font-bold mb-2">Terms of Service</h1>
       <p className="text-sm text-muted-foreground mb-10">Effective: April 6, 2026</p>
