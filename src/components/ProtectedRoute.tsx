@@ -9,6 +9,11 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
     const { user, loading } = useAuth();
     const location = useLocation();
     const [hasConnectedAccounts, setHasConnectedAccounts] = useState<boolean | null>(null);
+    const [onboardingDone, setOnboardingDone] = useState<boolean>(false);
+
+    useEffect(() => {
+      setOnboardingDone(localStorage.getItem("xsentinel_onboarding_done") === "1");
+    }, []);
 
     useEffect(() => {
       if (user) {
@@ -33,8 +38,8 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
 
     if (!user) return <Navigate to="/login" replace />;
 
-    // Show onboarding for any user without connected accounts (regardless of prior skips)
-    if (!hasConnectedAccounts && location.pathname !== "/onboarding") {
+    // Show onboarding until user either connects an account or explicitly completes/skips onboarding
+    if (!hasConnectedAccounts && !onboardingDone && location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;
     }
 
