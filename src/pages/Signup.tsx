@@ -23,7 +23,7 @@ const Signup = () => {
     keywords: "signup, sign up, create account, free trial, XSentinel, X account protection",
     ogTitle: "Sign up for XSentinel - Protect Your X Account",
     ogDescription: "Start your free 30-day trial of XSentinel. Cancel anytime.",
-    noindex: false
+    noindex: true
   });
 
   const handleSignup = async (e: React.FormEvent) => {

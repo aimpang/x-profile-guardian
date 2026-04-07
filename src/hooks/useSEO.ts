@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface SEOConfig {
   title: string;
@@ -15,26 +15,30 @@ interface SEOConfig {
   noindex?: boolean;
 }
 
+const DEFAULT_OG_IMAGE = 'https://xsentinel.dev/og-image.png';
+
 /**
- * Hook to manage page-level SEO meta tags
- * Updates document title, meta description, OG tags, Twitter cards, and canonical URLs
+ * Hook to manage page-level SEO meta tags.
+ * Updates document title, meta description, OG tags, Twitter cards, and canonical URLs.
  */
 export const useSEO = (config: SEOConfig) => {
+  // Stable ref so the effect doesn't re-fire on every render from inline object literals
+  const configRef = useRef(config);
+  configRef.current = config;
+
   useEffect(() => {
-    // Update title
-    document.title = config.title;
-    updateMetaTag('description', config.description);
+    const c = configRef.current;
 
-    if (config.keywords) {
-      updateMetaTag('keywords', config.keywords);
-    }
+    document.title = c.title;
+    updateMetaTag('description', c.description);
 
-    if (config.noindex) {
-      updateMetaTag('robots', 'noindex, nofollow');
-    }
+    if (c.keywords) updateMetaTag('keywords', c.keywords);
 
-    // Update canonical URL
-    const canonical = config.canonical || window.location.href;
+    // Always write robots tag — explicit intent per page
+    updateMetaTag('robots', c.noindex ? 'noindex, nofollow' : 'index, follow');
+
+    // Canonical — never use window.location.href (includes query strings)
+    const canonical = c.canonical || window.location.origin + window.location.pathname;
     let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
@@ -43,22 +47,20 @@ export const useSEO = (config: SEOConfig) => {
     }
     canonicalLink.href = canonical;
 
-    // Update OG tags
-    updateOGTag('og:title', config.ogTitle || config.title);
-    updateOGTag('og:description', config.ogDescription || config.description);
-    updateOGTag('og:type', config.ogType || 'website');
+    // OG tags
+    const ogImage = c.ogImage || DEFAULT_OG_IMAGE;
+    updateOGTag('og:title', c.ogTitle || c.title);
+    updateOGTag('og:description', c.ogDescription || c.description);
+    updateOGTag('og:type', c.ogType || 'website');
     updateOGTag('og:url', canonical);
-    if (config.ogImage) {
-      updateOGTag('og:image', config.ogImage);
-    }
+    updateOGTag('og:image', ogImage);
 
-    // Update Twitter tags
-    updateMetaTag('twitter:title', config.twitterTitle || config.ogTitle || config.title);
-    updateMetaTag('twitter:description', config.twitterDescription || config.ogDescription || config.description);
-    if (config.twitterImage) {
-      updateMetaTag('twitter:image', config.twitterImage);
-    }
-  }, [config]);
+    // Twitter card tags — always set twitter:card
+    updateMetaTag('twitter:card', 'summary_large_image');
+    updateMetaTag('twitter:title', c.twitterTitle || c.ogTitle || c.title);
+    updateMetaTag('twitter:description', c.twitterDescription || c.ogDescription || c.description);
+    updateMetaTag('twitter:image', c.twitterImage || ogImage);
+  }, []);
 };
 
 function updateMetaTag(name: string, content: string) {

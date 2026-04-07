@@ -23,7 +23,7 @@ const Login = () => {
     keywords: "login, sign in, XSentinel account, security monitoring",
     ogTitle: "Log in - XSentinel",
     ogDescription: "Access your XSentinel account to manage your X account security.",
-    noindex: false
+    noindex: true
   });
 
   const handleLogin = async (e: React.FormEvent) => {
