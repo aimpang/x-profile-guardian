@@ -1026,7 +1026,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Footer */}
-        <motion.div variants={itemVariants} className="flex justify-center pt-4 pb-2">
+        <motion.div variants={itemVariants} className="flex flex-col items-center gap-3 pt-4 pb-2">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -1040,8 +1040,20 @@ const Dashboard = () => {
               <BreadcrumbItem>
                 <BreadcrumbLink asChild><Link to="/privacy">Privacy</Link></BreadcrumbLink>
               </BreadcrumbItem>
+              <BreadcrumbSeparator><Slash className="h-3 w-3" /></BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <a href="mailto:support@xsentinel.dev">Support</a>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+          <p className="text-xs text-muted-foreground/50">
+            Report abuse or billing issues:{" "}
+            <a href="mailto:support@xsentinel.dev" className="hover:text-muted-foreground transition-colors">
+              support@xsentinel.dev
+            </a>
+          </p>
         </motion.div>
       </motion.div>
     </div>
