@@ -158,6 +158,11 @@ const Dashboard = () => {
       checkSubscription();
     }
     if (searchParams.get("x_connected") === "1" && user) {
+      // Await the DB fetch before anything else so account.subscription_status
+      // ("trial") is in state before subStatus is derived. Do NOT call
+      // checkSubscription() here — LemonSqueezy has no record yet for a fresh
+      // DB-only trial, and its "none" response would race against/override the
+      // DB value we just loaded.
       supabase
         .from("connected_accounts")
         .select("*")
@@ -170,7 +175,6 @@ const Dashboard = () => {
             setDigestEnabled(data.digest_enabled ?? true);
           }
         });
-      checkSubscription();
     }
   }, [searchParams, user]);
 
