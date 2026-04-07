@@ -61,7 +61,7 @@ const Onboarding = () => {
     try {
       const { data, error } = await supabase.functions.invoke("x-oauth-start");
       if (error || !data?.url) throw new Error("Failed to start OAuth");
-      window.location.href = data.url;
+      (window.top || window).location.href = data.url;
     } catch {
       setConnectLoading(false);
     }

@@ -174,7 +174,7 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase.functions.invoke("x-oauth-start");
       if (error || !data?.url) throw new Error(error?.message || "Failed to start OAuth");
-      window.location.href = data.url;
+      (window.top || window).location.href = data.url;
     } catch (err: any) {
       toast.error(err.message || "Failed to connect X account");
       setConnectXLoading(false);
