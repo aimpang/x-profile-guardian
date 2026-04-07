@@ -142,11 +142,6 @@ const Onboarding = () => {
               Next <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           )}
-          {step === 2 && (
-            <Button size="sm" onClick={done} variant="outline" className="text-muted-foreground">
-              Go to Dashboard
-            </Button>
-          )}
         </div>
       </div>
     </div>
@@ -528,25 +523,14 @@ const Slide3 = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.45, type: "spring", bounce: 0.2 }}
-      className="flex flex-col gap-3"
     >
       <Button
         size="lg"
-        onClick={onConnect}
-        disabled={connectLoading}
-        className="gap-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white w-full"
-      >
-        {connectLoading
-          ? <Loader2 className="h-4 w-4 animate-spin" />
-          : <ExternalLink className="h-4 w-4" />}
-        {connectLoading ? "Redirecting to X..." : "Connect my X Account"}
-      </Button>
-      <button
         onClick={onSkip}
-        className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center"
+        className="gap-2 w-full"
       >
-        Skip for now — I'll connect later
-      </button>
+        Go to Dashboard <ArrowRight className="h-4 w-4" />
+      </Button>
     </motion.div>
   </div>
 );
