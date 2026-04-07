@@ -170,6 +170,7 @@ const Dashboard = () => {
             setDigestEnabled(data.digest_enabled ?? true);
           }
         });
+      checkSubscription();
     }
   }, [searchParams, user]);
 
@@ -179,7 +180,13 @@ const Dashboard = () => {
       ? Math.max(0, Math.ceil((new Date(account.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
       : 0;
 
-  const subStatus = subInfo?.status || account?.subscription_status || "none";
+  // Only use subInfo.status when it represents a real status from LemonSqueezy.
+  // If LemonSqueezy returns "none" (no subscription found), fall back to the DB value
+  // which may already be "trial" (set by the OAuth callback edge function).
+  const subStatus =
+    (subInfo?.status && subInfo.status !== "none" ? subInfo.status : null)
+    ?? account?.subscription_status
+    ?? "none";
   const isExpired = subStatus === "expired" || subStatus === "canceled" || subStatus === "past_due";
   const isTrial = subStatus === "trialing" || subStatus === "trial";
   const isActive = subStatus === "active";
