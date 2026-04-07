@@ -1,6 +1,7 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Shield } from "lucide-react";
 import { ONBOARDING_KEY } from "@/pages/Onboarding";
 
@@ -8,8 +9,22 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
   ({ children }, ref) => {
     const { user, loading } = useAuth();
     const location = useLocation();
+    const [hasConnectedAccounts, setHasConnectedAccounts] = useState<boolean | null>(null);
 
-    if (loading) {
+    useEffect(() => {
+      if (user) {
+        const checkAccounts = async () => {
+          const { count } = await supabase
+            .from("connected_accounts")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id);
+          setHasConnectedAccounts((count ?? 0) > 0);
+        };
+        checkAccounts();
+      }
+    }, [user]);
+
+    if (loading || hasConnectedAccounts === null) {
       return (
         <div ref={ref} className="min-h-screen flex items-center justify-center">
           <Shield className="h-8 w-8 text-primary animate-pulse" />
@@ -19,8 +34,8 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
 
     if (!user) return <Navigate to="/login" replace />;
 
-    // First-time users → onboarding (skip if already on /onboarding)
-    if (!localStorage.getItem(ONBOARDING_KEY) && location.pathname !== "/onboarding") {
+    // First-time users (no connected accounts) → onboarding
+    if (!hasConnectedAccounts && location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;
     }
 
