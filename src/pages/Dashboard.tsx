@@ -410,11 +410,10 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen">
-      <nav className="border-b border-border/60 px-6 py-3.5 flex items-center justify-between max-w-3xl mx-auto">
-        <div className="flex items-center gap-2.5">
-          <img src="/logo-v2.png" alt="XSentinel" className="h-7 w-7" />
-          <span className="text-sm font-medium text-foreground/60 tracking-wide">XSentinel</span>
-        </div>
+      <nav className="border-b border-border/50 px-6 py-5 flex items-center justify-between max-w-3xl mx-auto">
+        <Link to="/">
+          <span className="text-sm font-semibold tracking-widest text-foreground hover:opacity-80 transition-opacity">XSENTINEL</span>
+        </Link>
         <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 text-muted-foreground hover:text-foreground">
           <LogOut className="h-4 w-4" />
           Log out
