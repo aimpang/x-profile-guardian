@@ -15,7 +15,7 @@ const Index = () => {
     <>
       {/* Nav */}
       <nav className="px-6 py-5 flex items-center justify-between max-w-5xl mx-auto border-b border-border/50">
-        <img src="/wordmark.svg" alt="XSentinel" className="h-7" />
+        <img src="/logo-v2.png" alt="XSentinel" className="h-7 w-7" />
         <div className="flex items-center gap-3">
           {user ? (
             <Link to="/dashboard">
