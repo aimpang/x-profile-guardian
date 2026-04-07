@@ -34,8 +34,9 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
 
     if (!user) return <Navigate to="/login" replace />;
 
-    // First-time users (no connected accounts) → onboarding
-    if (!hasConnectedAccounts && location.pathname !== "/onboarding") {
+    // First-time users (no connected accounts AND hasn't completed onboarding) → onboarding
+    const onboardingComplete = localStorage.getItem(ONBOARDING_KEY) || hasConnectedAccounts;
+    if (!onboardingComplete && location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;
     }
 
