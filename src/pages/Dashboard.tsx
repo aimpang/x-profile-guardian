@@ -114,6 +114,20 @@ const Dashboard = () => {
     fetchData();
   }, [user]);
 
+  // Auto-trigger X OAuth after successful checkout
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") === "success" && !account) {
+      // Wait 500ms for subscription to be fetched, then trigger X OAuth
+      const timer = setTimeout(() => {
+        handleConnectX();
+        // Clear query param
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [account]);
+
   // Register OneSignal push token when account first loads
   useEffect(() => {
     if (!account || !pushEnabled) return;
@@ -411,19 +425,23 @@ const Dashboard = () => {
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto">
-                    Subscribe to start protecting your X account with real-time monitoring
+                  <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
+                    Start your 14-day free trial by connecting your X account
                   </p>
-                  <div className="flex gap-2 justify-center">
-                    <Button size="lg" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading} className="px-8">
-                      {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                      $89/yr
-                    </Button>
-                    <Button size="lg" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading} className="px-8">
-                      {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                      $9/mo
-                    </Button>
-                  </div>
+                  <p className="text-xs text-muted-foreground/70 mb-8 max-w-xs mx-auto">
+                    No payment required now. You'll be guided through a quick setup with Stripe.
+                  </p>
+                  <Button
+                    size="lg"
+                    onClick={() => handleCheckout("monthly")}
+                    disabled={checkoutLoading}
+                    className="gap-2 px-10 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
+                  >
+                    {checkoutLoading
+                      ? <Loader2 className="h-4 w-4 animate-spin" />
+                      : <ExternalLink className="h-4 w-4" />}
+                    {checkoutLoading ? "Starting trial..." : "Connect to X"}
+                  </Button>
                 </>
               )}
             </div>
