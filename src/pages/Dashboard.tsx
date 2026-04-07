@@ -267,7 +267,7 @@ const Dashboard = () => {
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-8">
         {/* Trial/Expired Banners */}
         {isTrial && trialDaysLeft > 5 && (
-          <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 flex items-center justify-between gap-4">
+          <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <Zap className="h-5 w-5 text-primary" />
@@ -277,14 +277,14 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground mt-1">{trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} to experience full protection. No credit card required to cancel.</p>
               </div>
             </div>
-            <div className="flex gap-2 shrink-0">
-              <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading}>
+            <div className="flex gap-2 w-full md:w-auto">
+              <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading} className="flex-1 md:flex-none">
                 {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
                 $89/yr
               </Button>
-              <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading}>
+              <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading} className="flex-1 md:flex-none">
                 {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                Subscribe
+                $9/mo
               </Button>
             </div>
           </div>
