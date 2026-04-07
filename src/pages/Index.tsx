@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/ui/glow-card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSEO } from "@/hooks/useSEO";
+import { Navbar } from "@/components/shared/Navbar";
 
 const Index = () => {
   const { user } = useAuth();
@@ -26,17 +27,7 @@ const Index = () => {
 
   return (
     <>
-      {/* Nav */}
-      <nav className="px-6 py-5 flex items-center justify-between max-w-5xl mx-auto border-b border-border/50">
-        <span className="text-sm font-semibold tracking-widest text-foreground">XSENTINEL</span>
-        <div className="flex items-center gap-3">
-          {user && (
-            <Link to="/dashboard">
-              <Button size="sm" variant="outline" className="border-border bg-secondary/50 text-foreground">Dashboard</Button>
-            </Link>
-          )}
-        </div>
-      </nav>
+      <Navbar showAuthButtons={true} />
 
       {/* Hero */}
       <section className="flex flex-col items-center text-center px-6 pt-28 pb-24 max-w-3xl mx-auto">

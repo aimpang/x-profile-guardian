@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/custom-toast";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 import { useSEO } from "@/hooks/useSEO";
+import { Navbar } from "@/components/shared/Navbar";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -53,7 +54,9 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <>
+      <Navbar />
+      <div className="relative min-h-screen w-full overflow-hidden">
       {/* Canvas backgrounds */}
       <div className="absolute inset-0">
         {initialCanvasVisible && (
@@ -213,7 +216,8 @@ const Login = () => {
           </AnimatePresence>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

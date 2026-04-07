@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
+import { Navbar } from "@/components/shared/Navbar";
 
 const Privacy = () => {
   useSEO({
@@ -13,8 +14,10 @@ const Privacy = () => {
   });
 
   return (
-  <div className="min-h-screen bg-background text-foreground">
-    <div className="max-w-2xl mx-auto px-6 py-16">
+  <>
+    <Navbar />
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-2xl mx-auto px-6 py-16">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-10">
         <ArrowLeft className="h-4 w-4" /> Back
       </Link>
@@ -148,8 +151,9 @@ const Privacy = () => {
         </section>
 
       </div>
+      </div>
     </div>
-  </div>
+  </>
   );
 };
 

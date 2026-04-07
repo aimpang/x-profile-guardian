@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { useSEO } from "@/hooks/useSEO";
 
+const ONBOARDING_KEY = "xsentinel_onboarding_done";
+
 // ─── slide transition variants ────────────────────────────────────────────────
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? "60%" : "-60%", opacity: 0, filter: "blur(8px)" }),
@@ -84,15 +86,8 @@ const Onboarding = () => {
     <div className="min-h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-5 max-w-2xl mx-auto w-full shrink-0">
-        <div className="flex items-center gap-2">
-          <img src="/logo-v2.png" alt="XSentinel" className="h-7 w-7" />
-        </div>
-        <button
-          onClick={done}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          Skip
-        </button>
+        <span className="text-sm font-semibold tracking-widest text-foreground">XSENTINEL</span>
+        <div />
       </div>
 
       {/* Slide area */}
