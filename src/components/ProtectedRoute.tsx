@@ -3,7 +3,6 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Shield } from "lucide-react";
-import { ONBOARDING_KEY } from "@/pages/Onboarding";
 
 const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => {
@@ -34,9 +33,8 @@ const ProtectedRoute = forwardRef<HTMLDivElement, { children: React.ReactNode }>
 
     if (!user) return <Navigate to="/login" replace />;
 
-    // First-time users (no connected accounts AND hasn't completed onboarding) → onboarding
-    const onboardingComplete = localStorage.getItem(ONBOARDING_KEY) || hasConnectedAccounts;
-    if (!onboardingComplete && location.pathname !== "/onboarding") {
+    // Show onboarding for any user without connected accounts (regardless of prior skips)
+    if (!hasConnectedAccounts && location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;
     }
 

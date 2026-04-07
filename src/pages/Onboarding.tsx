@@ -11,8 +11,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
-export const ONBOARDING_KEY = "xsentinel_onboarding_v1";
-
 // ─── slide transition variants ────────────────────────────────────────────────
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? "60%" : "-60%", opacity: 0, filter: "blur(8px)" }),

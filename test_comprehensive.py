@@ -309,9 +309,16 @@ def test_xguard_comprehensive():
         try:
             page.goto(f"{BASE_URL}/login", wait_until="networkidle")
 
-            submit_button = page.locator("button:has-text('Sign in')")
-            assert submit_button.count() > 0, "Sign in button not found"
-            assert submit_button.is_visible(), "Sign in button not visible"
+            # Fill form to make submit button visible
+            email_input = page.locator("input#email")
+            password_input = page.locator("input#password")
+            email_input.fill("test@example.com")
+            password_input.fill("password123")
+
+            # Check for submit button (appears within password input after filled)
+            submit_button = page.locator("button[type='submit']")
+            assert submit_button.count() > 0, "Submit button not found"
+            assert submit_button.is_visible(), "Submit button not visible"
 
             print("[PASS] Form submission button present and visible")
             pass_count += 1

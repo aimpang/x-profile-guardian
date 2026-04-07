@@ -126,6 +126,7 @@ const Signup = () => {
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="relative">
                     <input
+                      id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -136,6 +137,7 @@ const Signup = () => {
                   </div>
                   <div className="relative">
                     <input
+                      id="password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}

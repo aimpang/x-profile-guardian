@@ -50,7 +50,7 @@ serve(async (req) => {
     });
 
     if (subscriptions.data.length === 0) {
-      return new Response(JSON.stringify({ subscribed: false, status: "expired" }), {
+      return new Response(JSON.stringify({ subscribed: false, status: "none" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
