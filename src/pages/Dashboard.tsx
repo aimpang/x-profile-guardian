@@ -12,6 +12,7 @@ import {
   LogOut,
   Slash,
   Loader2,
+  Zap,
 } from "lucide-react";
 import { GlowCard } from "@/components/ui/glow-card";
 import {
@@ -265,6 +266,40 @@ const Dashboard = () => {
 
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-8">
         {/* Trial/Expired Banners */}
+        {isTrial && trialDaysLeft > 5 && (
+          <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 flex items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Zap className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Your free trial has started</p>
+                <p className="text-sm text-muted-foreground mt-1">{trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} to experience full protection. No credit card required to cancel.</p>
+              </div>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <Button size="sm" variant="outline" onClick={() => handleCheckout("yearly")} disabled={checkoutLoading}>
+                {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                $89/yr
+              </Button>
+              <Button size="sm" onClick={() => handleCheckout("monthly")} disabled={checkoutLoading}>
+                {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        )}
+        {isTrial && trialDaysLeft <= 5 && trialDaysLeft > 0 && (
+          <div className="rounded-xl border border-[hsl(var(--warning))]/30 bg-[hsl(var(--warning))]/10 p-4 flex items-center gap-3">
+            <AlertTriangle className="h-5 w-5 text-[hsl(var(--warning))]" />
+            <p className="text-sm text-foreground">
+              <span className="font-medium">
+                {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""}
+              </span>{" "}
+              left in your free trial.
+            </p>
+          </div>
+        )}
         {isExpired && (
           <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 flex items-center justify-between gap-3">
             <div className="flex items-start gap-3">
@@ -284,17 +319,6 @@ const Dashboard = () => {
                 $9/mo
               </Button>
             </div>
-          </div>
-        )}
-        {isTrial && trialDaysLeft <= 5 && trialDaysLeft > 0 && (
-          <div className="rounded-xl border border-[hsl(var(--warning))]/30 bg-[hsl(var(--warning))]/10 p-4 flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-[hsl(var(--warning))]" />
-            <p className="text-sm text-foreground">
-              <span className="font-medium">
-                {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""}
-              </span>{" "}
-              left in your free trial.
-            </p>
           </div>
         )}
 
