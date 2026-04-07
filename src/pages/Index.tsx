@@ -41,7 +41,7 @@ const Index = () => {
           Protect your X identity
         </p>
         <h1 className="font-bold text-foreground leading-[1.05] tracking-tight" style={{ fontSize: "clamp(38px, 7vw, 68px)" }}>
-          Instant alerts when your X profile changes
+          Know within minutes if your X profile is changed
         </h1>
         <p className="mt-5 text-lg text-muted-foreground">
           Set once. Protected forever.
