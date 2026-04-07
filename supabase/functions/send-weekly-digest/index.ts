@@ -105,7 +105,7 @@ Deno.serve(async (req: Request) => {
         <div style="font-family:system-ui,-apple-system,Arial,sans-serif;max-width:600px;margin:0 auto;padding:40px 24px;background:#ffffff;">
           <div style="margin-bottom:32px;">
             <p style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin:0 0 12px;">XSentinel — Weekly Report</p>
-            <h1 style="font-size:20px;font-weight:700;color:#111;margin:0 0 6px;">Your account is being watched.</h1>
+            <h1 style="font-size:20px;font-weight:700;color:#111;margin:0 0 6px;">Your weekly protection summary.</h1>
             <p style="font-size:14px;color:#555;margin:0;">Here's what happened with <strong>@${account.x_username}</strong> this week.</p>
           </div>
 
