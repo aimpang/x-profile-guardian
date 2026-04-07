@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Zap, Bell, ArrowRight, Check, Slash } from "lucide-react";
 import { LiquidButton } from "@/components/ui/liquid-glass-button";
@@ -8,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const { user } = useAuth();
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
 
   return (
     <>
@@ -76,10 +78,33 @@ const Index = () => {
             <div className="p-6 flex flex-col justify-between text-center h-full">
             <div>
               <h3 className="text-base font-semibold text-foreground mb-3">Simple pricing</h3>
-              <div className="text-3xl font-bold text-foreground mb-1">
-                $9<span className="text-sm font-normal text-muted-foreground">/mo</span>
+
+              {/* Billing toggle */}
+              <div className="flex gap-2 justify-center mb-4">
+                <Button
+                  size="sm"
+                  variant={billingPeriod === "monthly" ? "default" : "outline"}
+                  onClick={() => setBillingPeriod("monthly")}
+                  className="text-xs"
+                >
+                  Monthly
+                </Button>
+                <Button
+                  size="sm"
+                  variant={billingPeriod === "yearly" ? "default" : "outline"}
+                  onClick={() => setBillingPeriod("yearly")}
+                  className="text-xs"
+                >
+                  Yearly
+                </Button>
               </div>
-              <p className="text-xs text-muted-foreground">Or $89/yr <span className="text-safe">— save 17%</span></p>
+
+              <div className="text-3xl font-bold text-foreground mb-1">
+                {billingPeriod === "monthly" ? "$9" : "$89"}<span className="text-sm font-normal text-muted-foreground">/{billingPeriod === "monthly" ? "mo" : "yr"}</span>
+              </div>
+              {billingPeriod === "yearly" && (
+                <p className="text-xs text-safe mb-3">Save 17% vs monthly</p>
+              )}
               <p className="text-xs text-muted-foreground mb-5">After 14-day free trial</p>
               <ul className="text-left space-y-2.5 mb-5">
                 {[
@@ -97,7 +122,7 @@ const Index = () => {
                 ))}
               </ul>
             </div>
-            <Link to="/signup">
+            <Link to={`/signup?plan=${billingPeriod}`}>
               <Button className="w-full" size="sm">Start free trial</Button>
             </Link>
             </div>
