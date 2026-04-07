@@ -101,7 +101,7 @@ const Index = () => {
       <section className="px-6 py-20 max-w-4xl mx-auto">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-2">Everything we watch for you</h2>
-          <p className="text-sm text-muted-foreground">Any unauthorized change fires an instant alert to your email and phone</p>
+          <p className="text-sm text-muted-foreground">Any unauthorized change fires an instant alert to your email</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
@@ -172,7 +172,7 @@ const Index = () => {
                 "Monitoring every 60 seconds, 24/7",
                 "Alerts on username, bio, avatar, banner, verified badge",
                 "Follower drop alerts (≥5% or ≥50 drop)",
-                "Instant email + mobile push alerts",
+                "Instant email alerts",
                 "Full change history with before & after proof",
                 "Profile snapshot — see your account as we last saw it",
                 "Step-by-step recovery guide on every suspicious alert",
