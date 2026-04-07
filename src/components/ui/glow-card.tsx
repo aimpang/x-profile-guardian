@@ -24,7 +24,7 @@ const GlowCard = React.forwardRef<HTMLDivElement, GlowCardProps>(
         <div className="absolute inset-0 rounded-xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 blur-xl bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,hsl(var(--primary)/0.08)_25%,hsl(var(--primary)/0.15)_50%,hsl(var(--primary)/0.08)_75%,transparent_100%)]" />
 
         {/* Content */}
-        <div className="relative m-[1px] rounded-[calc(0.75rem-1px)] bg-secondary/50 backdrop-blur-sm h-[calc(100%-2px)]">
+        <div className="relative m-[1px] rounded-[calc(0.75rem-1px)] bg-secondary/30 backdrop-blur-sm h-[calc(100%-2px)]">
           {children}
         </div>
       </div>

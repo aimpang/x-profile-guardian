@@ -28,7 +28,7 @@ import {
   ChevronUp,
   LifeBuoy,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BarChart,
   Bar,
@@ -682,8 +682,17 @@ const Dashboard = () => {
                   ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
                   : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
               </button>
-              {snapshotOpen && (
-                <div className="px-5 pb-5 border-t border-border/40">
+              <AnimatePresence initial={false}>
+                {snapshotOpen && (
+                  <motion.div
+                    key="snapshot-content"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+                    style={{ overflow: "hidden" }}
+                  >
+                  <div className="px-5 pb-5 border-t border-border/40">
                   <div className="pt-4 flex gap-4">
                     {account.last_snapshot.profile_image && (
                       <img
@@ -736,7 +745,9 @@ const Dashboard = () => {
                     </div>
                   )}
                 </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </GlowCard>
           </motion.div>
         )}
