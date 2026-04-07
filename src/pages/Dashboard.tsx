@@ -6,6 +6,7 @@ import {
   ExternalLink,
   AlertTriangle,
   Bell,
+  Mail,
   CreditCard,
   Unplug,
   LogOut,
@@ -36,6 +37,7 @@ interface ConnectedAccount {
   subscription_status: string | null;
   trial_ends_at: string | null;
   push_enabled: boolean | null;
+  digest_enabled: boolean | null;
   followers_count: number | null;
   last_checked_at: string | null;
 }
@@ -64,6 +66,7 @@ const eventLabels: Record<string, string> = {
   profile_image: "Profile picture",
   banner: "Banner",
   followers: "Follower count",
+  verified: "Verified status",
 };
 
 const Dashboard = () => {
@@ -73,6 +76,7 @@ const Dashboard = () => {
   const [account, setAccount] = useState<ConnectedAccount | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [pushEnabled, setPushEnabled] = useState(true);
+  const [digestEnabled, setDigestEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [subInfo, setSubInfo] = useState<SubscriptionInfo | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -99,6 +103,7 @@ const Dashboard = () => {
       if (accRes.data) {
         setAccount(accRes.data);
         setPushEnabled(accRes.data.push_enabled ?? true);
+        setDigestEnabled(accRes.data.digest_enabled ?? true);
       }
       if (alertRes.data) setAlerts(alertRes.data);
       await checkSubscription();
@@ -146,6 +151,7 @@ const Dashboard = () => {
           if (data) {
             setAccount(data);
             setPushEnabled(data.push_enabled ?? true);
+            setDigestEnabled(data.digest_enabled ?? true);
           }
         });
     }
@@ -210,6 +216,12 @@ const Dashboard = () => {
     setPushEnabled(val);
     await supabase.from("connected_accounts").update({ push_enabled: val }).eq("user_id", user!.id);
     toast.success(val ? "Push alerts enabled" : "Push alerts disabled — you'll still receive emails");
+  };
+
+  const toggleDigest = async (val: boolean) => {
+    setDigestEnabled(val);
+    await supabase.from("connected_accounts").update({ digest_enabled: val }).eq("user_id", user!.id);
+    toast.success(val ? "Weekly digest enabled" : "Weekly digest disabled");
   };
 
   const handleDisconnect = async () => {
@@ -477,6 +489,25 @@ const Dashboard = () => {
                 Connect your X account to enable push notifications.
               </p>
             )}
+            </div>
+          </GlowCard>
+
+          <GlowCard>
+            <div className="p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-foreground" />
+                <div>
+                  <Label className="text-foreground font-medium">Weekly digest</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {digestEnabled
+                      ? "Receive a weekly summary of changes and monitoring activity."
+                      : "Weekly digest emails are paused."}
+                  </p>
+                </div>
+              </div>
+              <Switch checked={digestEnabled} onCheckedChange={toggleDigest} disabled={!account} />
+            </div>
             </div>
           </GlowCard>
 

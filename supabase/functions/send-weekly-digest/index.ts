@@ -40,7 +40,8 @@ Deno.serve(async (req: Request) => {
   const { data: accounts, error } = await supabase
     .from("connected_accounts")
     .select("*")
-    .neq("subscription_status", "expired");
+    .neq("subscription_status", "expired")
+    .neq("digest_enabled", false);
 
   if (error) {
     console.error("Failed to fetch accounts:", error);
@@ -137,8 +138,8 @@ Deno.serve(async (req: Request) => {
 
           <p style="font-size:12px;color:#aaa;margin-top:36px;line-height:1.7;border-top:1px solid #eee;padding-top:24px;">
             Weekly digest from XSentinel. Your X account @${account.x_username} is monitored every minute.<br>
-            <a href="https://xsentinel.dev/dashboard" style="color:#888;">Manage preferences</a> ·
-            <a href="https://xsentinel.dev/dashboard" style="color:#888;">Unsubscribe from digest</a> ·
+            <a href="https://xsentinel.dev/dashboard#settings" style="color:#888;">Manage preferences</a> ·
+            <a href="https://xsentinel.dev/dashboard#settings" style="color:#888;">Unsubscribe from digest</a> ·
             Reply to this email for support.
           </p>
         </div>

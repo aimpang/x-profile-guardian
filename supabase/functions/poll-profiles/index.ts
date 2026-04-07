@@ -12,6 +12,7 @@ interface ProfileSnapshot {
   profile_image?: string;
   banner?: string;
   followers?: number;
+  verified?: boolean;
 }
 
 async function refreshXToken(clientId: string, clientSecret: string, refreshToken: string) {
@@ -32,7 +33,7 @@ async function refreshXToken(clientId: string, clientSecret: string, refreshToke
 
 async function fetchXProfile(accessToken: string) {
   const res = await fetch(
-    "https://api.twitter.com/2/users/me?user.fields=profile_image_url,description,name,username,profile_banner_url,public_metrics",
+    "https://api.twitter.com/2/users/me?user.fields=profile_image_url,description,name,username,profile_banner_url,public_metrics,verified",
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
   if (!res.ok) return null;
@@ -52,12 +53,21 @@ async function sendEmailAlert(resendKey: string, email: string, field: string, o
 
   const isUnauthorized = field !== "followers";
   const securityCta = isUnauthorized ? `
-    <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:16px;margin-bottom:24px;">
-      <p style="font-size:13px;color:#856404;margin:0 0 8px;font-weight:600;">Was this you?</p>
-      <p style="font-size:13px;color:#856404;margin:0 0 12px;">If you did not make this change, secure your account immediately.</p>
-      <a href="https://x.com/settings/security" style="display:inline-block;background:#856404;color:#fff;padding:10px 20px;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">
-        Go to X Security Settings →
-      </a>
+    <div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:10px;padding:20px;margin-bottom:24px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="width:28px;vertical-align:top;padding-top:1px;">
+            <span style="font-size:18px;line-height:1;">⚠️</span>
+          </td>
+          <td style="vertical-align:top;">
+            <p style="font-size:14px;font-weight:700;color:#92400e;margin:0 0 6px;">Was this you?</p>
+            <p style="font-size:13px;color:#78350f;margin:0 0 16px;line-height:1.5;">If you didn't make this change, your account may be compromised. Secure it immediately.</p>
+            <a href="https://x.com/settings/security" style="display:inline-block;background:#d97706;color:#fff;padding:11px 22px;text-decoration:none;border-radius:7px;font-size:13px;font-weight:600;letter-spacing:0.01em;">
+              Secure My Account →
+            </a>
+          </td>
+        </tr>
+      </table>
     </div>` : "";
 
   await fetch("https://api.resend.com/emails", {
@@ -214,10 +224,11 @@ Deno.serve(async (req: Request) => {
         profile_image: profile.profile_image_url?.replace("_normal", "") ?? null,
         banner: profile.profile_banner_url ?? null,
         followers: currentFollowers ?? undefined,
+        verified: profile.verified ?? false,
       };
 
       const snapshot: ProfileSnapshot = (account.last_snapshot as ProfileSnapshot) ?? {};
-      const fields: (keyof ProfileSnapshot)[] = ["username", "display_name", "bio", "profile_image", "banner"];
+      const fields: (keyof ProfileSnapshot)[] = ["username", "display_name", "bio", "profile_image", "banner", "verified"];
       const prevFollowers: number | null = snapshot.followers ?? null;
 
       const changed: string[] = [];
